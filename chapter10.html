@@ -572,9 +572,9 @@
                             <canvas id="simCanvas" width="620" height="700"></canvas>
                             <div class="legend-box" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #e2e8f0;">
                                 <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>充氧血 (高氧鲜红)</span></div>
-                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#3182ce;"></div><span>缺氧血 (高CO₂暗红)</span></div>
-                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>氧气 (O₂) 分子</span></div>
-                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#dd6b20;"></div><span>二氧化碳 (CO₂) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#3182ce;"></div><span>缺氧血 (高CO<sub>2</sub>暗红)</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>氧气 (O<sub>2</sub>) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#dd6b20;"></div><span>二氧化碳 (CO<sub>2</sub>) 分子</span></div>
                                 <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#319795;"></div><span>营养物质分子</span></div>
                                 <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#805ad5;"></div><span>代谢废物分子</span></div>
                             </div>
@@ -623,9 +623,9 @@
                                 <h3>毛细血管网核心功能</h3>
                                 <div id="infoText" style="font-size:0.88rem; line-height:1.6; background:#f7fafc; padding:12px; border-radius:6px; border-left:4px solid #3182ce;">
                                     <strong>1. 肺部毛细血管网：</strong><br>
-                                    气体在此进行扩散交换，血液排出 CO₂ 并吸收 O₂，由缺氧血转变为充氧血。<br><br>
+                                    气体在此进行扩散交换，血液排出 CO<sub>2</sub> 并吸收 O<sub>2</sub>，由缺氧血转变为充氧血。<br><br>
                                     <strong>2. 身体各部分毛细血管网：</strong><br>
-                                    血液在此把 O₂ 和养料供给细胞利用，并带走 CO₂ 和代谢废物，由充氧血转变为缺氧血。
+                                    血液在此把 O<sub>2</sub> 和养料供给细胞利用，并带走 CO<sub>2</sub> 和代谢废物，由充氧血转变为缺氧血。
                                 </div>
                             </div>
                         </div>
@@ -734,7 +734,7 @@
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <div class="node" onclick="toggleMMNode('mm5')"><span>10.5 人体排泄</span> <strong id="btn-mm5">[+]</strong></div>
                                 <div id="mm5" class="children-container hidden">
-                                    <div class="node">途径：泌尿系统(排尿)、皮肤(排汗)、肺(呼出CO2与水蒸气)</div>
+                                    <div class="node">途径：泌尿系统(排尿)、皮肤(排汗)、肺(呼出 CO<sub>2</sub> 与水蒸气)</div>
                                     <div class="node">泌尿系统：肾脏(产生尿液)、输尿管、膀胱(暂存)、尿道</div>
                                     <div class="node">尿液形成：肾小球滤过(原尿) ➔ 肾小管重吸收(葡萄糖100%/水/盐)</div>
                                 </div>
@@ -743,7 +743,7 @@
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <div class="node" onclick="toggleMMNode('mm6')"><span>10.6 植物排泄与分泌</span> <strong id="btn-mm6">[+]</strong></div>
                                 <div id="mm6" class="children-container hidden">
-                                    <div class="node">排泄：光合作用释放O2、呼吸作用排出CO2、蒸腾排出水</div>
+                                    <div class="node">排泄：光合作用释放 O<sub>2</sub>、呼吸作用排出 CO<sub>2</sub>、蒸腾排出水</div>
                                     <div class="node">分泌现象：松脂、桃胶、橡胶胶乳、见血封喉毒汁</div>
                                 </div>
                             </div>
@@ -1490,6 +1490,20 @@
             }
         }
 
+        // Canvas 文本包含下标辅助渲染函数
+        function drawSubscriptText(ctx, text, sub, nextText, x, y, font, subFont) {
+            ctx.font = font;
+            ctx.fillText(text, x, y);
+            let w1 = ctx.measureText(text).width;
+            ctx.font = subFont;
+            ctx.fillText(sub, x + w1, y + 4);
+            let w2 = ctx.measureText(sub).width;
+            if (nextText) {
+                ctx.font = font;
+                ctx.fillText(nextText, x + w1 + w2, y);
+            }
+        }
+
         function drawBoxesAndValves() {
             const chkValves = document.getElementById('chkValves');
             const chkLabels = document.getElementById('chkLabels');
@@ -1549,12 +1563,16 @@
 
                 simCtx.font = 'bold 18px sans-serif';
                 simCtx.fillText('肺部的毛细血管网', boxes.lung.x + boxes.lung.w/2, boxes.lung.y + 26);
-                simCtx.font = 'bold 13px sans-serif';
+                
+                // 绘制带下标的 氧增加/二氧化碳减少
+                simCtx.textAlign = 'left';
                 simCtx.fillStyle = '#e53e3e';
-                simCtx.fillText('氧增加 ↑', boxes.lung.x + boxes.lung.w/2 - 50, boxes.lung.y + 58);
+                drawSubscriptText(simCtx, '氧增加 ↑', '', '', boxes.lung.x + 30, boxes.lung.y + 58, 'bold 13px sans-serif', 'bold 10px sans-serif');
+                
                 simCtx.fillStyle = '#3182ce';
-                simCtx.fillText('二氧化碳减少 ↓', boxes.lung.x + boxes.lung.w/2 + 45, boxes.lung.y + 58);
+                drawSubscriptText(simCtx, '二氧化碳', '2', ' 减少 ↓', boxes.lung.x + 130, boxes.lung.y + 58, 'bold 13px sans-serif', 'bold 10px sans-serif');
 
+                simCtx.textAlign = 'center';
                 simCtx.fillStyle = '#1a202c';
                 simCtx.font = 'bold 18px sans-serif';
                 simCtx.fillText('右心房', boxes.ra.x + boxes.ra.w/2, boxes.ra.y + 28);
@@ -1566,12 +1584,14 @@
                 simCtx.fillText('身体各个部分的', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 28);
                 simCtx.fillText('毛细血管网', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 4);
                 
-                simCtx.font = 'bold 13px sans-serif';
+                simCtx.textAlign = 'left';
                 simCtx.fillStyle = '#e53e3e';
-                simCtx.fillText('消耗氧气 & 养料', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 + 25);
+                drawSubscriptText(simCtx, '消耗氧气 & 养料', '', '', boxes.body.x + 25, boxes.body.y + boxes.body.h/2 + 25, 'bold 13px sans-serif', 'bold 10px sans-serif');
+                
                 simCtx.fillStyle = '#3182ce';
-                simCtx.fillText('产生 CO₂ & 代谢物', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 + 48);
+                drawSubscriptText(simCtx, '产生 CO', '2', ' & 代谢物', boxes.body.x + 20, boxes.body.y + boxes.body.h/2 + 48, 'bold 13px sans-serif', 'bold 10px sans-serif');
 
+                simCtx.textAlign = 'center';
                 simCtx.font = 'bold 15px sans-serif';
                 simCtx.fillStyle = '#1a202c';
                 simCtx.fillText('上、下腔静脉', 375, 126);
