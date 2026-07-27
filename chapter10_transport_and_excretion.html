@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第10章 物质的运输与排泄 —— 互动学习平台</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --ans-color: #e53e3e;
+            --font-scale: 1rem;
+            --container-width: 1100px;
+        }
+
+        body.dark-mode {
+            --primary-color: #89b4fa;
+            --bg-color: #181825;
+            --card-bg: #1e1e2e;
+            --text-color: #cdd6f4;
+            --border-color: #45475a;
+            --ans-color: #f38ba8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-size: var(--font-scale);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .toolbar {
+            position: sticky;
+            top: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+            gap: 10px;
+        }
+
+        .toolbar h1 {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .controls-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background: #219150;
+            transform: translateY(-1px);
+        }
+
+        .select-btn {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 0.85rem;
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 20px auto;
+            padding: 0 20px;
+            transition: max-width 0.3s;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        h3 {
+            color: #2b6cb0;
+            margin-top: 20px;
+            font-size: 1.15em;
+        }
+
+        .inline-ans {
+            display: inline-block;
+            min-width: 50px;
+            padding: 2px 8px;
+            margin: 0 3px;
+            border-bottom: 2px dashed #999;
+            color: transparent;
+            background: rgba(0,0,0,0.05);
+            cursor: pointer;
+            border-radius: 3px;
+            text-align: center;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .inline-ans.revealed {
+            color: var(--ans-color);
+            background: rgba(229, 62, 62, 0.1);
+            border-bottom: 2px solid var(--ans-color);
+            font-weight: bold;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(0,0,0,0.04);
+            color: var(--primary-color);
+        }
+
+        .interactive-diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+            background: rgba(0,0,0,0.02);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .canvas-box {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .organ-info-panel {
+            flex: 1;
+            min-width: 280px;
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .sim-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.02);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        canvas {
+            background-color: #fafafa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .sim-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        /* 血液循环模拟器样式 */
+        .circ-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+        }
+        .circ-sidebar {
+            flex: 1;
+            min-width: 320px;
+            max-width: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .circ-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            background: #edf2f7;
+            padding: 6px;
+            border-radius: 8px;
+        }
+        .radio-label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+            user-select: none;
+        }
+        .radio-label input { display: none; }
+        .radio-label.active {
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* 思维导图 */
+        .mindmap-section {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 25px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .mindmap-tree {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .node {
+            background: #313244;
+            border: 1px solid #45475a;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .node:hover {
+            border-color: #89b4fa;
+            background: #45475a;
+        }
+        .node-title {
+            font-weight: bold;
+            color: #89b4fa;
+        }
+        .children-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-left: 2px dashed #45475a;
+            padding-left: 15px;
+            margin-left: 5px;
+        }
+        .hidden { display: none !important; }
+
+        @media print {
+            .toolbar, .btn, .sim-controls, canvas, .select-btn, .circ-sidebar {
+                display: none !important;
+            }
+            body { background: white !important; color: black !important; font-size: 12pt; }
+            .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
+            .inline-ans { border-bottom: 1px solid black; background: none; color: transparent; }
+            .inline-ans.revealed { color: black; background: none; border-bottom: 1px solid black; }
+            .mindmap-section { background: white; color: black; }
+            .node { background: #eee; color: black; border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h1>第10章 物质的运输与排泄</h1>
+        
+        <div class="controls-group">
+            <button class="btn" onclick="toggleAllAnswers(true)">🔓 展开答案</button>
+            <button class="btn" onclick="toggleAllAnswers(false)">🔒 隐藏答案</button>
+            
+            <select class="select-btn" onchange="changeFontSize(this.value)">
+                <option value="1rem">字号: 标准 (100%)</option>
+                <option value="1.15rem">字号: 大字 (115%)</option>
+                <option value="1.3rem">字号: 超大 (130%)</option>
+            </select>
+
+            <select class="select-btn" onchange="changeLayoutWidth(this.value)">
+                <option value="1100px">版面: 居中 (1100px)</option>
+                <option value="100%">版面: 宽屏 (全屏)</option>
+            </select>
+
+            <button class="btn" style="background:#8e44ad;" onclick="toggleDarkMode()">🌙 护眼模式</button>
+            <button class="btn" style="background:#2980b9;" onclick="window.print()">🖨️ 打印</button>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <script>
+        // --- 解剖与结构数据库 ---
+        const heartData = {
+            la: { title: "❤️ 左心房 (Left Atrium)", category: "心脏心腔", desc: "连接肺静脉，接收来自肺部完成气体交换后富含氧气的鲜红色充氧血。" },
+            lv: { title: "🔴 左心室 (Left Ventricle)", category: "心脏心腔（最厚心壁）", desc: "连接主动脉。心肌壁最发达厚实，强力收缩将充氧血泵入主动脉送往全身各器官。" },
+            ra: { title: "💙 右心房 (Right Atrium)", category: "心脏心腔", desc: "连接上、下腔静脉，接收全身组织细胞代谢后返回的暗红色缺氧血。" },
+            rv: { title: "🔵 右心室 (Right Ventricle)", category: "心脏心腔", desc: "连接肺动脉。收缩时将缺氧血泵入肺动脉送往肺部进行气体交换。" },
+            aorta: { title: "🩸 主脉动脉 (Aorta)", category: "主要血管", desc: "与左心室相连，将充氧血运送至全身身体各部分毛细血管网。" },
+            pa: { title: "🫁 肺动脉 (Pulmonary Artery)", category: "主要血管", desc: "与右心室相连，将缺氧血运送至肺部毛细血管网。是少数运送缺氧血的动脉。" },
+            pv: { title: "🫁 肺静脉 (Pulmonary Vein)", category: "主要血管", desc: "与左心房相连，将肺部鲜红的充氧血送回心脏。是少数运送充氧血的静脉。" },
+            vc: { title: "🌊 上、下腔静脉 (Vena Cava)", category: "主要血管", desc: "与右心房相连，收集上半身与下半身代谢后的缺氧血送回心脏。" },
+            av_valves: { title: "🚪 房室瓣 (左/右房室瓣)", category: "心脏瓣膜", desc: "位于心房与心室之间。心室收缩时关闭，防止血液倒流回心房。" },
+            sl_valves: { title: "🚪 动脉瓣 ( Semilunar Valves )", category: "心脏瓣膜", desc: "位于心室与动脉连接处。心室舒张时关闭，防止射入动脉的血液倒流回心室。" }
+        };
+
+        // 淋巴器官数据库：包含可点击揭晓的词汇（挖空练习）
+        const lymphData = {
+            spleen: { 
+                title: "🛡️ 脾 (Spleen)", 
+                category: "人体最大的淋巴器官", 
+                desc: "位于腹腔<span class='inline-ans' onclick='toggleInline(this)'>左上方</span>，外观呈<span class='inline-ans' onclick='toggleInline(this)'>紫红色</span>，呈扁圆形。它是人体<span class='inline-ans' onclick='toggleInline(this)'>最大</span>的淋巴器官，主要功能是破坏<span class='inline-ans' onclick='toggleInline(this)'>衰老血细胞</span>，并发挥强大的免疫过滤作用。" 
+            },
+            thymus: { 
+                title: "🫁 胸腺 (Thymus)", 
+                category: "中枢淋巴器官", 
+                desc: "位于<span class='inline-ans' onclick='toggleInline(this)'>胸骨</span>后面。主要功能是分泌<span class='inline-ans' onclick='toggleInline(this)'>胸腺激素</span>，促使<span class='inline-ans' onclick='toggleInline(this)'>T 淋巴细胞</span>发育成熟，与人体免疫密切相关。" 
+            },
+            tonsil: { 
+                title: "👄 扁桃体 (Tonsils)", 
+                category: "咽部淋巴器官", 
+                desc: "位于<span class='inline-ans' onclick='toggleInline(this)'>呼吸道</span>与<span class='inline-ans' onclick='toggleInline(this)'>消化道</span>的交会处，含有<span class='inline-ans' onclick='toggleInline(this)'>淋巴结</span>，能抵御由口鼻侵入的细菌与病毒。" 
+            },
+            node: { 
+                title: "🟢 淋巴结 (Lymph Nodes)", 
+                category: "周围淋巴器官", 
+                desc: "呈扁圆形或椭圆形小体，沿着<span class='inline-ans' onclick='toggleInline(this)'>淋巴管</span>分布，在<span class='inline-ans' onclick='toggleInline(this)'>颈部</span>、<span class='inline-ans' onclick='toggleInline(this)'>腋窝</span>和<span class='inline-ans' onclick='toggleInline(this)'>腹股沟</span>特别密集。能过滤淋巴液中的病菌，发生感染时会<span class='inline-ans' onclick='toggleInline(this)'>肿大疼痛</span>。" 
+            },
+            marrow: {
+                title: "🦴 红骨髓 (Bone Marrow)",
+                category: "造血与免疫器官",
+                desc: "位于骨髓腔及骨松质内，具有<span class='inline-ans' onclick='toggleInline(this)'>造血功能</span>，能产生各种<span class='inline-ans' onclick='toggleInline(this)'>血细胞</span>及 B 淋巴细胞。"
+            }
+        };
+
+        function renderApp() {
+            document.getElementById('app').innerHTML = `
+                <div class="card">
+                    <h2>🎯 章节学习目标</h2>
+                    <ul>
+                        <li>掌握血液的组成成分（血浆与血细胞）及饼图比例。</li>
+                        <li>学会解读血常规报告单，能根据红细胞、白细胞、血小板与血红蛋白判断健康状况。</li>
+                        <li>掌握 ABO 血型系统的抗原/抗体图解与交叉配血原则。</li>
+                        <li>熟记心脏真实解剖结构（四腔、瓣膜及连接血管）。</li>
+                        <li>理解体循环与肺循环的动态路径及毛细血管网的物质交换。</li>
+                        <li>掌握心率、脉搏与血压的生理意义及正常范围。</li>
+                        <li>掌握淋巴循环路径、单向回流特点及四大淋巴器官。</li>
+                        <li>掌握泌尿系统与肾脏解剖结构及尿液形成过程。</li>
+                        <li>理解植物的排泄与隐藏的分泌现象。</li>
+                    </ul>
+                </div>
+
+                <!-- 10.1 血液和血型 -->
+                <div class="card">
+                    <h2>10.1 血液和血型</h2>
+                    
+                    <h3>1. 血液成分占比（圆饼图）</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="bloodPieCanvas" width="340" height="260"></canvas>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3>🩸 血液成分组成说明</h3>
+                            <p><strong>血浆 (55%)：</strong> 90%以上为水，其余为血浆蛋白（白蛋白、球蛋白、纤维蛋白原）、葡萄糖、电解质及代谢废物。</p>
+                            <p><strong>血细胞 (45%)：</strong> 包含红细胞（4.8-5.4百万/μL）、白细胞与血小板（<1%）。</p>
+                        </div>
+                    </div>
+
+                    <h3>2. 🩺 临床血常规报告单诊断模拟器</h3>
+                    <p style="font-size:0.95em;">调整下方病人的指标，观察并判断可能患有的疾病：</p>
+                    <div class="sim-container">
+                        <div style="width:100%; max-width:650px;">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>检查项目</th>
+                                            <th>测定值</th>
+                                            <th>参考范围</th>
+                                            <th>单位</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>白细胞计数 (WBC)</strong></td>
+                                            <td><input type="number" id="valWBC" value="11.8" step="0.5" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>4.0 ~ 11.0</td>
+                                            <td>×10⁹ / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>红细胞计数 (RBC)</strong></td>
+                                            <td><input type="number" id="valRBC" value="3.0" step="0.2" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>4.0 ~ 6.0</td>
+                                            <td>×10¹² / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>血红蛋白 (Hb)</strong></td>
+                                            <td><input type="number" id="valHB" value="90" step="5" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>110 ~ 150</td>
+                                            <td>g / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>血小板计数 (PLT)</strong></td>
+                                            <td><input type="number" id="valPLT" value="210" step="10" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>150 ~ 400</td>
+                                            <td>×10⁹ / L</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="labDiagnosis" style="margin-top:10px; padding:12px; background:#fff; border-radius:6px; border-left:4px solid #e53e3e; font-weight:bold;">
+                                诊断分析加载中...
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>3. 🔬 ABO血型系统的抗原与抗体（图像化模拟器）</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="aboTypeCanvas" width="360" height="260"></canvas>
+                        </div>
+                        <div class="organ-info-panel">
+                            <label><strong>选择血型展示：</strong></label>
+                            <select id="selAboType" class="select-btn" style="width:100%; margin-top:8px; padding:8px;" onchange="drawAboTypeSim()">
+                                <option value="A">A 型 (红细胞含 A抗原，血浆含 B抗体)</option>
+                                <option value="B">B 型 (红细胞含 B抗原，血浆含 A抗体)</option>
+                                <option value="AB">AB 型 (红细胞含 A与B抗原，血浆无抗体)</option>
+                                <option value="O">O 型 (红细胞无抗原，血浆含 A与B抗体)</option>
+                            </select>
+                            <div id="aboDescText" style="margin-top:12px; font-size:0.9em; line-height:1.6;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.2 血管和心脏 -->
+                <div class="card">
+                    <h2>10.2 血管和心脏</h2>
+
+                    <h3>🫀 心脏结构与瓣膜解剖探究（标准解剖版）</h3>
+                    <p style="font-size:0.95em;">👇 <strong>点击左图中的各个心腔、大血管或瓣膜进行结构探究：</strong></p>
+
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="realHeartCanvas" width="380" height="420"></canvas>
+                        </div>
+                        <div class="organ-info-panel" id="heartInfoPanel">
+                            <h3 id="heartTitle">👈 点击左图心脏结构</h3>
+                            <p id="heartCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="heartDesc">点击左图查看左心房、左心室、右心房、右心室、主动脉、房室瓣等详细功能。</p>
+                        </div>
+                    </div>
+
+                    <h3>💓 血压、心率与脉搏模拟器</h3>
+                    <div class="sim-container">
+                        <div class="sim-controls">
+                            <label><strong>滑动调节心率 (BPM)：<span id="bpmDisp">75</span> 次/分</strong></label>
+                            <input type="range" id="bpmInput" min="40" max="160" value="75" oninput="updateBpSim()">
+                            
+                            <div class="table-responsive">
+                                <table>
+                                    <tr>
+                                        <th>收缩压 (高压)</th>
+                                        <th>舒张压 (低压)</th>
+                                        <th>脉搏次数</th>
+                                        <th>血压状态评估</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="sysDisp" style="font-weight:bold; color:#e53e3e;">118 mmHg</td>
+                                        <td id="diaDisp" style="font-weight:bold; color:#3182ce;">78 mmHg</td>
+                                        <td id="pulseDisp" style="font-weight:bold;">75 次/分</td>
+                                        <td id="bpStatus" style="font-weight:bold; color:#27ae60;">正常血压</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p style="font-size:0.85em; color:#718096;">注：心脏每次收缩射血对动脉壁产生的压强为血压；脉搏频率与心率完全一致。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.3 血液循环 -->
+                <div class="card">
+                    <h2>10.3 血液循环互动模拟器</h2>
+                    <p style="margin-bottom:15px;"><strong>重点强调：</strong> 肺部毛细血管网 与 身体各部分毛细血管网 的动态物质交换。</p>
+
+                    <div class="circ-layout">
+                        <div class="canvas-card" style="padding:10px;">
+                            <canvas id="simCanvas" width="620" height="700"></canvas>
+                            <div class="legend-box" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #e2e8f0;">
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>充氧血 (高氧鲜红)</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#3182ce;"></div><span>缺氧血 (高CO₂暗红)</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>氧气 (O₂) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#dd6b20;"></div><span>二氧化碳 (CO₂) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#319795;"></div><span>营养物质分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#805ad5;"></div><span>代谢废物分子</span></div>
+                            </div>
+                        </div>
+
+                        <div class="circ-sidebar">
+                            <div class="circ-panel">
+                                <h3>模式选择（循环类型）</h3>
+                                <div class="radio-group">
+                                    <label class="radio-label active" id="lblAll">
+                                        <input type="radio" name="circMode" value="all" checked> 全景循环
+                                    </label>
+                                    <label class="radio-label" id="lblSystemic">
+                                        <input type="radio" name="circMode" value="systemic"> 体循环
+                                    </label>
+                                    <label class="radio-label" id="lblPulmonary">
+                                        <input type="radio" name="circMode" value="pulmonary"> 肺循环
+                                    </label>
+                                </div>
+
+                                <h3>视图控制选项</h3>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item"><input type="checkbox" id="chkNets" checked> <span>突出显示毛细血管网 (Capillary Mesh)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkValves" checked> <span>显示房室瓣 (左/右房室瓣)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkFlowDir" checked> <span>显示血流方向箭头 (Flow Direction)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkBloodCells" checked> <span>显示血细胞动态流动 (Blood Flow)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkDiffusion" checked> <span>显示毛细血管物质扩散 (Substance Diffusion)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkLabels" checked> <span>显示文字与器官标注 (Labels)</span></label>
+                                </div>
+
+                                <div style="margin-top:15px;">
+                                    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:0.9rem;">
+                                        <span>心率 / 流速调节:</span>
+                                        <span id="bpmVal">75 BPM</span>
+                                    </div>
+                                    <input type="range" id="bpmSlider" min="40" max="150" value="75" style="width:100%;">
+                                </div>
+
+                                <div style="display:flex; gap:10px; margin-top:15px;">
+                                    <button class="btn" id="btnToggle" style="flex:1;">暂停模拟</button>
+                                    <button class="btn" id="btnReset" style="flex:1; background:#718096;">重置位置</button>
+                                </div>
+                            </div>
+
+                            <div class="circ-panel">
+                                <h3>毛细血管网核心功能</h3>
+                                <div id="infoText" style="font-size:0.88rem; line-height:1.6; background:#f7fafc; padding:12px; border-radius:6px; border-left:4px solid #3182ce;">
+                                    <strong>1. 肺部毛细血管网：</strong><br>
+                                    气体在此进行扩散交换，血液排出 CO₂ 并吸收 O₂，由缺氧血转变为充氧血。<br><br>
+                                    <strong>2. 身体各部分毛细血管网：</strong><br>
+                                    血液在此把 O₂ 和养料供给细胞利用，并带走 CO₂ 和代谢废物，由充氧血转变为缺氧血。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.4 淋巴循环 -->
+                <div class="card">
+                    <h2>10.4 淋巴循环与淋巴器官</h2>
+                    <p><strong>淋巴循环路径：</strong> <span class="inline-ans" onclick="toggleInline(this)">毛细淋巴管</span> ➔ 各级淋巴管 ➔ 淋巴总管 ➔ <span class="inline-ans" onclick="toggleInline(this)">锁骨下静脉</span>（汇入血液循环）。</p>
+                    
+                    <!-- 8. 修正版高精度解剖淋巴器官图 -->
+                    <h3>8. 淋巴器官分布与解剖探究（点击器官可查看详细功能）</h3>
+                    <p style="font-size:0.9em; color:#4a5568;">💡 点击下图中的<strong>扁桃体、胸腺、脾脏、淋巴结集群或骨髓</strong>，右侧将呈现包含隐藏挖空练习的器官介绍：</p>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="lymphCanvas" width="340" height="420"></canvas>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3 id="lymphTitle">👈 点击左图人体器官</h3>
+                            <p id="lymphCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="lymphDesc">请点击左图中的淋巴器官查看探究内容。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.5 人体的排泄 -->
+                <div class="card">
+                    <h2>10.5 人体的排泄（泌尿系统与肾脏）</h2>
+                    
+                    <h3>9 & 10. 泌尿系统与肾脏解剖结构探究</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <div style="margin-bottom:8px;">
+                                <button class="btn" id="btnModeUrinary" onclick="switchExcretionMode('urinary')">🩺 泌尿系统全貌</button>
+                                <button class="btn" id="btnModeKidney" style="background:#718096;" onclick="switchExcretionMode('kidney')">🫘 肾脏剖面结构</button>
+                            </div>
+                            <canvas id="excretionCanvas" width="360" height="360"></canvas>
+                        </div>
+
+                        <div class="organ-info-panel">
+                            <h3 id="excretTitle">👈 点击左图结构探究</h3>
+                            <p id="excretCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="excretDesc">选择模式并点击图中的肾脏、输尿管、膀胱或肾皮质、肾盂等结构查看详情。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.6 植物的排泄作用 -->
+                <div class="card">
+                    <h2>10.6 植物的排泄作用与分泌现象</h2>
+                    <p>植物通过光合作用释放氧气、呼吸作用排出二氧化碳，以及蒸腾作用排出过剩水分。</p>
+                    
+                    <h3>🌱 植物的分泌现象（点击隐藏词展开）</h3>
+                    <div style="background:#f7fafc; padding:15px; border-radius:8px; border-left:4px solid #27ae60; line-height:2;">
+                        1. 植物细胞合成特殊的有机物或无机物排出体外或积累于体内，称为 <span class="inline-ans" onclick="toggleInline(this)">分泌</span> 现象。<br>
+                        2. 松树在割开树体后会流出 <span class="inline-ans" onclick="toggleInline(this)">松脂</span>；桃树会分泌浅黄色的 <span class="inline-ans" onclick="toggleInline(this)">桃胶</span>。<br>
+                        3. 橡胶树割胶流出的胶乳是重要的经济 <span class="inline-ans" onclick="toggleInline(this)">分泌物</span>。<br>
+                        4. 剧毒树种见血封喉（箭毒木）的乳汁含有毒甙，进入伤口会引起 <span class="inline-ans" onclick="toggleInline(this)">血液凝固</span> 与心脏麻痹！
+                    </div>
+                </div>
+
+                <!-- NotebookLM 风格思维架构复盘 -->
+                <div class="card mindmap-section">
+                    <h2 style="color:#89b4fa; border-bottom-color:#89b4fa;">NotebookLM 风格思维架构复盘（点击右侧 [+] 展开）</h2>
+                    <div class="mindmap-tree">
+                        <div class="node"><span class="node-title">第10章 物质运输与排泄</span></div>
+                        <div class="children-container">
+                            
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm1')"><span>10.1 血液与血型</span> <strong id="btn-mm1">[+]</strong></div>
+                                <div id="mm1" class="children-container hidden">
+                                    <div class="node">血浆 (55%)：水(90%+)、蛋白质、葡萄糖、无机盐、代谢物</div>
+                                    <div class="node">血细胞：红细胞(无核/运氧)、白细胞(有核/防御)、血小板(无核/止血)</div>
+                                    <div class="node">ABO血型：红细胞抗原 + 血浆抗体 ➔ 交叉配血实验</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm2')"><span>10.2 血管与心脏</span> <strong id="btn-mm2">[+]</strong></div>
+                                <div id="mm2" class="children-container hidden">
+                                    <div class="node">血管：动脉(离心/壁厚)、静脉(回心/静脉瓣)、毛细血管(物质交换)</div>
+                                    <div class="node">心脏：四腔(左房/左室/右房/右室) + 房室瓣/动脉瓣(防止倒流)</div>
+                                    <div class="node">心血管健康：冠心病(冠状动脉狭窄)、中风(脑动脉硬化/破裂)</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm3')"><span>10.3 血液循环</span> <strong id="btn-mm3">[+]</strong></div>
+                                <div id="mm3" class="children-container hidden">
+                                    <div class="node">体循环：左心室 ➔ 主脉动脉 ➔ 身体毛细血管网 ➔ 腔静脉 ➔ 右心房 (充氧变缺氧)</div>
+                                    <div class="node">肺循环：右心室 ➔ 肺动脉 ➔ 肺部毛细血管网 ➔ 肺静脉 ➔ 左心房 (缺氧变充氧)</div>
+                                    <div class="node">生理指标：心率(约75次/分) = 脉搏 | 血压(收缩压/舒张压)</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm4')"><span>10.4 淋巴循环</span> <strong id="btn-mm4">[+]</strong></div>
+                                <div id="mm4" class="children-container hidden">
+                                    <div class="node">路径：毛细淋巴管 ➔ 各级淋巴管 ➔ 淋巴总管 ➔ 锁骨下静脉</div>
+                                    <div class="node">特点：单向回流，不形成闭合循环</div>
+                                    <div class="node">器官：脾(最大淋巴器官)、胸腺、扁桃体、淋巴结</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm5')"><span>10.5 人体排泄</span> <strong id="btn-mm5">[+]</strong></div>
+                                <div id="mm5" class="children-container hidden">
+                                    <div class="node">途径：泌尿系统(排尿)、皮肤(排汗)、肺(呼出CO2与水蒸气)</div>
+                                    <div class="node">泌尿系统：肾脏(产生尿液)、输尿管、膀胱(暂存)、尿道</div>
+                                    <div class="node">尿液形成：肾小球滤过(原尿) ➔ 肾小管重吸收(葡萄糖100%/水/盐)</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm6')"><span>10.6 植物排泄与分泌</span> <strong id="btn-mm6">[+]</strong></div>
+                                <div id="mm6" class="children-container hidden">
+                                    <div class="node">排泄：光合作用释放O2、呼吸作用排出CO2、蒸腾排出水</div>
+                                    <div class="node">分泌现象：松脂、桃胶、橡胶胶乳、见血封喉毒汁</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            initBloodPie();
+            updateLabReport();
+            drawAboTypeSim();
+            initRealHeartDiagram();
+            updateBpSim();
+            initCircSimulator();
+            initLymphDiagram();
+            initExcretionDiagram();
+
+            cleanCiteTexts();
+        }
+
+        // --- 自动清洗任何遗留的引用标签 ---
+        function cleanCiteTexts() {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.nodeValue && node.nodeValue.indexOf('[cite') !== -1) {
+                    let txt = node.nodeValue;
+                    while (txt.indexOf('[cite') !== -1) {
+                        const start = txt.indexOf('[cite');
+                        const end = txt.indexOf(']', start);
+                        if (end !== -1) {
+                            txt = txt.substring(0, start) + txt.substring(end + 1);
+                        } else {
+                            txt = txt.substring(0, start);
+                        }
+                    }
+                    node.nodeValue = txt;
+                }
+            }
+        }
+
+        // --- 思维导图展开/收起控制 ---
+        function toggleMMNode(id) {
+            const target = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            if (target) {
+                if (target.classList.contains('hidden')) {
+                    target.classList.remove('hidden');
+                    if (btn) btn.innerText = '[-]';
+                } else {
+                    target.classList.add('hidden');
+                    if (btn) btn.innerText = '[+]';
+                }
+            }
+        }
+
+        // --- 1. 血液成分圆饼图 ---
+        function initBloodPie() {
+            const canvas = document.getElementById('bloodPieCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const data = [
+                { label: '血浆 (55%)', value: 0.55, color: '#f6e05e' },
+                { label: '红细胞 (44%)', value: 0.44, color: '#e53e3e' },
+                { label: '白细胞与血小板 (<1%)', value: 0.01, color: '#3182ce' }
+            ];
+
+            let startAngle = -Math.PI / 2;
+            data.forEach(slice => {
+                let sliceAngle = slice.value * Math.PI * 2;
+                ctx.beginPath();
+                ctx.arc(120, 130, 90, startAngle, startAngle + sliceAngle);
+                ctx.lineTo(120, 130);
+                ctx.fillStyle = slice.color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                startAngle += sliceAngle;
+            });
+
+            data.forEach((slice, i) => {
+                ctx.fillStyle = slice.color;
+                ctx.fillRect(220, 70 + i * 40, 15, 15);
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(slice.label, 242, 82 + i * 40);
+            });
+        }
+
+        // --- 2. 验血报告模拟器逻辑 ---
+        function updateLabReport() {
+            const wbc = parseFloat(document.getElementById('valWBC').value);
+            const rbc = parseFloat(document.getElementById('valRBC').value);
+            const hb = parseFloat(document.getElementById('valHB').value);
+            const plt = parseFloat(document.getElementById('valPLT').value);
+            const diag = document.getElementById('labDiagnosis');
+
+            let issues = [];
+            if (wbc > 11.0) issues.push("⚠️ 白细胞偏高：身体可能存在<span style='color:#e53e3e;'>急性炎症或细菌感染</span>！");
+            if (wbc < 4.0) issues.push("⚠️ 白细胞偏低：免疫力低下。");
+            if (rbc < 4.0 || hb < 110) issues.push("⚠️ 红细胞/血红蛋白偏低：诊断为<span style='color:#e53e3e;'>贫血</span>，运氧能力下降！");
+            if (plt < 150) issues.push("⚠️ 血小板偏低：凝血功能受损，伤口止血困难！");
+            if (plt > 400) issues.push("⚠️ 血小板偏高：易形成异常血栓。");
+
+            if (issues.length === 0) {
+                diag.style.borderLeftColor = "#27ae60";
+                diag.innerHTML = "✅ 各项血液指标正常，身体健康！";
+            } else {
+                diag.style.borderLeftColor = "#e53e3e";
+                diag.innerHTML = issues.join("<br>");
+            }
+        }
+
+        // --- 3. ABO血型系统图像化模拟器 ---
+        function drawAboTypeSim() {
+            const canvas = document.getElementById('aboTypeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const type = document.getElementById('selAboType').value;
+            const desc = document.getElementById('aboDescText');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            ctx.arc(180, 130, 65, 0, Math.PI * 2);
+            ctx.fillStyle = '#e53e3e';
+            ctx.fill();
+            ctx.strokeStyle = '#c53030';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            if (type === 'A') {
+                drawAntigens(ctx, 'A');
+                drawAntibodies(ctx, 'B');
+                desc.innerHTML = "<strong>A型血：</strong>红细胞膜上附着圆形 <strong>A抗原</strong>，血浆中悬浮 <strong>B抗体</strong>。";
+            } else if (type === 'B') {
+                drawAntigens(ctx, 'B');
+                drawAntibodies(ctx, 'A');
+                desc.innerHTML = "<strong>B型血：</strong>红细胞膜上附着菱形 <strong>B抗原</strong>，血浆中悬浮 <strong>A抗体</strong>。";
+            } else if (type === 'AB') {
+                drawAntigens(ctx, 'AB');
+                desc.innerHTML = "<strong>AB型血：</strong>红细胞膜上同时含有 <strong>A与B抗原</strong>，血浆中<strong>无抗体</strong>（万能受血者）。";
+            } else if (type === 'O') {
+                drawAntibodies(ctx, 'AB');
+                desc.innerHTML = "<strong>O型血：</strong>红细胞膜上<strong>无抗原</strong>（万能施血者），血浆中同时含有 <strong>A与B抗体</strong>。";
+            }
+        }
+
+        function drawAntigens(ctx, type) {
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+                let x = 180 + Math.cos(a) * 65;
+                let y = 130 + Math.sin(a) * 65;
+                
+                if (type === 'A' || (type === 'AB' && a % (Math.PI/3) === 0)) {
+                    ctx.beginPath();
+                    ctx.arc(x + Math.cos(a)*10, y + Math.sin(a)*10, 6, 0, Math.PI*2);
+                    ctx.fillStyle = '#9b59b6';
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.rect(x + Math.cos(a)*8 - 5, y + Math.sin(a)*8 - 5, 10, 10);
+                    ctx.fillStyle = '#27ae60';
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawAntibodies(ctx, type) {
+            ctx.fillStyle = '#3182ce';
+            ctx.font = 'bold 12px Arial';
+            if (type === 'B' || type === 'AB') ctx.fillText('Y 型 B抗体', 30, 50);
+            if (type === 'A' || type === 'AB') ctx.fillText('Y 型 A抗体', 270, 50);
+        }
+
+        // --- 4. 真实心脏解剖结构图 ---
+        let selectedHeartPart = null;
+        function initRealHeartDiagram() {
+            const canvas = document.getElementById('realHeartCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = (selectedHeartPart === 'vc') ? '#e53e3e' : '#3182ce';
+                ctx.fillRect(80, 20, 35, 140);
+                
+                ctx.fillStyle = (selectedHeartPart === 'aorta') ? '#27ae60' : '#e53e3e';
+                ctx.beginPath();
+                ctx.arc(190, 80, 45, Math.PI, 0, false);
+                ctx.lineWidth = 30;
+                ctx.strokeStyle = ctx.fillStyle;
+                ctx.stroke();
+
+                ctx.fillStyle = (selectedHeartPart === 'pa') ? '#e53e3e' : '#2b6cb0';
+                ctx.fillRect(160, 90, 110, 25);
+
+                ctx.fillStyle = '#e2e8f0';
+                ctx.beginPath();
+                ctx.ellipse(190, 270, 110, 120, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 3; ctx.stroke();
+
+                ctx.fillStyle = (selectedHeartPart === 'ra') ? '#e53e3e' : '#63b3ed';
+                ctx.fillRect(100, 180, 70, 70);
+                ctx.fillStyle = (selectedHeartPart === 'la') ? '#27ae60' : '#fc8181';
+                ctx.fillRect(210, 180, 70, 70);
+                ctx.fillStyle = (selectedHeartPart === 'rv') ? '#e53e3e' : '#3182ce';
+                ctx.fillRect(100, 260, 70, 90);
+                ctx.fillStyle = (selectedHeartPart === 'lv') ? '#27ae60' : '#e53e3e';
+                ctx.fillRect(210, 260, 80, 100);
+
+                ctx.fillStyle = '#f6e05e';
+                ctx.fillRect(100, 250, 70, 8);
+                ctx.fillRect(210, 250, 80, 8);
+
+                ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial';
+                ctx.fillText('右心房', 115, 220); ctx.fillText('左心房', 225, 220);
+                ctx.fillText('右心室', 115, 310); ctx.fillText('左心室', 230, 310);
+            }
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+
+                if (mx > 210 && mx < 290 && my > 260) selectedHeartPart = 'lv';
+                else if (mx > 100 && mx < 170 && my > 260) selectedHeartPart = 'rv';
+                else if (mx > 210 && my > 180) selectedHeartPart = 'la';
+                else if (mx > 100 && my > 180) selectedHeartPart = 'ra';
+                else if (my < 100 && mx > 140) selectedHeartPart = 'aorta';
+                else selectedHeartPart = 'vc';
+
+                showHeartInfo(selectedHeartPart);
+                draw();
+            });
+
+            draw();
+        }
+
+        function showHeartInfo(key) {
+            const data = heartData[key];
+            if (!data) return;
+            document.getElementById('heartTitle').innerHTML = data.title;
+            document.getElementById('heartCategory').innerHTML = `解剖分类：${data.category}`;
+            document.getElementById('heartDesc').innerHTML = data.desc;
+        }
+
+        // --- 6. 血压与心率模拟 ---
+        function updateBpSim() {
+            const bpm = parseInt(document.getElementById('bpmInput').value);
+            document.getElementById('bpmDisp').textContent = bpm;
+            document.getElementById('pulseDisp').textContent = `${bpm} 次/分`;
+
+            let sys = Math.round(110 + (bpm - 75) * 0.35);
+            let dia = Math.round(72 + (bpm - 75) * 0.2);
+
+            document.getElementById('sysDisp').textContent = `${sys} mmHg`;
+            document.getElementById('diaDisp').textContent = `${dia} mmHg`;
+
+            const status = document.getElementById('bpStatus');
+            if (sys >= 140 || dia >= 90) {
+                status.textContent = "1级/2级高血压"; status.style.color = "#e53e3e";
+            } else if (sys >= 120) {
+                status.textContent = "血压偏高"; status.style.color = "#dd6b20";
+            } else {
+                status.textContent = "正常血压"; status.style.color = "#27ae60";
+            }
+        }
+
+        // =========================================================================
+        // --- 8. 全新高精度解剖人体淋巴系统绘制与点击交互 ---
+        // =========================================================================
+        let selectedLymphKey = null;
+
+        function initLymphDiagram() {
+            const canvas = document.getElementById('lymphCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function drawLymphSystem() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // 1. 人体躯干与轮廓线
+                ctx.strokeStyle = '#cbd5e0';
+                ctx.lineWidth = 2.5;
+                ctx.fillStyle = '#f8fafc';
+
+                ctx.beginPath();
+                // 头部
+                ctx.arc(170, 42, 28, 0, Math.PI * 2);
+                // 颈部与肩膀
+                ctx.moveTo(150, 68); ctx.lineTo(120, 85); ctx.lineTo(85, 120); // 左臂
+                ctx.moveTo(190, 68); ctx.lineTo(220, 85); ctx.lineTo(255, 120); // 右臂
+                // 躯干
+                ctx.moveTo(85, 120); ctx.lineTo(105, 230); ctx.lineTo(125, 290); ctx.lineTo(125, 390);
+                ctx.moveTo(255, 120); ctx.lineTo(235, 230); ctx.lineTo(215, 290); ctx.lineTo(215, 390);
+                ctx.stroke();
+
+                // 骨盆与内脏底纹
+                ctx.fillStyle = '#edf2f7';
+                ctx.fillRect(125, 280, 90, 50); // 骨盆区
+
+                // 2. 全身分支网状绿色淋巴管 (Lymphatic Vessels)
+                ctx.strokeStyle = '#27ae60';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                // 颈部与头部分支
+                ctx.moveTo(170, 68); ctx.lineTo(170, 150);
+                ctx.moveTo(170, 50); ctx.lineTo(155, 30);
+                ctx.moveTo(170, 50); ctx.lineTo(185, 30);
+                // 臂部分支
+                ctx.moveTo(170, 85); ctx.lineTo(120, 110); ctx.lineTo(95, 160);
+                ctx.moveTo(170, 85); ctx.lineTo(220, 110); ctx.lineTo(245, 160);
+                // 胸腹部中央管道 (胸管)
+                ctx.moveTo(170, 150); ctx.lineTo(165, 270);
+                // 下肢网状分支
+                ctx.moveTo(165, 270); ctx.lineTo(140, 320); ctx.lineTo(135, 380);
+                ctx.moveTo(165, 270); ctx.lineTo(195, 320); ctx.lineTo(205, 380);
+                ctx.stroke();
+
+                // 3. 绘制四大淋巴器官 + 骨髓
+
+                // A. 扁桃体 (Tonsils) - 口腔咽部
+                ctx.fillStyle = (selectedLymphKey === 'tonsil') ? '#e53e3e' : '#fc8181';
+                ctx.beginPath(); ctx.arc(162, 45, 5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(178, 45, 5, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = '#c53030'; ctx.lineWidth = 1; ctx.stroke();
+
+                // B. 胸腺 (Thymus) - 胸骨后双叶状
+                ctx.fillStyle = (selectedLymphKey === 'thymus') ? '#e53e3e' : '#f6ad55';
+                ctx.beginPath();
+                ctx.ellipse(165, 105, 8, 16, -0.15, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(175, 105, 8, 16, 0.15, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = '#dd6b20'; ctx.stroke();
+
+                // C. 脾脏 (Spleen) - 左上腹紫红色扁豆状 (解剖左侧 = 画面右侧)
+                ctx.fillStyle = (selectedLymphKey === 'spleen') ? '#e53e3e' : '#805ad5';
+                ctx.beginPath();
+                ctx.ellipse(215, 175, 16, 24, 0.4, 0, Math.PI*2);
+                ctx.fill();
+                ctx.strokeStyle = '#553c9a'; ctx.lineWidth = 1.5; ctx.stroke();
+
+                // D. 骨髓 (Bone Marrow) - 骨盆处
+                ctx.fillStyle = (selectedLymphKey === 'marrow') ? '#e53e3e' : '#e53e3e';
+                ctx.fillRect(135, 290, 12, 40);
+                ctx.fillRect(193, 290, 12, 40);
+
+                // E. 密集淋巴结集群 (Lymph Nodes) - 绿圆点
+                const nodeColor = (selectedLymphKey === 'node') ? '#e53e3e' : '#2e7d32';
+                ctx.fillStyle = nodeColor;
+                const nodePoints = [
+                    // 颈部
+                    {x:155, y:62}, {x:185, y:62}, {x:170, y:72},
+                    // 腋窝
+                    {x:115, y:110}, {x:122, y:118}, {x:225, y:110}, {x:218, y:118},
+                    // 肠系膜/腹部
+                    {x:165, y:180}, {x:172, y:200}, {x:160, y:220},
+                    // 腹股沟
+                    {x:145, y:275}, {x:152, y:285}, {x:195, y:275}, {x:188, y:285}
+                ];
+                nodePoints.forEach(pt => {
+                    ctx.beginPath(); ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI*2); ctx.fill();
+                });
+
+                // 4. 文字标注与指引线
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'left';
+
+                // 扁桃体
+                ctx.fillText('扁桃体 ➔', 100, 48);
+                // 胸腺
+                ctx.fillText('胸腺 ➔', 110, 108);
+                // 脾脏
+                ctx.fillText('⬅️ 脾脏 (最大)', 235, 178);
+                // 淋巴结
+                ctx.fillText('⬅️ 淋巴结集群', 235, 115);
+                // 骨髓
+                ctx.fillText('⬅️ 骨髓', 215, 310);
+
+                ctx.font = '11px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText('（颈部/腋窝/腹股沟密集）', 210, 130);
+            }
+
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+
+                // 碰撞检测区分点击的器官
+                if (my < 58 && mx > 140 && mx < 200) {
+                    selectedLymphKey = 'tonsil';
+                } else if (my >= 85 && my < 135 && mx > 145 && mx < 195) {
+                    selectedLymphKey = 'thymus';
+                } else if (my >= 150 && my < 205 && mx > 190 && mx < 245) {
+                    selectedLymphKey = 'spleen';
+                } else if (my >= 280 && my < 340 && mx > 125 && mx < 215) {
+                    selectedLymphKey = 'marrow';
+                } else {
+                    selectedLymphKey = 'node';
+                }
+
+                showLymphInfo(selectedLymphKey);
+                drawLymphSystem();
+            });
+
+            drawLymphSystem();
+        }
+
+        function showLymphInfo(key) {
+            const data = lymphData[key];
+            if (!data) return;
+            document.getElementById('lymphTitle').innerHTML = data.title;
+            document.getElementById('lymphCategory').innerHTML = `器官分类：${data.category}`;
+            document.getElementById('lymphDesc').innerHTML = data.desc;
+        }
+
+        // --- 9 & 10. 泌尿与肾脏双模式 ---
+        let excretMode = 'urinary';
+        function switchExcretionMode(mode) {
+            excretMode = mode;
+            document.getElementById('btnModeUrinary').style.background = (mode === 'urinary') ? '#27ae60' : '#718096';
+            document.getElementById('btnModeKidney').style.background = (mode === 'kidney') ? '#27ae60' : '#718096';
+            initExcretionDiagram();
+        }
+
+        function initExcretionDiagram() {
+            const canvas = document.getElementById('excretionCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (excretMode === 'urinary') {
+                ctx.fillStyle = '#e53e3e'; ctx.fillRect(170, 30, 20, 160);
+                ctx.fillStyle = '#3182ce'; ctx.fillRect(195, 30, 20, 160);
+
+                ctx.fillStyle = '#9b2c2c';
+                ctx.beginPath(); ctx.arc(120, 100, 30, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(265, 100, 30, 0, Math.PI*2); ctx.fill();
+
+                ctx.strokeStyle = '#f6e05e'; ctx.lineWidth = 5;
+                ctx.beginPath(); ctx.moveTo(120, 120); ctx.lineTo(160, 260); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(265, 120); ctx.lineTo(225, 260); ctx.stroke();
+
+                ctx.fillStyle = '#dd6b20';
+                ctx.beginPath(); ctx.arc(192, 280, 25, 0, Math.PI*2); ctx.fill();
+                ctx.fillRect(188, 300, 8, 30);
+
+                ctx.fillStyle = '#2d3748'; ctx.font = 'bold 12px Arial';
+                ctx.fillText('肾脏 (产生尿液)', 40, 105);
+                ctx.fillText('输尿管', 80, 190);
+                ctx.fillText('膀胱 (暂存尿液)', 230, 285);
+                ctx.fillText('尿道', 205, 325);
+            } else {
+                ctx.fillStyle = '#c53030';
+                ctx.beginPath(); ctx.arc(180, 180, 120, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = '#feb2b2';
+                ctx.beginPath(); ctx.arc(180, 180, 80, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = '#feebc8';
+                ctx.beginPath(); ctx.arc(140, 180, 40, 0, Math.PI*2); ctx.fill();
+
+                ctx.fillStyle = '#2d3748'; ctx.font = 'bold 13px Arial';
+                ctx.fillText('肾皮质 (外层红褐)', 220, 90);
+                ctx.fillText('肾髓质 (深部较淡)', 220, 150);
+                ctx.fillText('肾盂 (凹陷处)', 100, 185);
+            }
+        }
+
+        // =========================================================================
+        // --- 5. 完整植入【血液循环交互模拟器（强调毛细血管网版）】核心逻辑 ---
+        // =========================================================================
+        let simCanvas, simCtx;
+        let isRunning = true;
+        let selectedMode = 'all';
+
+        const boxes = {
+            lung: { x: 180, y: 35, w: 260, h: 85 },
+            ra: { x: 200, y: 210, w: 110, h: 70 },
+            la: { x: 310, y: 210, w: 110, h: 70 },
+            rv: { x: 200, y: 280, w: 110, h: 70 },
+            lv: { x: 310, y: 280, w: 110, h: 70 },
+            body: { x: 420, y: 360, w: 170, h: 240 }
+        };
+
+        const systemicPath = [
+            { x: 365, y: 350 }, { x: 365, y: 650 }, { x: 505, y: 650 },
+            { x: 505, y: 600 }, { x: 505, y: 360 }, { x: 505, y: 150 },
+            { x: 255, y: 150 }, { x: 255, y: 210 }
+        ];
+
+        const pulmonaryPath = [
+            { x: 255, y: 350 }, { x: 255, y: 610 }, { x: 80, y: 610 },
+            { x: 80, y: 77 }, { x: 180, y: 77 }, { x: 440, y: 77 },
+            { x: 455, y: 77 }, { x: 455, y: 175 }, { x: 365, y: 175 }, { x: 365, y: 210 }
+        ];
+
+        const raToRv = [{ x: 255, y: 210 }, { x: 255, y: 280 }];
+        const laToLv = [{ x: 365, y: 210 }, { x: 365, y: 280 }];
+
+        class Particle {
+            constructor(pathType, offset = 0) {
+                this.pathType = pathType;
+                this.progress = offset;
+            }
+
+            getPosAndState() {
+                let path = this.pathType === 'systemic' ? systemicPath : pulmonaryPath;
+                let totalDist = 0, segDists = [];
+
+                for (let i = 0; i < path.length - 1; i++) {
+                    let d = Math.hypot(path[i+1].x - path[i].x, path[i+1].y - path[i].y);
+                    segDists.push(d); totalDist += d;
+                }
+
+                let targetD = this.progress * totalDist, currentD = 0;
+                let x = path[0].x, y = path[0].y;
+                let isOxygenated = (this.pathType === 'systemic') ? (this.progress < 0.38) : (this.progress > 0.45);
+
+                for (let i = 0; i < segDists.length; i++) {
+                    if (currentD + segDists[i] >= targetD) {
+                        let t = (targetD - currentD) / segDists[i];
+                        x = path[i].x + t * (path[i+1].x - path[i].x);
+                        y = path[i].y + t * (path[i+1].y - path[i].y);
+                        break;
+                    }
+                    currentD += segDists[i];
+                }
+                return { x, y, isOxygenated };
+            }
+
+            update(speed) {
+                this.progress += speed;
+                if (this.progress >= 1) {
+                    this.progress = 0;
+                    if (selectedMode === 'all') {
+                        this.pathType = (this.pathType === 'systemic') ? 'pulmonary' : 'systemic';
+                    }
+                }
+            }
+        }
+
+        const circParticles = [];
+        const numParticles = 28;
+        for (let i = 0; i < numParticles; i++) {
+            circParticles.push(new Particle('systemic', i / (numParticles / 2)));
+            circParticles.push(new Particle('pulmonary', i / (numParticles / 2)));
+        }
+
+        class DiffusionParticle {
+            constructor(zone) {
+                this.zone = zone;
+                this.reset();
+            }
+
+            reset() {
+                if (this.zone === 'lung') {
+                    this.type = Math.random() > 0.5 ? 'O2' : 'CO2';
+                    this.progress = Math.random();
+                    this.y = boxes.lung.y + 20 + Math.random() * 45;
+                } else {
+                    const rand = Math.random();
+                    if (rand < 0.3) this.type = 'O2';
+                    else if (rand < 0.6) this.type = 'Nutrient';
+                    else if (rand < 0.8) this.type = 'CO2';
+                    else this.type = 'Waste';
+                    
+                    this.progress = Math.random();
+                    this.y = boxes.body.y + 25 + Math.random() * 190;
+                }
+                this.speed = 0.005 + Math.random() * 0.008;
+            }
+
+            update() {
+                this.progress += this.speed;
+                if (this.progress > 1) this.reset();
+            }
+
+            draw(ctx) {
+                let x, y, color, size = 5;
+                if (this.zone === 'lung') {
+                    if (this.type === 'O2') {
+                        x = boxes.lung.x + 20 + this.progress * 220;
+                        y = this.y - (1 - this.progress) * 12;
+                        color = '#e53e3e';
+                    } else {
+                        x = boxes.lung.x + 240 - this.progress * 220;
+                        y = this.y + (1 - this.progress) * 12;
+                        color = '#dd6b20';
+                    }
+                } else {
+                    if (this.type === 'O2' || this.type === 'Nutrient') {
+                        x = boxes.body.x + 20 + this.progress * 130;
+                        y = this.y;
+                        color = (this.type === 'O2') ? '#e53e3e' : '#319795';
+                    } else {
+                        x = boxes.body.x + 150 - this.progress * 130;
+                        y = this.y;
+                        color = (this.type === 'CO2') ? '#dd6b20' : '#805ad5';
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        const diffParticles = [];
+        for (let i = 0; i < 20; i++) {
+            diffParticles.push(new DiffusionParticle('lung'));
+            diffParticles.push(new DiffusionParticle('body'));
+        }
+
+        function drawPipelines() {
+            simCtx.lineWidth = 16;
+            simCtx.lineJoin = 'round';
+
+            const showSystemic = (selectedMode === 'all' || selectedMode === 'systemic');
+            const showPulmonary = (selectedMode === 'all' || selectedMode === 'pulmonary');
+
+            simCtx.strokeStyle = showSystemic ? '#e53e3e' : 'rgba(229, 62, 62, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(systemicPath[0].x, systemicPath[0].y);
+            simCtx.lineTo(systemicPath[1].x, systemicPath[1].y);
+            simCtx.lineTo(systemicPath[2].x, systemicPath[2].y);
+            simCtx.lineTo(systemicPath[3].x, systemicPath[3].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showSystemic ? '#3182ce' : 'rgba(49, 130, 206, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(systemicPath[4].x, systemicPath[4].y);
+            simCtx.lineTo(systemicPath[5].x, systemicPath[5].y);
+            simCtx.lineTo(systemicPath[6].x, systemicPath[6].y);
+            simCtx.lineTo(systemicPath[7].x, systemicPath[7].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showPulmonary ? '#3182ce' : 'rgba(49, 130, 206, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(pulmonaryPath[0].x, pulmonaryPath[0].y);
+            simCtx.lineTo(pulmonaryPath[1].x, pulmonaryPath[1].y);
+            simCtx.lineTo(pulmonaryPath[2].x, pulmonaryPath[2].y);
+            simCtx.lineTo(pulmonaryPath[3].x, pulmonaryPath[3].y);
+            simCtx.lineTo(pulmonaryPath[4].x, pulmonaryPath[4].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showPulmonary ? '#e53e3e' : 'rgba(229, 62, 62, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(pulmonaryPath[5].x, pulmonaryPath[5].y);
+            simCtx.lineTo(pulmonaryPath[6].x, pulmonaryPath[6].y);
+            simCtx.lineTo(pulmonaryPath[7].x, pulmonaryPath[7].y);
+            simCtx.lineTo(pulmonaryPath[8].x, pulmonaryPath[8].y);
+            simCtx.lineTo(pulmonaryPath[9].x, pulmonaryPath[9].y);
+            simCtx.stroke();
+
+            simCtx.lineWidth = 12;
+            simCtx.strokeStyle = '#cbd5e0';
+            simCtx.beginPath();
+            simCtx.moveTo(raToRv[0].x, raToRv[0].y); simCtx.lineTo(raToRv[1].x, raToRv[1].y);
+            simCtx.moveTo(laToLv[0].x, laToLv[0].y); simCtx.lineTo(laToLv[1].x, laToLv[1].y);
+            simCtx.stroke();
+        }
+
+        function drawCapillaryNets() {
+            const chkNets = document.getElementById('chkNets');
+            if (!chkNets || !chkNets.checked) return;
+
+            simCtx.save();
+            simCtx.lineWidth = 2.5;
+
+            const lungX = boxes.lung.x, lungY = boxes.lung.y, lungW = boxes.lung.w;
+            simCtx.strokeStyle = 'rgba(229, 62, 62, 0.35)';
+            simCtx.beginPath();
+            simCtx.moveTo(lungX, lungY + 20); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 5, lungX + lungW, lungY + 20);
+            simCtx.moveTo(lungX, lungY + 42); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 30, lungX + lungW, lungY + 42);
+            simCtx.moveTo(lungX, lungY + 65); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 80, lungX + lungW, lungY + 65);
+            simCtx.moveTo(lungX + 60, lungY + 12); simCtx.lineTo(lungX + 60, lungY + 70);
+            simCtx.moveTo(lungX + 130, lungY + 10); simCtx.lineTo(lungX + 130, lungY + 75);
+            simCtx.moveTo(lungX + 200, lungY + 12); simCtx.lineTo(lungX + 200, lungY + 70);
+            simCtx.stroke();
+
+            const bodyX = boxes.body.x, bodyY = boxes.body.y, bodyH = boxes.body.h, bodyW = boxes.body.w;
+            simCtx.strokeStyle = 'rgba(49, 130, 206, 0.35)';
+            simCtx.beginPath();
+            simCtx.moveTo(bodyX + 30, bodyY); simCtx.quadraticCurveTo(bodyX + 10, bodyY + bodyH/2, bodyX + 30, bodyY + bodyH);
+            simCtx.moveTo(bodyX + bodyW/2, bodyY); simCtx.quadraticCurveTo(bodyX + bodyW/2 + 20, bodyY + bodyH/2, bodyX + bodyW/2, bodyY + bodyH);
+            simCtx.moveTo(bodyX + bodyW - 30, bodyY); simCtx.quadraticCurveTo(bodyX + bodyW - 10, bodyY + bodyH/2, bodyX + bodyW - 30, bodyY + bodyH);
+            simCtx.moveTo(bodyX + 15, bodyY + 60); simCtx.lineTo(bodyX + bodyW - 15, bodyY + 60);
+            simCtx.moveTo(bodyX + 10, bodyY + 120); simCtx.lineTo(bodyX + bodyW - 10, bodyY + 120);
+            simCtx.moveTo(bodyX + 15, bodyY + 180); simCtx.lineTo(bodyX + bodyW - 15, bodyY + 180);
+            simCtx.stroke();
+
+            simCtx.restore();
+        }
+
+        function drawArrow(x, y, dir, color) {
+            simCtx.save();
+            simCtx.translate(x, y);
+            let angle = 0;
+            if (dir === 'up') angle = -Math.PI / 2;
+            if (dir === 'down') angle = Math.PI / 2;
+            if (dir === 'left') angle = Math.PI;
+            if (dir === 'right') angle = 0;
+            simCtx.rotate(angle);
+
+            simCtx.fillStyle = color;
+            simCtx.beginPath();
+            simCtx.moveTo(-9, -7);
+            simCtx.lineTo(7, 0);
+            simCtx.lineTo(-9, 7);
+            simCtx.closePath();
+            simCtx.fill();
+            simCtx.restore();
+        }
+
+        function drawFlowDirections() {
+            if (selectedMode === 'all' || selectedMode === 'systemic') {
+                drawArrow(365, 520, 'down', '#ffffff');
+                drawArrow(430, 650, 'right', '#ffffff');
+                drawArrow(505, 250, 'up', '#ffffff');
+                drawArrow(375, 150, 'left', '#ffffff');
+                drawArrow(255, 245, 'down', '#2b6cb0');
+            }
+
+            if (selectedMode === 'all' || selectedMode === 'pulmonary') {
+                drawArrow(255, 480, 'down', '#ffffff');
+                drawArrow(160, 610, 'left', '#ffffff');
+                drawArrow(80, 290, 'up', '#ffffff');
+                drawArrow(135, 77, 'right', '#ffffff');
+                drawArrow(455, 125, 'down', '#ffffff');
+                drawArrow(400, 175, 'left', '#ffffff');
+                drawArrow(365, 245, 'down', '#2b6cb0');
+            }
+        }
+
+        function drawBoxesAndValves() {
+            const chkValves = document.getElementById('chkValves');
+            const chkLabels = document.getElementById('chkLabels');
+
+            simCtx.lineWidth = 2.5;
+            simCtx.strokeStyle = '#2d3748';
+            simCtx.textAlign = 'center';
+            simCtx.textBaseline = 'middle';
+
+            simCtx.fillStyle = '#ffffff';
+            simCtx.fillRect(boxes.lung.x, boxes.lung.y, boxes.lung.w, boxes.lung.h);
+            simCtx.strokeRect(boxes.lung.x, boxes.lung.y, boxes.lung.w, boxes.lung.h);
+
+            [boxes.ra, boxes.la, boxes.rv, boxes.lv].forEach(b => {
+                simCtx.fillStyle = '#ffffff';
+                simCtx.fillRect(b.x, b.y, b.w, b.h);
+            });
+
+            simCtx.beginPath();
+            simCtx.rect(200, 210, 220, 140);
+            simCtx.moveTo(310, 210); simCtx.lineTo(310, 350);
+            simCtx.moveTo(200, 280); simCtx.lineTo(228, 280);
+            simCtx.moveTo(282, 280); simCtx.lineTo(338, 280);
+            simCtx.moveTo(392, 280); simCtx.lineTo(420, 280);
+            simCtx.stroke();
+
+            simCtx.fillStyle = '#ffffff';
+            simCtx.fillRect(boxes.body.x, boxes.body.y, boxes.body.w, boxes.body.h);
+            simCtx.strokeRect(boxes.body.x, boxes.body.y, boxes.body.w, boxes.body.h);
+
+            drawCapillaryNets();
+
+            if (chkValves && chkValves.checked) {
+                simCtx.lineWidth = 3.5;
+                simCtx.strokeStyle = '#3182ce';
+
+                simCtx.beginPath();
+                simCtx.moveTo(228, 280); simCtx.lineTo(243, 302);
+                simCtx.moveTo(282, 280); simCtx.lineTo(267, 302);
+                simCtx.stroke();
+
+                simCtx.beginPath();
+                simCtx.moveTo(338, 280); simCtx.lineTo(353, 302);
+                simCtx.moveTo(392, 280); simCtx.lineTo(377, 302);
+                simCtx.stroke();
+
+                if (chkLabels && chkLabels.checked) {
+                    simCtx.font = 'bold 13px sans-serif';
+                    simCtx.fillStyle = '#2b6cb0';
+                    simCtx.fillText('右房室瓣', 255, 268);
+                    simCtx.fillText('左房室瓣', 365, 268);
+                }
+            }
+
+            if (chkLabels && chkLabels.checked) {
+                simCtx.fillStyle = '#1a202c';
+
+                simCtx.font = 'bold 18px sans-serif';
+                simCtx.fillText('肺部的毛细血管网', boxes.lung.x + boxes.lung.w/2, boxes.lung.y + 26);
+                simCtx.font = 'bold 13px sans-serif';
+                simCtx.fillStyle = '#e53e3e';
+                simCtx.fillText('氧增加 ↑', boxes.lung.x + boxes.lung.w/2 - 50, boxes.lung.y + 58);
+                simCtx.fillStyle = '#3182ce';
+                simCtx.fillText('二氧化碳减少 ↓', boxes.lung.x + boxes.lung.w/2 + 45, boxes.lung.y + 58);
+
+                simCtx.fillStyle = '#1a202c';
+                simCtx.font = 'bold 18px sans-serif';
+                simCtx.fillText('右心房', boxes.ra.x + boxes.ra.w/2, boxes.ra.y + 28);
+                simCtx.fillText('左心房', boxes.la.x + boxes.la.w/2, boxes.la.y + 28);
+                simCtx.fillText('右心室', boxes.rv.x + boxes.rv.w/2, boxes.rv.y + 45);
+                simCtx.fillText('左心室', boxes.lv.x + boxes.lv.w/2, boxes.lv.y + 45);
+
+                simCtx.font = 'bold 17px sans-serif';
+                simCtx.fillText('身体各个部分的', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 28);
+                simCtx.fillText('毛细血管网', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 4);
+                
+                simCtx.font = 'bold 13px sans-serif';
+                simCtx.fillStyle = '#e53e3e';
+                simCtx.fillText('消耗氧气 & 养料', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 + 25);
+                simCtx.fillStyle = '#3182ce';
+                simCtx.fillText('产生 CO₂ & 代谢物', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 + 48);
+
+                simCtx.font = 'bold 15px sans-serif';
+                simCtx.fillStyle = '#1a202c';
+                simCtx.fillText('上、下腔静脉', 375, 126);
+                simCtx.fillText('肺静脉', 480, 245);
+                simCtx.fillText('肺动脉', 145, 630);
+                simCtx.fillText('主动脉', 350, 630);
+            }
+        }
+
+        function initCircSimulator() {
+            simCanvas = document.getElementById('simCanvas');
+            if (!simCanvas) return;
+            simCtx = simCanvas.getContext('2d');
+
+            const bpmSlider = document.getElementById('bpmSlider');
+            const bpmVal = document.getElementById('bpmVal');
+            const btnToggle = document.getElementById('btnToggle');
+            const btnReset = document.getElementById('btnReset');
+            const infoText = document.getElementById('infoText');
+
+            if(bpmSlider) {
+                bpmSlider.addEventListener('input', (e) => {
+                    if(bpmVal) bpmVal.textContent = `${e.target.value} BPM`;
+                });
+            }
+
+            if(btnToggle) {
+                btnToggle.addEventListener('click', () => {
+                    isRunning = !isRunning;
+                    btnToggle.textContent = isRunning ? '暂停模拟' : '播放模拟';
+                });
+            }
+
+            if(btnReset) {
+                btnReset.addEventListener('click', () => {
+                    circParticles.forEach((p, idx) => {
+                        p.progress = (idx % (numParticles / 2)) / (numParticles / 2);
+                    });
+                });
+            }
+
+            const radios = document.querySelectorAll('input[name="circMode"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    selectedMode = e.target.value;
+                    document.querySelectorAll('.radio-label').forEach(lbl => lbl.classList.remove('active'));
+                    if (selectedMode === 'all') document.getElementById('lblAll').classList.add('active');
+                    if (selectedMode === 'systemic') document.getElementById('lblSystemic').classList.add('active');
+                    if (selectedMode === 'pulmonary') document.getElementById('lblPulmonary').classList.add('active');
+
+                    if (infoText) {
+                        if (selectedMode === 'all') {
+                            infoText.innerHTML = '<strong>全景模式：</strong>体循环与肺循环紧密衔接，构成一条完整的双循环途径。<br><br><strong>毛细血管网：</strong>是血液与组织细胞（或肺泡）进行物质交换的唯一场所。';
+                        } else if (selectedMode === 'systemic') {
+                            infoText.innerHTML = '<strong>体循环路径：</strong><br>左心室 → 主脉动脉 → 身体各部分毛细血管网 → 上、下腔静脉 → 右心房<br><br><em>经由左房室瓣将血液从左心房注入左心室。</em>';
+                        } else if (selectedMode === 'pulmonary') {
+                            infoText.innerHTML = '<strong>肺循环路径：</strong><br>右心室 → 肺动脉 → 肺部毛细血管网 → 肺静脉 → 左心房<br><br><em>经由右房室瓣将血液从右心房注入右心室。</em>';
+                        }
+                    }
+                });
+            });
+
+            renderCirc();
+        }
+
+        function renderCirc() {
+            if (!simCtx) return;
+            simCtx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+
+            drawPipelines();
+
+            const chkFlowDir = document.getElementById('chkFlowDir');
+            if (chkFlowDir && chkFlowDir.checked) {
+                drawFlowDirections();
+            }
+
+            drawBoxesAndValves();
+
+            const bpmSlider = document.getElementById('bpmSlider');
+            const bpm = bpmSlider ? parseInt(bpmSlider.value) : 75;
+            const speed = (bpm / 60) * 0.0025;
+
+            const chkBloodCells = document.getElementById('chkBloodCells');
+            if (chkBloodCells && chkBloodCells.checked) {
+                circParticles.forEach(p => {
+                    if (selectedMode === 'systemic' && p.pathType !== 'systemic') return;
+                    if (selectedMode === 'pulmonary' && p.pathType !== 'pulmonary') return;
+
+                    if (isRunning) p.update(speed);
+                    let res = p.getPosAndState();
+
+                    simCtx.beginPath();
+                    simCtx.arc(res.x, res.y, 7, 0, Math.PI * 2);
+                    simCtx.fillStyle = res.isOxygenated ? '#e53e3e' : '#3182ce';
+                    simCtx.fill();
+                    simCtx.strokeStyle = '#ffffff';
+                    simCtx.lineWidth = 1.5;
+                    simCtx.stroke();
+                });
+            }
+
+            const chkDiffusion = document.getElementById('chkDiffusion');
+            if (chkDiffusion && chkDiffusion.checked) {
+                diffParticles.forEach(dp => {
+                    if (selectedMode === 'systemic' && dp.zone === 'lung') return;
+                    if (selectedMode === 'pulmonary' && dp.zone === 'body') return;
+
+                    if (isRunning) dp.update();
+                    dp.draw(simCtx);
+                });
+            }
+
+            requestAnimationFrame(renderCirc);
+        }
+
+        // --- 通用页面控制 ---
+        function toggleInline(el) { el.classList.toggle('revealed'); }
+        function toggleAllAnswers(show) {
+            document.querySelectorAll('.inline-ans').forEach(el => {
+                if(show) el.classList.add('revealed'); else el.classList.remove('revealed');
+            });
+        }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function changeFontSize(sz) { document.documentElement.style.setProperty('--font-scale', sz); }
+        function changeLayoutWidth(w) { document.documentElement.style.setProperty('--container-width', w); }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderApp();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第8章 食物与营养 —— 互动学习平台</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --ans-color: #e74c3c;
+            --font-scale: 1rem;
+            --container-width: 1000px;
+        }
+
+        body.dark-mode {
+            --primary-color: #89b4fa;
+            --bg-color: #181825;
+            --card-bg: #1e1e2e;
+            --text-color: #cdd6f4;
+            --border-color: #45475a;
+            --ans-color: #f38ba8;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-size: var(--font-scale);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .toolbar {
+            position: sticky;
+            top: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+            gap: 10px;
+        }
+
+        .toolbar h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .controls-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #219150;
+        }
+
+        .select-btn {
+            padding: 5px 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 0.85rem;
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 20px auto;
+            padding: 0 20px;
+            transition: max-width 0.3s;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .inline-ans {
+            display: inline-block;
+            min-width: 60px;
+            padding: 2px 8px;
+            margin: 0 3px;
+            border-bottom: 2px dashed #999;
+            color: transparent;
+            background: rgba(0,0,0,0.05);
+            cursor: pointer;
+            border-radius: 3px;
+            text-align: center;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .inline-ans.revealed {
+            color: var(--ans-color);
+            background: rgba(231, 76, 60, 0.1);
+            border-bottom: 2px solid var(--ans-color);
+            font-weight: bold;
+        }
+
+        .block-ans-btn {
+            background: rgba(0,0,0,0.03);
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            width: 100%;
+            text-align: left;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+
+        .block-ans-content {
+            display: none;
+            padding: 15px;
+            background: rgba(231, 76, 60, 0.05);
+            border-left: 4px solid var(--ans-color);
+            margin-top: 5px;
+            color: var(--ans-color);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(0,0,0,0.04);
+            color: var(--primary-color);
+        }
+
+        .sim-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.03);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        canvas {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .sim-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .calc-box {
+            background: rgba(39, 174, 96, 0.05);
+            border: 1px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .mindmap-section {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 25px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .mindmap-tree {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .node {
+            background: #313244;
+            border: 1px solid #45475a;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .node:hover {
+            border-color: #89b4fa;
+            background: #45475a;
+        }
+
+        .node-title {
+            font-weight: bold;
+            color: #89b4fa;
+        }
+
+        .children-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-left: 2px dashed #45475a;
+            padding-left: 15px;
+            margin-left: 5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media print {
+            .toolbar, .btn, .block-ans-btn, .sim-controls, canvas, .select-btn {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 12pt;
+            }
+
+            .card {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin-bottom: 20px;
+            }
+
+            .inline-ans {
+                border-bottom: 1px solid black;
+                background: none;
+                color: transparent;
+            }
+
+            .inline-ans.revealed {
+                color: black;
+                background: none;
+                border-bottom: 1px solid black;
+            }
+
+            .block-ans-content.show-print {
+                display: block !important;
+                color: black;
+                border-left: 2px solid black;
+                background: none;
+            }
+
+            .mindmap-section {
+                background: white;
+                color: black;
+            }
+
+            .node {
+                background: #eee;
+                color: black;
+                border: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h1>第8章 食物与营养</h1>
+        
+        <div class="controls-group">
+            <button class="btn" onclick="toggleAllAnswers(true)">🔓 展开答案</button>
+            <button class="btn" onclick="toggleAllAnswers(false)">🔒 隐藏答案</button>
+            
+            <select class="select-btn" onchange="changeFontSize(this.value)">
+                <option value="1rem">字号: 标准 (100%)</option>
+                <option value="1.15rem">字号: 大字 (115%)</option>
+                <option value="1.3rem">字号: 超大 (130%)</option>
+            </select>
+
+            <select class="select-btn" onchange="changeLayoutWidth(this.value)">
+                <option value="1000px">版面: 居中 (1000px)</option>
+                <option value="100%">版面: 宽屏 (全屏)</option>
+            </select>
+
+            <button class="btn" style="background:#8e44ad;" onclick="toggleDarkMode()">🌙 护眼模式</button>
+            <button class="btn" style="background:#2980b9;" onclick="window.print()">🖨️ 打印</button>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <script>
+        // 高阶 DOM 强效净化器：专门强行擦除任何系统自动插入的 字符串
+        function forceCleanCites() {
+            const regex = /\+\]/gi;
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            let node;
+            while (node = walker.nextNode()) {
+                if (regex.test(node.nodeValue)) {
+                    node.nodeValue = node.nodeValue.replace(regex, '');
+                }
+            }
+        }
+
+        // 启动全局实时监测，发生任何改变立刻清理
+        const citeObserver = new MutationObserver(() => forceCleanCites());
+
+        function renderApp() {
+            document.getElementById('app').innerHTML = `
+                <div class="card">
+                    <h2>🎯 章节学习目标</h2>
+                    <ul>
+                        <li>掌握人体所需的六大营养素（水、无机盐、糖类、脂肪、蛋白质、维生素）及膳食纤维的作用。</li>
+                        <li>掌握五种主要营养成分的化学检验试剂、试剂初始颜色与反应后的变色现象。</li>
+                        <li>理解食物氧化释放热量的机制，掌握糖类、蛋白质（16.8 kJ/g）与脂肪（34 kJ/g）的热值差异。</li>
+                        <li>能够识别营养失衡（肥胖症、消瘦型与浮肿型营养不良）及维生素/无机盐缺乏症。</li>
+                        <li>学会使用公式计算 BMI 与标准体重，掌握食物金字塔与合理三餐分配比例（3:4:3）。</li>
+                        <li>树立食品安全意识，识别食品污染、天然毒素及马来西亚食品认证标志。</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2>8.1 食物中的营养物质</h2>
+                    <p>1. 人体所需的六大营养素中，属于无机物的是 <span class="inline-ans" onclick="toggleInline(this)">水</span> 和 <span class="inline-ans" onclick="toggleInline(this)">无机盐</span>；属于有机物的是 <span class="inline-ans" onclick="toggleInline(this)">糖类</span>、<span class="inline-ans" onclick="toggleInline(this)">脂肪</span>、<span class="inline-ans" onclick="toggleInline(this)">蛋白质</span> 和 <span class="inline-ans" onclick="toggleInline(this)">维生素</span>。</p>
+                    
+                    <h3>实验：食物中营养成分的检测</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>营养成分</th>
+                                    <th>测试样液示例</th>
+                                    <th>检验试剂（初始颜色）</th>
+                                    <th>反应条件/操作</th>
+                                    <th>明显变化/测试结果现象</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>还原糖（葡萄糖/果糖）</td>
+                                    <td>苹果/梨匀浆</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">斐林试剂【蓝色】</span></td>
+                                    <td>水浴加热</td>
+                                    <td>产生 <span class="inline-ans" onclick="toggleInline(this)">砖红色</span> 沉淀</td>
+                                </tr>
+                                <tr>
+                                    <td>淀粉</td>
+                                    <td>马铃薯块茎匀浆</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">碘液【黄褐色】</span></td>
+                                    <td>常温滴加</td>
+                                    <td>呈现 <span class="inline-ans" onclick="toggleInline(this)">深蓝色</span></td>
+                                </tr>
+                                <tr>
+                                    <td>蛋白质</td>
+                                    <td>稀释蛋清液/豆浆</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">双缩脲试剂【浅蓝色】</span></td>
+                                    <td>先加A液摇匀，再加B液</td>
+                                    <td>溶液呈现 <span class="inline-ans" onclick="toggleInline(this)">紫色</span></td>
+                                </tr>
+                                <tr>
+                                    <td>脂肪</td>
+                                    <td>花生种子匀浆</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">苏丹 III 染液【红色/橘红色】</span></td>
+                                    <td>常温滴加</td>
+                                    <td>呈现 <span class="inline-ans" onclick="toggleInline(this)">橘黄色</span></td>
+                                </tr>
+                                <tr>
+                                    <td>维生素 C</td>
+                                    <td>柠檬汁/橙汁</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">吲哚酚试剂【深蓝色】</span></td>
+                                    <td>逐滴滴入</td>
+                                    <td>蓝色试剂 <span class="inline-ans" onclick="toggleInline(this)">褪色(变无色透明)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>🧪 互动模拟器 —— 食物营养成分检测变色实验</h3>
+                    <div class="sim-container">
+                        <canvas id="testSimCanvas" width="360" height="260"></canvas>
+                        <div class="sim-controls">
+                            <label><strong>1. 选择待测样液：</strong></label>
+                            <select id="simSample">
+                                <option value="apple">苹果匀浆 (含还原糖)</option>
+                                <option value="potato">马铃薯匀浆 (含淀粉)</option>
+                                <option value="egg">蛋清稀释液 (含蛋白质)</option>
+                                <option value="peanut">花生匀浆 (含脂肪)</option>
+                                <option value="lemon">柠檬汁 (含维生素 C)</option>
+                            </select>
+
+                            <label><strong>2. 选择检验试剂：</strong></label>
+                            <select id="simReagent" onchange="previewReagentColor()">
+                                <option value="fehling">斐林试剂 [原色: 蓝色] (需加热)</option>
+                                <option value="iodine">碘液 [原色: 黄褐色]</option>
+                                <option value="biuret">双缩脲试剂 [原色: 浅蓝色]</option>
+                                <option value="sudan">苏丹 III 染液 [原色: 红色]</option>
+                                <option value="indophenol">吲哚酚试剂 [原色: 深蓝色]</option>
+                            </select>
+
+                            <button class="btn" onclick="runTestSim()">🧪 滴加试剂并观察变色</button>
+                            <button class="btn" style="background:#7f8c8d;" onclick="resetTestSim()">🔄 洗净试管</button>
+                            
+                            <div id="testSimResult" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
+                                状态：请选择试剂与样液，准备对比前后颜色变化。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>8.1.2 食物与能量</h2>
+                    <p>食物中的能量通过体内缓慢氧化释放。氧化 1g 糖类或蛋白质释放约 <span class="inline-ans" onclick="toggleInline(this)">16.8 kJ</span> 热量，而氧化 1g 脂肪可释放约 <span class="inline-ans" onclick="toggleInline(this)">34 kJ</span> 热量。</p>
+                    
+                    <h3>🔥 互动模拟器 —— 食物热量测定 (Calorimetry)</h3>
+                    <div class="sim-container">
+                        <canvas id="calorimeterCanvas" width="320" height="240"></canvas>
+                        <div class="sim-controls">
+                            <label><strong>选择燃烧样品 (1g)：</strong></label>
+                            <select id="foodSample" onchange="resetCalSim()">
+                                <option value="rice">大米 (富含糖类 - 16.8 kJ)</option>
+                                <option value="beef">牛肉干 (富含蛋白质 - 16.8 kJ)</option>
+                                <option value="peanut" selected>花生仁 (富含脂肪 - 34.0 kJ)</option>
+                            </select>
+                            <button class="btn" onclick="startCombustion()">点燃样品并测量水温</button>
+                            <button class="btn" style="background:#7f8c8d;" onclick="resetCalSim()">🔄 重置实验</button>
+                            <div id="calSimOutput" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
+                                初始水温：20.0 °C<br>当前水温：20.0 °C
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>8.1.3 营养素的作用与缺乏症</h2>
+                    <p>填空并核对各营养素缺乏导致的疾病：</p>
+                    <ul>
+                        <li><strong>缺钙 (Ca)：</strong> 儿童易患 <span class="inline-ans" onclick="toggleInline(this)">佝偻病</span>，成人易患 <span class="inline-ans" onclick="toggleInline(this)">骨质疏松症</span>。</li>
+                        <li><strong>缺铁 (Fe)：</strong> 易导致 <span class="inline-ans" onclick="toggleInline(this)">缺铁性贫血</span>。</li>
+                        <li><strong>缺碘 (I)：</strong> 引起人体 <span class="inline-ans" onclick="toggleInline(this)">甲状腺肿大</span>，儿童智力低下。</li>
+                        <li><strong>缺锌 (Zn)：</strong> 会导致儿童 <span class="inline-ans" onclick="toggleInline(this)">味蕾功能下降</span>、食欲减弱。</li>
+                        <li><strong>维生素 A 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">夜盲症</span>、干眼症、皮肤干燥。</li>
+                        <li><strong>维生素 B1 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">脚气病</span>（非真菌性，下肢无力水肿）、神经炎。</li>
+                        <li><strong>维生素 C 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">坏血病</span>（牙龈出血、皮下淤血）。</li>
+                        <li><strong>维生素 D 缺乏：</strong> 影响钙磷吸收，人体可在阳光照射下利用皮肤自行合成 <span class="inline-ans" onclick="toggleInline(this)">维生素 D</span>。</li>
+                    </ul>
+
+                    <button class="block-ans-btn" onclick="toggleBlockAns('q1')">💡 逆向思考：为什么膳食纤维不能提供能量，却被称为“第七大营养素”？</button>
+                    <div id="q1" class="block-ans-content">
+                        膳食纤维主要由纤维素组成。虽然不能被消化吸收，但它能促进肠道蠕动、刺激消化液分泌、利于排便，并能降低大肠癌发病率、减少肠道对脂肪的吸收，预防心血管疾病。
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>8.2 营养与健康 & 8.3 均衡饮食</h2>
+                    
+                    <h3>📐 健康计算器 —— BMI 与标准体重计算过程</h3>
+                    <div style="background:rgba(39, 174, 96, 0.05); padding:15px; border-radius:6px; margin-bottom:15px; border:1px solid var(--border-color);">
+                        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:center;">
+                            <label>性别: 
+                                <select id="bmiGender" class="select-btn">
+                                    <option value="male">男性</option>
+                                    <option value="female">女性</option>
+                                </select>
+                            </label>
+                            <label>身高 (cm): <input type="number" id="bmiHeight" value="170" style="width:70px; padding:5px; border-radius:4px; border:1px solid #ccc;"></label>
+                            <label>体重 (kg): <input type="number" id="bmiWeight" value="65" style="width:70px; padding:5px; border-radius:4px; border:1px solid #ccc;"></label>
+                            <button class="btn" onclick="calculateBMI()">📊 演示公式与计算步骤</button>
+                        </div>
+
+                        <div id="bmiCalcDetails" class="calc-box" style="display:none;"></div>
+                    </div>
+
+                    <h3>三餐热量分配与饮食习惯</h3>
+                    <p>一日三餐合理的食量分配比例为：早餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>，午餐占 <span class="inline-ans" onclick="toggleInline(this)">40%</span>，晚餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>。</p>
+                    <p>营养不良的临床常见类型包括：能量供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">消瘦型</span>；蛋白质供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">浮肿型</span>；以及消瘦-浮肿型。</p>
+                </div>
+
+                <div class="card">
+                    <h2>8.4 关注食品安全</h2>
+                    <p>1. 食品安全问题可归纳为三大类：</p>
+                    <ul>
+                        <li>细菌及其毒素引起的腐败变质（如发酵米面制品中的 <span class="inline-ans" onclick="toggleInline(this)">米酵菌酸</span>）。</li>
+                        <li>农药、有毒化学药品和激素污染。</li>
+                        <li>新型食品安全隐患（如未经长期实践证明无害的转基因食品与过度强化食品）。</li>
+                    </ul>
+                    <p>2. 天然毒素防范：发芽的马铃薯含有毒剧烈的 <span class="inline-ans" onclick="toggleInline(this)">龙葵素</span>；受潮大米/花生易被致癌性极强的 <span class="inline-ans" onclick="toggleInline(this)">黄曲霉毒素</span> 污染。</p>
+                    
+                    <button class="block-ans-btn" onclick="toggleBlockAns('q2')">🔍 辨识：马来西亚常见的食品安全认证有哪些？</button>
+                    <div id="q2" class="block-ans-content">
+                        主要认证标志包括：
+                        <ol>
+                            <li><strong>Buatan Malaysia</strong> (马来西亚制造)</li>
+                            <li><strong>Halal by JAKIM</strong> (清真认证)</li>
+                            <li><strong>GMP</strong> (药品/食品生产质量管理规范)</li>
+                            <li><strong>HACCP</strong> (危害分析临界控制点)</li>
+                            <li><strong>ISO 9001 / 22000</strong> (国际标准化组织认证)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card mindmap-section">
+                    <h2 style="color:#89b4fa; border-bottom-color:#89b4fa;">NotebookLM 风格思维架构复盘（水平向右展开）</h2>
+                    <p style="font-size:0.9em; color:#a6adc8;">💡 点击节点右侧的 [+] 或 [-] 可展开/收起子分支知识网络：</p>
+                    
+                    <div class="mindmap-tree">
+                        <div class="node">
+                            <span class="node-title">第8章 食物与营养</span>
+                        </div>
+                        
+                        <div class="children-container">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm1')">
+                                    <span>8.1 食物中的营养物质</span> <strong id="btn-mm1">[+]</strong>
+                                </div>
+                                <div id="mm1" class="children-container hidden">
+                                    <div class="node">无机物：水、无机盐（Ca/Fe/I/Zn）</div>
+                                    <div class="node">有机物：糖类、脂肪、蛋白质、维生素</div>
+                                    <div class="node">化学检验：斐林/碘液/双缩脲/苏丹III/吲哚酚试剂</div>
+                                    <div class="node">膳食纤维：促进蠕动、预防心血管疾病</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm2')">
+                                    <span>8.1.2 食物与能量</span> <strong id="btn-mm2">[+]</strong>
+                                </div>
+                                <div id="mm2" class="children-container hidden">
+                                    <div class="node">糖类 & 蛋白质：16.8 kJ/g</div>
+                                    <div class="node">脂肪：34.0 kJ/g（储能物质）</div>
+                                    <div class="node">释放机制：体内缓慢氧化反应</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm3')">
+                                    <span>8.2 & 8.3 营养健康与均衡饮食</span> <strong id="btn-mm3">[+]</strong>
+                                </div>
+                                <div id="mm3" class="children-container hidden">
+                                    <div class="node">营养失衡：肥胖症 vs 营养不良（消瘦/浮肿型）</div>
+                                    <div class="node">食物金字塔与三餐比例（30%:40%:30%）</div>
+                                    <div class="node">BMI 计算公式与标准体重范围</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm4')">
+                                    <span>8.4 关注食品安全</span> <strong id="btn-mm4">[+]</strong>
+                                </div>
+                                <div id="mm4" class="children-container hidden">
+                                    <div class="node">污染源：微生物毒素、农药重金属、新型食品</div>
+                                    <div class="node">天然毒素：龙葵素（土豆）、黄曲霉毒素（花生）</div>
+                                    <div class="node">质量认证：Halal, HACCP, GMP, Buatan Malaysia</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            initSimulators();
+            forceCleanCites();
+        }
+
+        function changeFontSize(size) {
+            document.documentElement.style.setProperty('--font-scale', size);
+        }
+
+        function changeLayoutWidth(width) {
+            document.documentElement.style.setProperty('--container-width', width);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function toggleInline(element) {
+            element.classList.toggle('revealed');
+        }
+
+        function toggleBlockAns(id) {
+            const content = document.getElementById(id);
+            content.style.display = (content.style.display === "block") ? "none" : "block";
+        }
+
+        function toggleAllAnswers(show) {
+            document.querySelectorAll('.inline-ans').forEach(el => {
+                if (show) el.classList.add('revealed');
+                else el.classList.remove('revealed');
+            });
+
+            document.querySelectorAll('.block-ans-content').forEach(el => {
+                el.style.display = show ? "block" : "none";
+                if(show) el.classList.add('show-print');
+                else el.classList.remove('show-print');
+            });
+        }
+
+        let testCanvas, testCtx, calCanvas, calCtx;
+        const reagentOriginalColors = {
+            'fehling': { color: '#2980b9', name: '蓝色' },
+            'iodine': { color: '#d35400', name: '黄褐色' },
+            'biuret': { color: '#52be80', name: '浅蓝色' },
+            'sudan': { color: '#e74c3c', name: '红色' },
+            'indophenol': { color: '#1b4f72', name: '深蓝色' }
+        };
+
+        function initSimulators() {
+            testCanvas = document.getElementById('testSimCanvas');
+            testCtx = testCanvas.getContext('2d');
+            calCanvas = document.getElementById('calorimeterCanvas');
+            calCtx = calCanvas.getContext('2d');
+
+            previewReagentColor();
+            drawCalorimeter(20.0, false);
+        }
+
+        function drawTestTube(liquidColor, label, showHeat, reagentDropColor) {
+            if(!testCtx) return;
+            testCtx.clearRect(0, 0, testCanvas.width, testCanvas.height);
+
+            if (showHeat) {
+                testCtx.fillStyle = "#bdc3c7";
+                testCtx.fillRect(100, 160, 160, 70);
+                testCtx.fillStyle = "rgba(52, 152, 219, 0.4)";
+                testCtx.fillRect(105, 170, 150, 55);
+                testCtx.beginPath();
+                testCtx.fillStyle = "#e67e22";
+                testCtx.arc(180, 240, 12, 0, Math.PI * 2);
+                testCtx.fill();
+            }
+
+            testCtx.strokeStyle = "#7f8c8d";
+            testCtx.lineWidth = 3;
+            testCtx.fillStyle = "rgba(236, 240, 241, 0.3)";
+            testCtx.fillRect(160, 40, 40, 150);
+            testCtx.strokeRect(160, 40, 40, 150);
+
+            testCtx.fillStyle = liquidColor;
+            testCtx.fillRect(162, 110, 36, 78);
+
+            if (reagentDropColor) {
+                testCtx.fillStyle = reagentDropColor;
+                testCtx.beginPath();
+                testCtx.arc(180, 75, 5, 0, Math.PI * 2);
+                testCtx.fill();
+                testCtx.fillStyle = "#95a5a6";
+                testCtx.fillRect(177, 10, 6, 50);
+            }
+
+            testCtx.fillStyle = "#2c3e50";
+            testCtx.font = "14px Arial";
+            testCtx.fillText(label, 15, 30);
+        }
+
+        function runTestSim() {
+            const sample = document.getElementById('simSample').value;
+            const reagent = document.getElementById('simReagent').value;
+            const resDiv = document.getElementById('testSimResult');
+
+            let targetColor = "";
+            let desc = "";
+            let isHeat = false;
+            const origName = reagentOriginalColors[reagent].name;
+
+            if (sample === 'apple' && reagent === 'fehling') {
+                targetColor = "#c0392b";
+                desc = `成功检验！试剂由初始【${origName}】经水浴加热后转变为【砖红色沉淀】，证明含有还原糖。`;
+                isHeat = true;
+            } else if (sample === 'potato' && reagent === 'iodine') {
+                targetColor = "#1a252f";
+                desc = `成功检验！试剂由初始【${origName}】变为【深蓝色】，证明含有淀粉。`;
+            } else if (sample === 'egg' && reagent === 'biuret') {
+                targetColor = "#8e44ad";
+                desc = `成功检验！试剂由初始【${origName}】变为【紫色】，证明含有蛋白质。`;
+            } else if (sample === 'peanut' && reagent === 'sudan') {
+                targetColor = "#f39c12";
+                desc = `成功检验！试剂由初始【${origName}】变为【橘黄色】，证明含有脂肪。`;
+            } else if (sample === 'lemon' && reagent === 'indophenol') {
+                targetColor = "rgba(236, 240, 241, 0.2)";
+                desc = `成功检验！初始【${origName}】吲哚酚试剂滴入后【褪色至无色透明】，证明含有维生素 C。`;
+            } else {
+                targetColor = reagentOriginalColors[reagent].color;
+                desc = `未出现明显变色：试剂维持【${origName}】，表明该样液中不含对应的目标营养成分。`;
+            }
+
+            drawTestTube(targetColor, isHeat ? "🔥 正在水浴加热反应..." : "✅ 反应完成，观察变色", isHeat, reagentOriginalColors[reagent].color);
+            resDiv.innerHTML = `测试结果：${desc}`;
+        }
+
+        function previewReagentColor() {
+            const reagent = document.getElementById('simReagent').value;
+            const orig = reagentOriginalColors[reagent];
+            drawTestTube("#f5f6fa", `试剂原色: 【${orig.name}】`, false, orig.color);
+            document.getElementById('testSimResult').innerHTML = `当前选择试剂初始颜色为：<b>${orig.name}</b>`;
+        }
+
+        function resetTestSim() {
+            drawTestTube("rgba(236, 240, 241, 0.5)", "试管已清洗，准备就绪", false, null);
+            document.getElementById('testSimResult').innerHTML = "状态：请选择样液与试剂，观察变色。";
+        }
+
+        let simInterval = null;
+        let currentTemp = 20.0;
+        let targetTemp = 20.0;
+        let isBurning = false;
+
+        function drawCalorimeter(temp, flame) {
+            if(!calCtx) return;
+            calCtx.clearRect(0, 0, calCanvas.width, calCanvas.height);
+            calCtx.fillStyle = "#7f8c8d";
+            calCtx.fillRect(30, 200, 120, 8);
+            calCtx.fillRect(50, 30, 8, 170);
+            calCtx.fillRect(50, 50, 70, 5);
+
+            calCtx.strokeStyle = "#3498db";
+            calCtx.lineWidth = 2;
+            calCtx.strokeRect(95, 60, 30, 90);
+            calCtx.fillStyle = "#3498db";
+            calCtx.fillRect(96, 90, 28, 59);
+
+            calCtx.fillStyle = "#95a5a6";
+            calCtx.fillRect(108, 30, 4, 100);
+            let mercuryHeight = (temp - 20) * 1.8;
+            calCtx.fillStyle = "#e74c3c";
+            calCtx.fillRect(108, 130 - mercuryHeight, 4, mercuryHeight + 4);
+
+            calCtx.fillStyle = "#34495e";
+            calCtx.fillRect(80, 165, 40, 3);
+
+            if (flame) {
+                calCtx.beginPath();
+                calCtx.fillStyle = "#e67e22";
+                calCtx.arc(110, 160, 7, 0, Math.PI * 2);
+                calCtx.fill();
+            }
+
+            calCtx.fillStyle = "#2c3e50";
+            calCtx.font = "14px Arial";
+            calCtx.fillText(`水温计: ${temp.toFixed(1)} °C`, 170, 50);
+        }
+
+        function startCombustion() {
+            if (isBurning) return;
+            const sample = document.getElementById('foodSample').value;
+            targetTemp = (sample === 'peanut') ? 60.5 : 40.0;
+
+            isBurning = true;
+            simInterval = setInterval(() => {
+                if (currentTemp < targetTemp) {
+                    currentTemp += 0.5;
+                    drawCalorimeter(currentTemp, true);
+                    document.getElementById('calSimOutput').innerHTML = 
+                        `初始水温：20.0 °C<br>当前水温：<span style="color:red;">${currentTemp.toFixed(1)} °C</span> (上升 ${(currentTemp-20).toFixed(1)} °C)`;
+                } else {
+                    clearInterval(simInterval);
+                    isBurning = false;
+                    drawCalorimeter(currentTemp, false);
+                }
+            }, 50);
+        }
+
+        function resetCalSim() {
+            clearInterval(simInterval);
+            isBurning = false;
+            currentTemp = 20.0;
+            drawCalorimeter(20.0, false);
+            document.getElementById('calSimOutput').innerHTML = `初始水温：20.0 °C<br>当前水温：20.0 °C`;
+        }
+
+        function calculateBMI() {
+            const gender = document.getElementById('bmiGender').value;
+            const h = parseFloat(document.getElementById('bmiHeight').value);
+            const w = parseFloat(document.getElementById('bmiWeight').value);
+
+            if (!h || !w) return;
+
+            const hm = h / 100;
+            const bmi = (w / (hm * hm)).toFixed(1);
+            
+            let stdFormulaText = "";
+            let stdWeight = 0;
+
+            if (gender === 'male') {
+                stdFormulaText = `男性标准体重 = (身高 - 80) × 70% = (${h} - 80) × 0.7`;
+                stdWeight = ((h - 80) * 0.7).toFixed(1);
+            } else {
+                stdFormulaText = `女性标准体重 = (身高 - 70) × 60% = (${h} - 70) × 0.6`;
+                stdWeight = ((h - 70) * 0.6).toFixed(1);
+            }
+
+            const minStd = (stdWeight * 0.9).toFixed(1);
+            const maxStd = (stdWeight * 1.1).toFixed(1);
+
+            let status = "";
+            const diffRatio = (w - stdWeight) / stdWeight;
+
+            if (diffRatio > 0.2) status = "肥胖（超过标准体重 20% 以上）";
+            else if (diffRatio > 0.1) status = "过重（超过标准体重 10%~20%）";
+            else if (diffRatio < -0.2) status = "体重不足（低于标准体重 20% 以上）";
+            else if (diffRatio < -0.1) status = "过轻（低于标准体重 10%~20%）";
+            else status = "正常体重（位于标准体重 ±10% 范围内）";
+
+            const detailBox = document.getElementById('bmiCalcDetails');
+            detailBox.style.display = "block";
+            detailBox.innerHTML = `
+<strong>📘 详细计算过程与步骤展现：</strong><br>
+--------------------------------------------------<br>
+<strong>1. BMI (身体质量指数) 计算：</strong><br>
+   • 公式：BMI = 体重(kg) ÷ [身高(m)]²<br>
+   • 算式：BMI = ${w} ÷ (${hm} × ${hm}) = <strong>${bmi}</strong><br><br>
+
+<strong>2. 标准体重评估计算：</strong><br>
+   • 公式：${stdFormulaText}<br>
+   • 计算结果：理想标准体重 = <strong>${stdWeight} kg</strong><br>
+   • 正常体重范围(±10%)：<strong>${minStd} kg ~ ${maxStd} kg</strong><br><br>
+
+<strong>3. 结果判断：</strong><br>
+   • 当前实际体重：<strong>${w} kg</strong><br>
+   • 结论评估：<span style="color:#e74c3c; font-weight:bold;">${status}</span>
+            `;
+        }
+
+        function toggleMMNode(id) {
+            const target = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            if (target.classList.contains('hidden')) {
+                target.classList.remove('hidden');
+                btn.innerText = '[-]';
+            } else {
+                target.classList.add('hidden');
+                btn.innerText = '[+]';
+            }
+        }
+
+        // 页面初始化
+        document.addEventListener("DOMContentLoaded", () => {
+            renderApp();
+            citeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        });
+    </script>
+</body>
+</html>
