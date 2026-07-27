@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初中科学 —— 互动学习与模拟平台</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #219150;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧪 初中生物学 互动学习平台</h1>
+        <p>集成可视化探究模拟器、解剖图谱与互动练习</p>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            
+            <!-- 第8章 -->
+            <div class="card">
+                <div>
+                    <h2>第8章 食物与营养</h2>
+                    <p>涵盖人体六大营养素、营养检测实验模拟器、食物热量测定 (Calorimetry)、BMI与标准体重计算器及食品安全知识。</p>
+                </div>
+                <a href="chapter8.html" class="btn">进入学习平台 →</a>
+            </div>
+
+            <!-- 第9章 -->
+            <div class="card">
+                <div>
+                    <h2>第9章 消化与吸收</h2>
+                    <p>包含人体消化系统解剖图探究、恒牙排列与牙齿剖面结构模拟器、唾液淀粉酶水解实验及小肠绒毛微观吸收模拟。</p>
+                </div>
+                <a href="chapter9.html" class="btn">进入学习平台 →</a>
+            </div>
+
+            <!-- 第10章 -->
+            <div class="card">
+                <div>
+                    <h2>第10章 物质的运输与排泄</h2>
+                    <p>包含血液成分分析、ABO血型系统抗原抗体互动、心脏真实解剖图、双路径血液循环动态模拟器及泌尿系统探究。</p>
+                </div>
+                <a href="chapter10.html" class="btn">进入学习平台 →</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 生物学互动学习平台 | 基于 GitHub Pages 构建</p>
+    </footer>
+
+</body>
+</html>
