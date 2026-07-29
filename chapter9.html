@@ -137,29 +137,6 @@
             font-weight: bold;
         }
 
-        .block-ans-btn {
-            background: rgba(0,0,0,0.03);
-            color: var(--primary-color);
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            width: 100%;
-            text-align: left;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-size: 0.95em;
-        }
-
-        .block-ans-content {
-            display: none;
-            padding: 15px;
-            background: rgba(231, 76, 60, 0.05);
-            border-left: 4px solid var(--ans-color);
-            margin-top: 5px;
-            color: var(--ans-color);
-        }
-
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -183,7 +160,101 @@
             color: var(--primary-color);
         }
 
-        .interactive-diagram-container {
+        /* CSS 绝对定位互动热区组件样式 */
+        .interactive-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: visible;
+        }
+
+        .interactive-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #e74c3c;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: transform 0.2s ease;
+        }
+
+        .hotspot:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            z-index: 100;
+        }
+
+        /* 呼吸灯脉冲扩散效果 */
+        .hotspot::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #e74c3c;
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Hover Tooltip 浮动提示框 */
+        .hotspot .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            width: max-content;
+            max-width: 160px;
+            background-color: rgba(20, 20, 20, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            z-index: 110;
+        }
+
+        .hotspot .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(20, 20, 20, 0.9) transparent transparent transparent;
+        }
+
+        .hotspot:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 联动展示信息面板 */
+        .layout-flex {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
@@ -194,20 +265,9 @@
             border: 1px solid var(--border-color);
         }
 
-        .canvas-box {
+        .info-panel {
             flex: 1;
-            min-width: 340px;
-            max-width: 440px;
-            background: white;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .organ-info-panel {
-            flex: 1;
-            min-width: 280px;
+            min-width: 260px;
             background: var(--card-bg);
             border-left: 4px solid var(--accent-color);
             padding: 20px;
@@ -291,8 +351,80 @@
             display: none !important;
         }
 
+        /* ----------------------------------------------------
+           CSS 热区点位配置区 (百分比 top% / left%)
+           * 如需要微调热区位置，请在此处直接修改对应的 top 和 left 数值
+        ---------------------------------------------------- */
+        
+        /* 图 1：人体消化系统解剖图 (image_c4508d.jpg) */
+/* ====================================================
+   图 1：人体消化系统解剖图 (精确定位修正版)
+   ==================================================== */
+/* 口腔：在嘴唇/口腔内部位置 */
+.spot-anatomy-mouth { top: 20.0%; left: 43.0%; }
+
+/* 唾液腺：在耳朵下方/腮腺位置 */
+.spot-anatomy-salivary { top: 20.5%; left: 52.0%; }
+
+/* 咽：在喉咙上方通道 */
+.spot-anatomy-pharynx { top: 26.5%; left: 51.5%; }
+
+/* 食道：在胸腔中线的食道管上 */
+.spot-anatomy-esophagus { top: 38.0%; left: 50.5%; }
+
+/* 肝脏：在左侧红色的肝脏区域 */
+.spot-anatomy-liver { top: 54.0%; left: 44.0%; }
+
+/* 胆囊：在肝脏下方的绿色胆囊 */
+.spot-anatomy-gallbladder { top: 57.5%; left: 41.5%; }
+
+/* 胃：在右上腹粉白色的胃袋上 */
+.spot-anatomy-stomach { top: 54.5%; left: 55.0%; }
+
+/* 胰腺：在胃下方黄色的胰腺上 */
+.spot-anatomy-pancreas { top: 62.0%; left: 48.0%; }
+
+/* 大肠：在粉红色外围大肠圈上 */
+.spot-anatomy-large-int { top: 68.0%; left: 57.0%; }
+
+/* 小肠：在盘曲的中央小肠区域 */
+.spot-anatomy-small-int { top: 74.0%; left: 50.0%; }
+
+/* 肛门：在底部消化道出口 */
+.spot-anatomy-anus { top: 88.0%; left: 48.5%; }
+
+        /* 图 2：恒牙排列图 (image_c44ff1.jpg) */
+        .spot-arch-incisor { top: 20.0%; left: 35.0%; }
+        .spot-arch-canine { top: 30.0%; left: 58.0%; }
+        .spot-arch-premolar { top: 41.0%; left: 63.0%; }
+        .spot-arch-molar { top: 58.0%; left: 66.0%; }
+        .spot-arch-wisdom { top: 76.0%; left: 65.0%; }
+
+        /* 图 3：牙齿纵剖面结构图 (image_c44c33.jpg) */
+        .spot-cross-enamel { top: 21.0%; left: 69.0%; }
+        .spot-cross-dentin { top: 31.0%; left: 65.0%; }
+        .spot-cross-pulp { top: 37.0%; left: 59.0%; }
+        .spot-cross-gum { top: 44.0%; left: 71.0%; }
+        .spot-cross-vessel { top: 58.0%; left: 58.0%; }
+        .spot-cross-nerve { top: 87.0%; left: 60.0%; }
+
+        /* 图 4：营养物质的消化与器官图 (image_c3f5fa.jpg) */
+        .spot-dig-mouth { top: 12.0%; left: 33.0%; }
+        .spot-dig-salivary { top: 16.0%; left: 21.0%; }
+        .spot-dig-stomach { top: 37.0%; left: 24.0%; }
+        .spot-dig-liver { top: 48.0%; left: 16.0%; }
+        .spot-dig-pancreas { top: 52.0%; left: 81.0%; }
+        .spot-dig-small-int { top: 73.0%; left: 24.0%; }
+
+        /* 图 5：小肠绒毛微观结构与吸收图 (image_c3f599.jpg) */
+        .spot-villi-wall { top: 70.0%; left: 18.0%; }
+        .spot-villi-villi { top: 52.0%; left: 85.0%; }
+        .spot-villi-lymph { top: 18.0%; left: 70.0%; }
+        .spot-villi-capillary { top: 50.0%; left: 68.0%; }
+        .spot-villi-vein { top: 71.0%; left: 85.0%; }
+
         @media print {
-            .toolbar, .btn, .block-ans-btn, .sim-controls, canvas, .select-btn {
+            .toolbar, .btn, .sim-controls, canvas, .select-btn {
                 display: none !important;
             }
 
@@ -319,13 +451,6 @@
                 color: black;
                 background: none;
                 border-bottom: 1px solid black;
-            }
-
-            .block-ans-content.show-print {
-                display: block !important;
-                color: black;
-                border-left: 2px solid black;
-                background: none;
             }
 
             .mindmap-section {
@@ -369,19 +494,53 @@
     <div class="container" id="app"></div>
 
     <script>
-        const organData = {
-            mouth: { title: "👄 口腔 (Oral Cavity)", category: "消化道", desc: "内有牙齿、舌和唾液腺。牙齿切断、磨碎食物（物理性消化）；唾液腺分泌唾液（含唾液淀粉酶），初步分解淀粉为麦芽糖。" },
-            salivary: { title: "💦 唾液腺 (Salivary Glands)", category: "消化腺", desc: "共有三对，分泌唾液，湿润食物，内含唾液淀粉酶。" },
-            pharynx: { title: "🗣️ 咽与食道 (Pharynx & Esophagus)", category: "消化道", desc: "食物通道。食道平滑肌蠕动推送食团入胃。无消化与吸收功能。" },
-            stomach: { title: "🫀 胃 (Stomach)", category: "消化道", desc: "左上腹膨大囊状（1-2L）。暂存食物，平滑肌蠕动搅拌成食糜。胃腺分泌酸性胃液（含盐酸与胃蛋白酶），初步消化蛋白质为多肽。" },
-            liver: { title: "🥩 肝脏 (Liver)", category: "消化腺（人体最大）", desc: "右上腹最大的消化腺。分泌胆汁（无消化酶），乳化脂肪为细小微粒。" },
-            gallbladder: { title: "🟢 胆囊 (Gallbladder)", category: "辅助器官", desc: "贮存与浓缩胆汁，进食后排入十二指肠。" },
-            duodenum: { title: "🌀 十二指肠 (Duodenum)", category: "消化道（小肠起始段）", desc: "小肠起始段（约25cm）。有胆总管和胰管开口，胆汁和胰液在此汇入。" },
-            pancreas: { title: "🟡 胰腺 (Pancreas)", category: "消化腺", desc: "分泌胰液经胰管流入十二指肠。胰液含消化糖类、蛋白质和脂肪的多种酶。" },
-            small_intestine: { title: "🌀 小肠 (Small Intestine)", category: "主要消化与吸收器官", desc: "盘曲腹腔（5-6m）。具环形皱襞和小肠绒毛，极大增加表面积。是最终消化与吸收养分的主要场所。" },
-            large_intestine: { title: "🟤 大肠 (Large Intestine)", category: "消化道", desc: "包绕外围。无消化功能，吸收水、无机盐与部分维生素，形成粪便。" },
-            appendix: { title: "🪱 盲肠与阑尾 (Cecum & Appendix)", category: "消化道结构", desc: "右下腹盲肠末端（7-8cm盲管）。易引发阑尾炎。" },
-            anus: { title: "🚪 肛门 (Anus)", category: "消化道末端", desc: "粪便排出体外的出口（排遗）。" }
+        // 解剖器官详细知识点数据
+        const anatomyData = {
+            mouth: { title: "👄 口腔 (Oral Cavity)", category: "消化道", desc: "内有牙齿和舌。牙齿咀嚼食物（物理性消化），舌搅拌食物并协助吞咽。" },
+            salivary: { title: "💦 唾液腺 (Salivary Glands)", category: "消化腺", desc: "分泌唾液。唾液中含有唾液淀粉酶，能将初步分解淀粉为麦芽糖。" },
+            pharynx: { title: "🗣️ 咽 (Pharynx)", category: "消化道", desc: "食物与空气共同经过的通道，吞咽时下咽食团进入食道。" },
+            esophagus: { title: "🥢 食道 (Esophagus)", category: "消化道", desc: "通过肌肉蠕动，将食团由咽部推送推入胃中。" },
+            stomach: { title: "🫀 胃 (Stomach)", category: "消化道", desc: "消化道最膨大的部分。胃腺位于胃壁上，分泌酸性胃液（含胃蛋白酶），初步消化蛋白质。" },
+            liver: { title: "🥩 肝脏 (Liver)", category: "消化腺（人体最大）", desc: "人体最大的消化腺。分泌胆汁（不含消化酶），经导管流入小肠或贮存于胆囊。" },
+            gallbladder: { title: "🟢 胆囊 (Gallbladder)", category: "辅助器官", desc: "贮存与浓缩胆汁，进食后胆汁经导管流入十二指肠。" },
+            pancreas: { title: "🟡 胰腺 (Pancreas)", category: "消化腺", desc: "分泌胰液，经导管流入小肠。胰液中含有消化糖类、蛋白质和脂肪的多种酶。" },
+            small_intestine: { title: "🌀 小肠 (Small Intestine)", category: "主要消化与吸收器官", desc: "消化与吸收的主要场所。肠腺位于小肠壁上，分泌肠液。含有多种消化酶，彻底水解三大营养物质。" },
+            large_intestine: { title: "🟤 大肠 (Large Intestine)", category: "消化道", desc: "未消化的食物残渣在大肠内形成粪便，吸收部分水、无机盐和维生素。" },
+            anus: { title: "🚪 肛门 (Anus)", category: "消化道末端", desc: "粪便由肛门排出体外的出口（排遗作用）。" }
+        };
+
+        // 牙齿排列与剖面数据
+        const teethData = {
+            incisor: { title: "🪥 门齿 (Incisors)", category: "恒牙分类", desc: "位于牙弓前部，切缘锋利，主要功能是切断食物。" },
+            canine: { title: "🪥 犬齿 (Canines)", category: "恒牙分类", desc: "牙冠尖锐，主要功能是撕裂食物。" },
+            premolar: { title: "🪥 前臼齿 (Premolars)", category: "恒牙分类", desc: "位于犬齿之后，辅助咀嚼与磨碎食物。" },
+            molar: { title: "🪥 臼齿 (Molars)", category: "恒牙分类", desc: "咬合面宽大且具齿尖，主要功能是捣碎和磨碎食物。" },
+            wisdom: { title: "🪥 智齿 (Wisdom Tooth)", category: "第三臼齿", desc: "人类萌出最晚的第三臼齿，通常在18-25岁萌出。" },
+            enamel: { title: "🛡️ 牙釉质 (Enamel)", category: "牙齿结构", desc: "包在牙冠外层，是人体中最坚硬的结构。破坏后不可再生。" },
+            dentin: { title: "🦴 牙本质 (Dentin)", category: "牙齿结构", desc: "构成牙齿的主体结构，淡黄色，硬度仅次于牙釉质。" },
+            pulp: { title: "🩸 牙髓 (Pulp)", category: "牙齿结构", desc: "位于牙齿内部腔隙（牙髓腔），内含丰富血管与神经。" },
+            gum: { title: "🌸 牙龈 (Gum)", category: "牙周组织", desc: "粉红色的口腔黏膜包裹着牙槽骨与牙颈部。" },
+            vessel: { title: "🩸 血管 (Blood Vessels)", category: "牙髓组织", desc: "为牙齿组织提供养分与氧气，维持牙齿活性。" },
+            nerve: { title: "⚡ 神经 (Nerves)", category: "牙髓组织", desc: "传导冷、热、酸、甜及痛觉刺激。深龋刺激神经会导致剧烈牙痛。" }
+        };
+
+        // 消化过程图解数据
+        const digProcessData = {
+            mouth: { title: "👄 口腔消化", category: "消化起始段", desc: "牙齿咀嚼（物理消化），唾液腺分泌唾液淀粉酶将淀粉初步分解为麦芽糖。" },
+            salivary: { title: "💦 唾液腺", category: "消化腺", desc: "分泌唾液，含有唾液淀粉酶。" },
+            stomach: { title: "🫀 胃部消化", category: "蛋白质初步消化", desc: "胃腺分泌酸性胃液，内含胃蛋白酶，将蛋白质初步分解为多肽。" },
+            liver: { title: "🥩 肝脏与胆汁", category: "物理乳化", desc: "肝脏分泌胆汁，胆汁不含消化酶，能将脂肪乳化为细小微粒，增大与脂肪酶的接触面积。" },
+            pancreas: { title: "🟡 胰腺与胰液", category: "消化液供给", desc: "胰腺分泌胰液，含有消化糖类、蛋白质和脂肪的多种酶，注入小肠。" },
+            small_int: { title: "🌀 小肠彻底消化", category: "终极消化场所", desc: "在肠液和胰液的共同作用下，淀粉最终分解为葡萄糖，蛋白质分解为氨基酸，脂肪分解为甘油和脂肪酸。" }
+        };
+
+        // 小肠绒毛吸收结构数据
+        const villiData = {
+            wall: { title: "🧬 小肠壁 (Small Intestinal Wall)", category: "解剖结构", desc: "环形皱襞与小肠绒毛极大地增加了小肠的吸收表面积。" },
+            villi: { title: "🔬 小肠绒毛 (Intestinal Villi)", category: "吸收微结构", desc: "小肠绒毛壁仅由一层上皮细胞构成，极利于营养物质快速吸收进入循环系统。" },
+            lymph: { title: "🥛 毛细淋巴管 / 乳糜管", category: "养分吸收通道", desc: "吸收大部分甘油和脂肪酸，通过淋巴系统最终汇入血液循环。" },
+            capillary: { title: "🩸 毛细血管网", category: "养分吸收通道", desc: "吸收葡萄糖、氨基酸、大部分水、无机盐和维生素，直接进入血液循环。" },
+            vein: { title: "🔵 静脉", category: "血液循环", desc: "收集富含吸收养分的血液流向肝门静脉。" }
         };
 
         function renderApp() {
@@ -389,60 +548,115 @@
                 <div class="card">
                     <h2>🎯 章节学习目标</h2>
                     <ul>
-                        <li>掌握消化系统的组成器官（消化道与消化腺）及各自的功能[cite: 3, 4]。</li>
-                        <li>区分物理性消化与化学性消化的联系与区别[cite: 3, 4]。</li>
-                        <li>认识牙齿的分类（门齿、犬齿、前臼齿、臼齿）、结构及龋齿（蛀牙）预防[cite: 3, 4]。</li>
-                        <li>掌握消化酶的作用特性（专一性、高效性及温度/pH 敏感性）[cite: 3, 4]。</li>
-                        <li>理解三大营养物质（淀粉、蛋白质、脂肪）的渐进消化过程与最终产物[cite: 3, 4]。</li>
-                        <li>阐明小肠作为消化与吸收主要场所的结构适应性特点[cite: 3, 4]。</li>
-                        <li>理解排遗与便秘的成因及良好的生活习惯[cite: 3, 4]。</li>
+                        <li>掌握消化系统的组成器官（消化道与消化腺）及各自的功能。</li>
+                        <li>区分物理性消化与化学性消化的联系与区别。</li>
+                        <li>认识牙齿的分类（门齿、犬齿、前臼齿、臼齿）、结构及龋齿（蛀牙）预防。</li>
+                        <li>掌握消化酶的作用特性（专一性、高效性及温度/pH 敏感性）。</li>
+                        <li>理解三大营养物质（淀粉、蛋白质、脂肪）的渐进消化过程与最终产物。</li>
+                        <li>阐明小肠作为消化与吸收主要场所的结构适应性特点。</li>
+                        <li>理解排遗与便秘的成因及良好的生活习惯。</li>
                     </ul>
                 </div>
 
-                <!-- 9.1 人体消化系统的结构 -->
+                <!-- 9.1 人体消化系统的结构探究 -->
                 <div class="card">
                     <h2>9.1 人体消化系统的结构探究</h2>
-                    <p>👇 <strong>点击解剖图中的各个器官，可在右侧查阅对应的结构特征与生理功能：</strong></p>
+                    <p>👇 <strong>点击真实解剖图中的热区标记点（呼吸灯），可在右侧查阅对应的结构特征与生理功能：</strong></p>
 
-                    <div class="interactive-diagram-container">
-                        <div class="canvas-box">
-                            <canvas id="anatomyCanvas" width="380" height="520"></canvas>
-                            <p style="font-size:0.85em; color:#7f8c8d; margin-top:5px;">图 1：人体消化系统解剖结构图 (点击查看详情)[cite: 3, 4]</p>
+                    <div class="layout-flex">
+                        <div class="interactive-image-container">
+                            <img src="image/image_c4508d.jpg" alt="人体消化系统解剖图">
+                            
+                            <!-- 标记热区定义 -->
+                            <div class="hotspot spot-anatomy-mouth" onclick="showInfo('anatomy', 'mouth')">
+                                <span class="tooltip">口腔</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-salivary" onclick="showInfo('anatomy', 'salivary')">
+                                <span class="tooltip">唾液腺</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-pharynx" onclick="showInfo('anatomy', 'pharynx')">
+                                <span class="tooltip">咽</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-esophagus" onclick="showInfo('anatomy', 'esophagus')">
+                                <span class="tooltip">食道</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-stomach" onclick="showInfo('anatomy', 'stomach')">
+                                <span class="tooltip">胃</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-liver" onclick="showInfo('anatomy', 'liver')">
+                                <span class="tooltip">肝脏</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-gallbladder" onclick="showInfo('anatomy', 'gallbladder')">
+                                <span class="tooltip">胆囊</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-pancreas" onclick="showInfo('anatomy', 'pancreas')">
+                                <span class="tooltip">胰腺</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-large-int" onclick="showInfo('anatomy', 'large_intestine')">
+                                <span class="tooltip">大肠</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-small-int" onclick="showInfo('anatomy', 'small_intestine')">
+                                <span class="tooltip">小肠</span>
+                            </div>
+                            <div class="hotspot spot-anatomy-anus" onclick="showInfo('anatomy', 'anus')">
+                                <span class="tooltip">肛门</span>
+                            </div>
                         </div>
 
-                        <div class="organ-info-panel" id="organInfoPanel">
-                            <h3 id="organTitle">👈 请点击左侧解剖图中的器官</h3>
-                            <p id="organCategory" style="font-weight:bold; color:var(--accent-color);"></p>
-                            <p id="organDesc">点击图中的口腔、食道、胃、肝脏、小肠、大肠等任何部位，即可在这里阅读该器官的生理功能与特征[cite: 3, 4]。</p>
+                        <div class="info-panel" id="anatomyInfoPanel">
+                            <h3 id="anatomyTitle">👈 请点击左图红点探索器官</h3>
+                            <p id="anatomyCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="anatomyDesc">点击解剖图中的口腔、食道、胃、肝脏、小肠、大肠等标记点，查阅对应器官的生理功能与特征。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9.1.2 牙齿结构与口腔保健 -->
+                <div class="card">
+                    <h2>🦷 牙齿结构与口腔保健（互动探究）</h2>
+                    <p>点击下图中的标记点，分别探究<strong>恒牙排列分类（图2）</strong>与<strong>牙齿纵剖面结构（图3）</strong>：</p>
+                    
+                    <div style="display:flex; flex-wrap:wrap; gap:20px; margin-bottom:15px;">
+                        <!-- 图2：恒牙排列拱形图 -->
+                        <div style="flex:1; min-width:300px;">
+                            <h3 style="text-align:center; font-size:1.05rem;">图2：恒牙排列</h3>
+                            <div class="interactive-image-container">
+                                <img src="image/image_c44ff1.jpg" alt="恒牙排列图">
+                                <div class="hotspot spot-arch-incisor" onclick="showInfo('teeth', 'incisor')"><span class="tooltip">门齿</span></div>
+                                <div class="hotspot spot-arch-canine" onclick="showInfo('teeth', 'canine')"><span class="tooltip">犬齿</span></div>
+                                <div class="hotspot spot-arch-premolar" onclick="showInfo('teeth', 'premolar')"><span class="tooltip">前臼齿</span></div>
+                                <div class="hotspot spot-arch-molar" onclick="showInfo('teeth', 'molar')"><span class="tooltip">臼齿</span></div>
+                                <div class="hotspot spot-arch-wisdom" onclick="showInfo('teeth', 'wisdom')"><span class="tooltip">智齿</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 图3：牙齿纵剖面结构图 -->
+                        <div style="flex:1; min-width:300px;">
+                            <h3 style="text-align:center; font-size:1.05rem;">图3：牙齿结构剖面</h3>
+                            <div class="interactive-image-container">
+                                <img src="image/image_c44c33.jpg" alt="牙齿结构剖面图">
+                                <div class="hotspot spot-cross-enamel" onclick="showInfo('teeth', 'enamel')"><span class="tooltip">牙釉质</span></div>
+                                <div class="hotspot spot-cross-dentin" onclick="showInfo('teeth', 'dentin')"><span class="tooltip">牙本质</span></div>
+                                <div class="hotspot spot-cross-pulp" onclick="showInfo('teeth', 'pulp')"><span class="tooltip">牙髓</span></div>
+                                <div class="hotspot spot-cross-gum" onclick="showInfo('teeth', 'gum')"><span class="tooltip">牙龈</span></div>
+                                <div class="hotspot spot-cross-vessel" onclick="showInfo('teeth', 'vessel')"><span class="tooltip">血管</span></div>
+                                <div class="hotspot spot-cross-nerve" onclick="showInfo('teeth', 'nerve')"><span class="tooltip">神经</span></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- ★★★ 新增：牙齿结构与分类双模式模拟器 ★★★ -->
-                    <h3>🦷 牙齿结构与口腔保健（互动模拟器）</h3>
-                    <p style="font-size:0.95em;">根据讲义图 2（恒牙排列）与图 3（牙齿结构），点击图中的不同牙齿类型或解剖结构进行探究[cite: 3, 4]：</p>
-                    
-                    <div class="interactive-diagram-container">
-                        <div class="canvas-box">
-                            <div style="margin-bottom:8px;">
-                                <button class="btn" id="btnModeArch" onclick="switchTeethMode('arch')">👄 恒牙分类与排列 (图2)</button>
-                                <button class="btn" id="btnModeCross" style="background:#7f8c8d;" onclick="switchTeethMode('cross')">🔍 牙齿剖面结构 (图3)</button>
-                            </div>
-                            <canvas id="teethCanvas" width="360" height="360"></canvas>
-                        </div>
-
-                        <div class="organ-info-panel" id="teethInfoPanel">
-                            <h3 id="teethTitle">👈 点击左图牙齿或结构查看详情</h3>
-                            <p id="teethCategory" style="font-weight:bold; color:var(--accent-color);"></p>
-                            <p id="teethDesc">人一生有两组牙齿：乳牙(20颗)与恒牙(32颗)[cite: 3, 4]。门齿切断食物、犬齿撕裂食物、臼齿磨碎食物[cite: 3, 4]。</p>
-                        </div>
+                    <div class="info-panel" id="teethInfoPanel">
+                        <h3 id="teethTitle">👈 点击上方牙齿结构的红点</h3>
+                        <p id="teethCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                        <p id="teethDesc">人一生有两组牙齿：乳牙(20颗)与恒牙(32颗)。门齿切断食物、犬齿撕裂食物、臼齿磨碎食物。</p>
                     </div>
 
                     <div style="margin-top:15px;">
                         <p><strong>填空复习：</strong></p>
                         <ul>
-                            <li><strong>牙齿形态分类：</strong> <span class="inline-ans" onclick="toggleInline(this)">门齿</span> (切断食物)、<span class="inline-ans" onclick="toggleInline(this)">犬齿</span> (尖锐撕裂食物)、<span class="inline-ans" onclick="toggleInline(this)">前臼齿</span> 与 <span class="inline-ans" onclick="toggleInline(this)">臼齿</span> (咀嚼面宽大，磨碎食物)[cite: 3, 4]。</li>
-                            <li><strong>牙齿结构：</strong> 外层包有人体最坚硬但破坏后不可再生的 <span class="inline-ans" onclick="toggleInline(this)">牙釉质</span>；主体结构为 <span class="inline-ans" onclick="toggleInline(this)">牙本质</span>；内含血管与神经的部分是 <span class="inline-ans" onclick="toggleInline(this)">牙髓</span>[cite: 3, 4]。</li>
-                            <li><strong>龋齿(蛀牙)原理：</strong> 口腔细菌分解残留糖类产生酸液，腐蚀牙釉质深入牙本质及牙髓[cite: 3, 4]。使用弱碱性牙膏刷牙是利用 <span class="inline-ans" onclick="toggleInline(this)">酸碱中和</span> 原理[cite: 3, 4]。</li>
+                            <li><strong>牙齿形态分类：</strong> <span class="inline-ans" onclick="toggleInline(this)">门齿</span> (切断食物)、<span class="inline-ans" onclick="toggleInline(this)">犬齿</span> (尖锐撕裂食物)、<span class="inline-ans" onclick="toggleInline(this)">前臼齿</span> 与 <span class="inline-ans" onclick="toggleInline(this)">臼齿</span> (咀嚼面宽大，磨碎食物)。</li>
+                            <li><strong>牙齿结构：</strong> 外层包有人体最坚硬但破坏后不可再生的 <span class="inline-ans" onclick="toggleInline(this)">牙釉质</span>；主体结构为 <span class="inline-ans" onclick="toggleInline(this)">牙本质</span>；内含血管与神经的部分是 <span class="inline-ans" onclick="toggleInline(this)">牙髓</span>。</li>
+                            <li><strong>龋齿(蛀牙)原理：</strong> 口腔细菌分解残留糖类产生酸液，腐蚀牙釉质深入牙本质及牙髓。使用弱碱性牙膏刷牙是利用 <span class="inline-ans" onclick="toggleInline(this)">酸碱中和</span> 原理。</li>
                         </ul>
                     </div>
                 </div>
@@ -450,9 +664,28 @@
                 <!-- 9.2 食物的消化 -->
                 <div class="card">
                     <h2>9.2 食物的消化与酶的催化</h2>
-                    <p>酶是由活细胞产生的生物催化剂，大多数是蛋白质[cite: 3, 4]。酶具有 <span class="inline-ans" onclick="toggleInline(this)">高效性</span> 和 <span class="inline-ans" onclick="toggleInline(this)">专一性</span>[cite: 3, 4]，且催化活性易受 <span class="inline-ans" onclick="toggleInline(this)">温度</span> 和 <span class="inline-ans" onclick="toggleInline(this)">pH值</span> 的影响（如唾液淀粉酶最适pH为 6.6-7.1，胃蛋白酶最适pH为 0.9-1.5）[cite: 3, 4]。</p>
+                    <p>酶是由活细胞产生的生物催化剂，大多数是蛋白质。酶具有 <span class="inline-ans" onclick="toggleInline(this)">高效性</span> 和 <span class="inline-ans" onclick="toggleInline(this)">专一性</span>，且催化活性易受 <span class="inline-ans" onclick="toggleInline(this)">温度</span> 和 <span class="inline-ans" onclick="toggleInline(this)">pH值</span> 的影响。</p>
 
-                    <h3>三大营养物质的化学性消化途径</h3>
+                    <h3>图4：三大营养物质渐进消化全过程（互动探究图）</h3>
+                    <div class="layout-flex" style="margin-bottom:20px;">
+                        <div class="interactive-image-container">
+                            <img src="image/image_c3f5fa.jpg" alt="营养物质的消化全图">
+                            <div class="hotspot spot-dig-mouth" onclick="showInfo('dig', 'mouth')"><span class="tooltip">口腔消化</span></div>
+                            <div class="hotspot spot-dig-salivary" onclick="showInfo('dig', 'salivary')"><span class="tooltip">唾液腺</span></div>
+                            <div class="hotspot spot-dig-stomach" onclick="showInfo('dig', 'stomach')"><span class="tooltip">胃部消化</span></div>
+                            <div class="hotspot spot-dig-liver" onclick="showInfo('dig', 'liver')"><span class="tooltip">肝脏胆汁</span></div>
+                            <div class="hotspot spot-dig-pancreas" onclick="showInfo('dig', 'pancreas')"><span class="tooltip">胰腺胰液</span></div>
+                            <div class="hotspot spot-dig-small-int" onclick="showInfo('dig', 'small_int')"><span class="tooltip">小肠终极消化</span></div>
+                        </div>
+
+                        <div class="info-panel" id="digInfoPanel">
+                            <h3 id="digTitle">👈 点击图4热区查看消化过程</h3>
+                            <p id="digCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="digDesc">探索淀粉、蛋白质和脂肪在不同器官中被各种消化液及消化酶逐步水解的过程。</p>
+                        </div>
+                    </div>
+
+                    <h3>三大营养物质的化学性消化途径汇总</h3>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -468,35 +701,35 @@
                             <tbody>
                                 <tr>
                                     <td><strong>淀粉 (糖类)</strong></td>
-                                    <td>口腔[cite: 3, 4]</td>
-                                    <td>麦芽糖[cite: 3, 4]</td>
-                                    <td>小肠[cite: 3, 4]</td>
-                                    <td>唾液、胰液、肠液 (淀粉酶、麦芽糖酶)[cite: 3, 4]</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">葡萄糖</span>[cite: 3, 4]</td>
+                                    <td>口腔</td>
+                                    <td>麦芽糖</td>
+                                    <td>小肠</td>
+                                    <td>唾液、胰液、肠液 (淀粉酶、麦芽糖酶)</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">葡萄糖</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>蛋白质</strong></td>
-                                    <td>胃[cite: 3, 4]</td>
-                                    <td>多肽[cite: 3, 4]</td>
-                                    <td>小肠[cite: 3, 4]</td>
-                                    <td>胃液、胰液、肠液 (胃蛋白酶、胰蛋白酶)[cite: 3, 4]</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">氨基酸</span>[cite: 3, 4]</td>
+                                    <td>胃</td>
+                                    <td>多肽</td>
+                                    <td>小肠</td>
+                                    <td>胃液、胰液、肠液 (胃蛋白酶、胰蛋白酶)</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">氨基酸</span></td>
                                 </tr>
                                 <tr>
                                     <td><strong>脂肪</strong></td>
-                                    <td>小肠[cite: 3, 4]</td>
-                                    <td>脂肪微粒 (胆汁物理乳化)[cite: 3, 4]</td>
-                                    <td>小肠[cite: 3, 4]</td>
-                                    <td>胆汁(无酶)、胰液、肠液 (脂肪酶)[cite: 3, 4]</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">甘油 + 脂肪酸</span>[cite: 3, 4]</td>
+                                    <td>小肠</td>
+                                    <td>脂肪微粒 (胆汁物理乳化)</td>
+                                    <td>小肠</td>
+                                    <td>胆汁(无酶)、胰液、肠液 (脂肪酶)</td>
+                                    <td><span class="inline-ans" onclick="toggleInline(this)">甘油 + 脂肪酸</span></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- ★★★ 升级：讲义实验1 唾液淀粉酶消化探究模拟器 ★★★ -->
+                    <!-- 实验1 唾液淀粉酶消化探究模拟器 -->
                     <h3>🧪 实验 1：唾液淀粉酶的消化作用探究模拟器</h3>
-                    <p style="font-size:0.9em;">模拟讲义图 A/B/C/D 实验全过程：对比试管 1（含唾液）与试管 2（对照组，含水）在 37°C 保温后的变色结果[cite: 3, 4]。</p>
+                    <p style="font-size:0.9em;">模拟实验全过程：对比试管 1（含唾液）与试管 2（对照组，含水）在不同水浴温度下保温后的变色结果。</p>
                     <div class="sim-container">
                         <canvas id="enzymeCanvas" width="380" height="250"></canvas>
                         <div class="sim-controls">
@@ -515,84 +748,46 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- 模拟器 2：胆汁乳化与脂肪分解 -->
-                    <h3>🔬 互动模拟器 2 —— 胆汁乳化与脂肪酶分解微观过程</h3>
-                    <div class="sim-container">
-                        <canvas id="fatCanvas" width="360" height="220"></canvas>
-                        <div class="sim-controls">
-                            <label><strong>选择加入小肠的消化液组合：</strong></label>
-                            <select id="fatSimChoice">
-                                <option value="none">无消化液 (只有大脂肪滴)</option>
-                                <option value="bile">只加胆汁 (物理性消化：乳化)</option>
-                                <option value="lipase">只加脂肪酶 (无胆汁，接触面积小，分解极慢)</option>
-                                <option value="both" selected>胆汁 + 脂肪酶 (物理与化学协同分解)</option>
-                            </select>
-
-                            <button class="btn" onclick="runFatSim()">▶️ 观察微观粒子变化</button>
-                            
-                            <div id="fatSimResult" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
-                                状态：点击按钮观察脂肪微粒演变。
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 9.3 营养物质的吸收 -->
                 <div class="card">
                     <h2>9.3 营养物质的吸收</h2>
-                    <p>营养物质的吸收是指小分子营养通过消化道上皮细胞进入 <span class="inline-ans" onclick="toggleInline(this)">血液</span> 和 <span class="inline-ans" onclick="toggleInline(this)">淋巴</span> 的过程[cite: 3, 4]。</p>
+                    <p>营养物质的吸收是指小分子营养通过消化道上皮细胞进入 <span class="inline-ans" onclick="toggleInline(this)">血液</span> 和 <span class="inline-ans" onclick="toggleInline(this)">淋巴</span> 的过程。</p>
                     
+                    <!-- 图5：小肠绒毛结构与吸收途径 -->
+                    <h3>图5：小肠结构与小肠绒毛吸收微结构（互动探究）</h3>
+                    <div class="layout-flex" style="margin-bottom:20px;">
+                        <div class="interactive-image-container">
+                            <img src="image/image_c3f599.jpg" alt="小肠绒毛微观结构图">
+                            <div class="hotspot spot-villi-wall" onclick="showInfo('villi', 'wall')"><span class="tooltip">小肠壁皱襞</span></div>
+                            <div class="hotspot spot-villi-villi" onclick="showInfo('villi', 'villi')"><span class="tooltip">小肠绒毛</span></div>
+                            <div class="hotspot spot-villi-lymph" onclick="showInfo('villi', 'lymph')"><span class="tooltip">毛细淋巴管</span></div>
+                            <div class="hotspot spot-villi-capillary" onclick="showInfo('villi', 'capillary')"><span class="tooltip">毛细血管</span></div>
+                            <div class="hotspot spot-villi-vein" onclick="showInfo('villi', 'vein')"><span class="tooltip">静脉</span></div>
+                        </div>
+
+                        <div class="info-panel" id="villiInfoPanel">
+                            <h3 id="villiTitle">👈 点击图5热区探索吸收微结构</h3>
+                            <p id="villiCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="villiDesc">小肠绒毛壁、毛细血管壁和毛细淋巴管壁均仅由一层上皮细胞构成，是养分吸收的关键结构。</p>
+                        </div>
+                    </div>
+
                     <h3>消化道各段的吸收功能</h3>
                     <ul>
-                        <li><strong>口腔 & 食道：</strong> 基本 <span class="inline-ans" onclick="toggleInline(this)">没有吸收功能</span>[cite: 3, 4]。</li>
-                        <li><strong>胃：</strong> 吸收少量的 <span class="inline-ans" onclick="toggleInline(this)">水、无机盐和酒精</span>[cite: 3, 4]。</li>
-                        <li><strong>小肠（主要场所）：</strong> 吸收 <span class="inline-ans" onclick="toggleInline(this)">葡萄糖、氨基酸、大部分水、无机盐、维生素</span>（进入毛细血管）以及大部分 <span class="inline-ans" onclick="toggleInline(this)">甘油和脂肪酸</span>（进入毛细淋巴管/乳糜管）[cite: 3, 4]。</li>
-                        <li><strong>大肠：</strong> 吸收少量的 <span class="inline-ans" onclick="toggleInline(this)">水、无机盐和部分维生素</span>[cite: 3, 4]。</li>
+                        <li><strong>口腔 & 食道：</strong> 基本 <span class="inline-ans" onclick="toggleInline(this)">没有吸收功能</span>。</li>
+                        <li><strong>胃：</strong> 吸收少量的 <span class="inline-ans" onclick="toggleInline(this)">水、无机盐和酒精</span>。</li>
+                        <li><strong>小肠（主要场所）：</strong> 吸收 <span class="inline-ans" onclick="toggleInline(this)">葡萄糖、氨基酸、大部分水、无机盐、维生素</span>（进入毛细血管）以及大部分 <span class="inline-ans" onclick="toggleInline(this)">甘油和脂肪酸</span>（进入毛细淋巴管/乳糜管）。</li>
+                        <li><strong>大肠：</strong> 吸收少量的 <span class="inline-ans" onclick="toggleInline(this)">水、无机盐和部分维生素</span>。</li>
                     </ul>
-
-                    <!-- 小肠绒毛微观吸收模拟器 -->
-                    <h3>🔬 重点探究：小肠绒毛微观结构与养分吸收模拟器</h3>
-                    <p style="font-size:0.95em;">小肠绒毛极大地增大了吸收表面积[cite: 3, 4]。选择不同的营养小分子，观察它们如何穿过单层上皮细胞进入不同的血管通道[cite: 3, 4]：</p>
-                    <div class="sim-container">
-                        <canvas id="villiCanvas" width="380" height="300"></canvas>
-                        <div class="sim-controls">
-                            <label><strong>选择被吸收的养分小分子：</strong></label>
-                            <select id="villiNutrient">
-                                <option value="glucose">葡萄糖 / 氨基酸 (进入毛细血管 -> 血液)</option>
-                                <option value="fatty">甘油 / 脂肪酸 (进入毛细淋巴管/乳糜管 -> 淋巴)</option>
-                            </select>
-
-                            <button class="btn" onclick="startVilliSim()">▶️ 动态演示小肠绒毛吸收</button>
-                            <button class="btn" style="background:#7f8c8d;" onclick="resetVilliSim()">🔄 重置模拟</button>
-
-                            <div id="villiSimOutput" style="margin-top:5px; font-size:0.9em; font-weight:bold; color:var(--primary-color);">
-                                提示：小肠绒毛壁、毛细血管壁与毛细淋巴管壁均仅由一层上皮细胞构成，极利于吸收[cite: 3, 4]。
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模拟器 3：人造肠衣半透膜吸收 -->
-                    <h3>🧫 互动模拟器 3 —— 人造肠衣（半透膜）小肠吸收模拟</h3>
-                    <div class="sim-container">
-                        <canvas id="dialysisCanvas" width="360" height="220"></canvas>
-                        <div class="sim-controls">
-                            <p style="font-size:0.9em; margin:0;">将装有 <strong>淀粉 + 葡萄糖混合液</strong> 的人造肠衣浸入温水烧杯中 20 分钟[cite: 4]：</p>
-                            <button class="btn" onclick="testDialysis('fehling')">🧪 取烧杯水 + 斐林试剂 (水浴加热)</button>
-                            <button class="btn" style="background:#e67e22;" onclick="testDialysis('iodine')">🧪 取烧杯水 + 滴加碘液</button>
-                            
-                            <div id="dialysisResult" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
-                                检测结果：等待检测...
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 9.4 排遗与便秘 -->
                 <div class="card">
                     <h2>9.4 排遗与便秘</h2>
-                    <p>未消化的食物残渣在大肠内形成粪便，由肛门排出体外的过程称为 <span class="inline-ans" onclick="toggleInline(this)">排遗</span>（区别于排泄）[cite: 3, 4]。</p>
-                    <p>粪便在大肠停留过久失水干硬会导致 <span class="inline-ans" onclick="toggleInline(this)">便秘</span>[cite: 3, 4]。常见成因包括：饮水不足、缺少 <span class="inline-ans" onclick="toggleInline(this)">膳食纤维</span>、久坐少动、肠道益生菌不足等[cite: 3, 4]。</p>
+                    <p>未消化的食物残渣在大肠内形成粪便，由肛门排出体外的过程称为 <span class="inline-ans" onclick="toggleInline(this)">排遗</span>（区别于排泄）。</p>
+                    <p>粪便在大肠停留过久失水干硬会导致 <span class="inline-ans" onclick="toggleInline(this)">便秘</span>。常见成因包括：饮水不足、缺少 <span class="inline-ans" onclick="toggleInline(this)">膳食纤维</span>、久坐少动、肠道益生菌不足等。</p>
                 </div>
 
                 <!-- 心智图复盘 -->
@@ -602,7 +797,7 @@
                     
                     <div class="mindmap-tree">
                         <div class="node">
-                            <span class="node-title">第9章 消化与吸收[cite: 3, 4]</span>
+                            <span class="node-title">第9章 消化与吸收</span>
                         </div>
                         
                         <div class="children-container">
@@ -611,9 +806,9 @@
                                     <span>9.1 消化系统结构</span> <strong id="btn-mm1">[+]</strong>
                                 </div>
                                 <div id="mm1" class="children-container hidden">
-                                    <div class="node">消化道：口腔->咽->食道->胃->小肠->大肠->肛门[cite: 3, 4]</div>
-                                    <div class="node">消化腺：唾液腺、胃腺、肝脏(胆汁无酶)、胰腺、肠腺[cite: 3, 4]</div>
-                                    <div class="node">牙齿：乳牙(20) / 恒牙(32) | 釉质-本质-牙髓[cite: 3, 4]</div>
+                                    <div class="node">消化道：口腔->咽->食道->胃->小肠->大肠->肛门</div>
+                                    <div class="node">消化腺：唾液腺、胃腺、肝脏(胆汁无酶)、胰腺、肠腺</div>
+                                    <div class="node">牙齿：乳牙(20) / 恒牙(32) | 釉质-本质-牙髓</div>
                                 </div>
                             </div>
 
@@ -622,9 +817,9 @@
                                     <span>9.2 食物的消化</span> <strong id="btn-mm2">[+]</strong>
                                 </div>
                                 <div id="mm2" class="children-container hidden">
-                                    <div class="node">消化类型：物理性(磨碎/搅拌) vs 化学性(酶水解)[cite: 3, 4]</div>
-                                    <div class="node">酶特性：生物催化剂，专一性，高效性，受Temp/pH影响[cite: 3, 4]</div>
-                                    <div class="node">终产物：淀粉->葡萄糖 | 蛋白->氨基酸 | 脂肪->甘油+脂肪酸[cite: 3, 4]</div>
+                                    <div class="node">消化类型：物理性(磨碎/搅拌) vs 化学性(酶水解)</div>
+                                    <div class="node">酶特性：生物催化剂，专一性，高效性，受Temp/pH影响</div>
+                                    <div class="node">终产物：淀粉->葡萄糖 | 蛋白->氨基酸 | 脂肪->甘油+脂肪酸</div>
                                 </div>
                             </div>
 
@@ -633,9 +828,8 @@
                                     <span>9.3 营养物质的吸收</span> <strong id="btn-mm3">[+]</strong>
                                 </div>
                                 <div id="mm3" class="children-container hidden">
-                                    <div class="node">主要器官：小肠 (长5-6m，皱襞与绒毛，单层上皮)[cite: 3, 4]</div>
-                                    <div class="node">吸收途径：毛细血管(葡萄糖/氨基酸) | 毛细淋巴管(甘油脂肪酸)[cite: 3, 4]</div>
-                                    <div class="node">人造肠衣实验：小分子(葡萄糖)可透过半透膜[cite: 4]</div>
+                                    <div class="node">主要器官：小肠 (长5-6m，皱襞与绒毛，单层上皮)</div>
+                                    <div class="node">吸收途径：毛细血管(葡萄糖/氨基酸) | 毛细淋巴管(甘油脂肪酸)</div>
                                 </div>
                             </div>
 
@@ -644,9 +838,8 @@
                                     <span>9.4 排遗与便秘</span> <strong id="btn-mm4">[+]</strong>
                                 </div>
                                 <div id="mm4" class="children-container hidden">
-                                    <div class="node">排遗：食物残渣形成粪便由肛门排出[cite: 3, 4]</div>
-                                    <div class="node">阑尾：盲肠末端盲管 (7-8cm)[cite: 3, 4]</div>
-                                    <div class="node">便秘预防：多喝水、高纤维饮食、适量运动[cite: 3, 4]</div>
+                                    <div class="node">排遗：食物残渣形成粪便由肛门排出</div>
+                                    <div class="node">便秘预防：多喝水、高纤维饮食、适量运动</div>
                                 </div>
                             </div>
                         </div>
@@ -654,455 +847,53 @@
                 </div>
             `;
 
-            initAnatomyDiagram();
-            initTeethSimulator();
             initSimulators();
-            initVilliSimulator();
-            
-            cleanCiteTexts();
         }
 
-        // 自动清洗引用标签
-        function cleanCiteTexts() {
-            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-            let node;
-            while (node = walker.nextNode()) {
-                if (node.nodeValue && node.nodeValue.indexOf('[cite') !== -1) {
-                    let txt = node.nodeValue;
-                    while (txt.indexOf('[cite') !== -1) {
-                        const start = txt.indexOf('[cite');
-                        const end = txt.indexOf(']', start);
-                        if (end !== -1) {
-                            txt = txt.substring(0, start) + txt.substring(end + 1);
-                        } else {
-                            txt = txt.substring(0, start);
-                        }
-                    }
-                    node.nodeValue = txt;
-                }
+        // 热区点击信息面板更新函数
+        function showInfo(type, key) {
+            let data = null;
+            let titleEl, catEl, descEl;
+
+            if (type === 'anatomy') {
+                data = anatomyData[key];
+                titleEl = document.getElementById('anatomyTitle');
+                catEl = document.getElementById('anatomyCategory');
+                descEl = document.getElementById('anatomyDesc');
+            } else if (type === 'teeth') {
+                data = teethData[key];
+                titleEl = document.getElementById('teethTitle');
+                catEl = document.getElementById('teethCategory');
+                descEl = document.getElementById('teethDesc');
+            } else if (type === 'dig') {
+                data = digProcessData[key];
+                titleEl = document.getElementById('digTitle');
+                catEl = document.getElementById('digCategory');
+                descEl = document.getElementById('digDesc');
+            } else if (type === 'villi') {
+                data = villiData[key];
+                titleEl = document.getElementById('villiTitle');
+                catEl = document.getElementById('villiCategory');
+                descEl = document.getElementById('villiDesc');
+            }
+
+            if (data && titleEl && catEl && descEl) {
+                titleEl.innerHTML = data.title;
+                catEl.innerHTML = `所属分类 / 结构：${data.category}`;
+                descEl.innerHTML = data.desc;
             }
         }
 
-        // --- 人体解剖图交互 ---
-        let selectedOrgan = null;
-        let hoverOrgan = null;
-
-        const organHitMap = [
-            { id: 'mouth', name: '口腔', x: 190, y: 75, r: 18 },
-            { id: 'salivary', name: '唾液腺', x: 230, y: 80, r: 15 },
-            { id: 'pharynx', name: '咽/食道', x: 190, y: 135, r: 25 },
-            { id: 'liver', name: '肝脏', x: 145, y: 220, r: 35 },
-            { id: 'stomach', name: '胃', x: 230, y: 230, r: 32 },
-            { id: 'gallbladder', name: '胆囊', x: 175, y: 245, r: 12 },
-            { id: 'pancreas', name: '胰腺', x: 210, y: 265, r: 18 },
-            { id: 'duodenum', name: '十二指肠', x: 180, y: 280, r: 15 },
-            { id: 'large_intestine', name: '大肠', x: 190, y: 340, r: 65 },
-            { id: 'small_intestine', name: '小肠', x: 190, y: 340, r: 40 },
-            { id: 'appendix', name: '阑尾/盲肠', x: 130, y: 385, r: 14 },
-            { id: 'anus', name: '肛门', x: 190, y: 440, r: 12 }
-        ];
-
-        function initAnatomyDiagram() {
-            const canvas = document.getElementById('anatomyCanvas');
-            if(!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            function drawAnatomy() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                ctx.strokeStyle = "#b2bec3";
-                ctx.lineWidth = 2;
-                ctx.fillStyle = "#fdfefe";
-                ctx.beginPath();
-                ctx.moveTo(190, 15);
-                ctx.bezierCurveTo(130, 15, 120, 60, 120, 85);
-                ctx.bezierCurveTo(120, 115, 140, 125, 140, 140);
-                ctx.lineTo(80, 180);
-                ctx.lineTo(95, 380);
-                ctx.lineTo(135, 490);
-                ctx.lineTo(245, 490);
-                ctx.lineTo(285, 380);
-                ctx.lineTo(300, 180);
-                ctx.lineTo(240, 140);
-                ctx.bezierCurveTo(240, 125, 260, 115, 260, 85);
-                ctx.bezierCurveTo(260, 60, 250, 15, 190, 15);
-                ctx.fill();
-                ctx.stroke();
-
-                function getOrganColor(id, defaultColor) {
-                    if (selectedOrgan === id) return "#e74c3c";
-                    if (hoverOrgan === id) return "#27ae60";
-                    return defaultColor;
-                }
-
-                ctx.strokeStyle = getOrganColor('pharynx', '#e74c3c');
-                ctx.lineWidth = 8;
-                ctx.beginPath();
-                ctx.moveTo(190, 85);
-                ctx.lineTo(190, 200);
-                ctx.stroke();
-
-                ctx.fillStyle = getOrganColor('mouth', '#d63031');
-                ctx.beginPath();
-                ctx.arc(190, 75, 10, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = getOrganColor('salivary', '#e67e22');
-                ctx.beginPath();
-                ctx.arc(230, 80, 8, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.strokeStyle = getOrganColor('large_intestine', '#8e44ad');
-                ctx.lineWidth = 16;
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                ctx.beginPath();
-                ctx.moveTo(135, 380);
-                ctx.lineTo(135, 290);
-                ctx.lineTo(245, 290);
-                ctx.lineTo(245, 390);
-                ctx.lineTo(190, 390);
-                ctx.lineTo(190, 435);
-                ctx.stroke();
-
-                ctx.strokeStyle = getOrganColor('appendix', '#27ae60');
-                ctx.lineWidth = 5;
-                ctx.beginPath();
-                ctx.moveTo(135, 380);
-                ctx.lineTo(125, 400);
-                ctx.stroke();
-
-                ctx.strokeStyle = getOrganColor('small_intestine', '#e67e22');
-                ctx.lineWidth = 10;
-                ctx.beginPath();
-                ctx.moveTo(180, 280);
-                ctx.bezierCurveTo(150, 310, 230, 310, 190, 330);
-                ctx.bezierCurveTo(150, 340, 230, 350, 180, 365);
-                ctx.stroke();
-
-                ctx.strokeStyle = getOrganColor('duodenum', '#f39c12');
-                ctx.lineWidth = 7;
-                ctx.beginPath();
-                ctx.arc(190, 265, 16, Math.PI * 0.7, Math.PI * 1.8, false);
-                ctx.stroke();
-
-                ctx.fillStyle = getOrganColor('pancreas', '#f1c40f');
-                ctx.beginPath();
-                ctx.ellipse(210, 265, 20, 7, -0.2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = "#d4ac0d";
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
-                ctx.fillStyle = getOrganColor('stomach', '#e74c3c');
-                ctx.beginPath();
-                ctx.moveTo(190, 200);
-                ctx.bezierCurveTo(240, 190, 260, 230, 235, 255);
-                ctx.bezierCurveTo(210, 270, 185, 250, 190, 230);
-                ctx.closePath();
-                ctx.fill();
-                ctx.strokeStyle = "#c0392b";
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.fillStyle = getOrganColor('liver', '#d35400');
-                ctx.beginPath();
-                ctx.moveTo(190, 200);
-                ctx.lineTo(120, 210);
-                ctx.bezierCurveTo(110, 240, 150, 250, 180, 245);
-                ctx.closePath();
-                ctx.fill();
-                ctx.strokeStyle = "#ba4a00";
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.fillStyle = getOrganColor('gallbladder', '#27ae60');
-                ctx.beginPath();
-                ctx.arc(165, 242, 6, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = getOrganColor('anus', '#2c3e50');
-                ctx.beginPath();
-                ctx.arc(190, 440, 5, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = "#2c3e50";
-                ctx.font = "bold 12px Arial";
-                
-                const labels = [
-                    { name: '唾液腺', x: 280, y: 83, lx: 230, ly: 80, id: 'salivary' },
-                    { name: '口腔', x: 280, y: 63, lx: 190, ly: 75, id: 'mouth' },
-                    { name: '咽/食道', x: 280, y: 135, lx: 190, ly: 135, id: 'pharynx' },
-                    { name: '肝脏 (右上腹)', x: 15, y: 215, lx: 130, ly: 215, id: 'liver' },
-                    { name: '胆囊', x: 25, y: 245, lx: 165, ly: 242, id: 'gallbladder' },
-                    { name: '胃 (左上腹)', x: 280, y: 220, lx: 235, ly: 225, id: 'stomach' },
-                    { name: '胰腺', x: 280, y: 268, lx: 220, ly: 265, id: 'pancreas' },
-                    { name: '十二指肠', x: 15, y: 275, lx: 175, ly: 270, id: 'duodenum' },
-                    { name: '大肠', x: 280, y: 330, lx: 245, ly: 330, id: 'large_intestine' },
-                    { name: '小肠', x: 280, y: 365, lx: 200, ly: 350, id: 'small_intestine' },
-                    { name: '盲肠/阑尾', x: 15, y: 395, lx: 125, ly: 395, id: 'appendix' },
-                    { name: '肛门', x: 280, y: 443, lx: 190, ly: 440, id: 'anus' }
-                ];
-
-                labels.forEach(l => {
-                    ctx.strokeStyle = (selectedOrgan === l.id || hoverOrgan === l.id) ? "#27ae60" : "#95a5a6";
-                    ctx.lineWidth = 1;
-                    ctx.setLineDash([2, 2]);
-                    ctx.beginPath();
-                    ctx.moveTo(l.x < 190 ? l.x + 60 : l.x - 5, l.y - 3);
-                    ctx.lineTo(l.lx, l.ly);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-
-                    ctx.fillStyle = (selectedOrgan === l.id || hoverOrgan === l.id) ? "#27ae60" : "#2c3e50";
-                    ctx.fillText(l.name, l.x, l.y);
-                });
-            }
-
-            canvas.addEventListener('mousemove', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mx = e.clientX - rect.left;
-                const my = e.clientY - rect.top;
-
-                let found = null;
-                for (let organ of organHitMap) {
-                    const dist = Math.hypot(mx - organ.x, my - organ.y);
-                    if (dist < organ.r) {
-                        found = organ.id;
-                        break;
-                    }
-                }
-
-                if (hoverOrgan !== found) {
-                    hoverOrgan = found;
-                    canvas.style.cursor = found ? 'pointer' : 'default';
-                    drawAnatomy();
-                }
-            });
-
-            canvas.addEventListener('click', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mx = e.clientX - rect.left;
-                const my = e.clientY - rect.top;
-
-                for (let organ of organHitMap) {
-                    const dist = Math.hypot(mx - organ.x, my - organ.y);
-                    if (dist < organ.r) {
-                        selectedOrgan = organ.id;
-                        showOrganInfo(organ.id);
-                        drawAnatomy();
-                        break;
-                    }
-                }
-            });
-
-            drawAnatomy();
-        }
-
-        function showOrganInfo(key) {
-            const data = organData[key];
-            if (!data) return;
-
-            document.getElementById('organTitle').innerHTML = data.title;
-            document.getElementById('organCategory').innerHTML = `所属分类：${data.category}`;
-            document.getElementById('organDesc').innerHTML = data.desc;
-        }
-
-        // --- ★★★ 新增：牙齿结构与排列双模式模拟器逻辑 ★★★ ---
-        let teethMode = 'arch'; // 'arch' 或 'cross'
-        let teethCanvas, teethCtx;
-        let selectedToothPart = null;
-
-        const teethArchHits = [
-            { id: 'incisor', name: '门齿 (Incisors)', x: 180, y: 70, r: 30 },
-            { id: 'canine', name: '犬齿 (Canines)', x: 235, y: 95, r: 20 },
-            { id: 'premolar', name: '前臼齿 (Premolars)', x: 255, y: 145, r: 20 },
-            { id: 'molar', name: '臼齿 (Molars)', x: 260, y: 220, r: 35 }
-        ];
-
-        const teethCrossHits = [
-            { id: 'enamel', name: '牙釉质 (Enamel)', yMin: 50, yMax: 100 },
-            { id: 'dentin', name: '牙本质 (Dentin)', yMin: 101, yMax: 170 },
-            { id: 'pulp', name: '牙髓 (Pulp)', yMin: 171, yMax: 280 }
-        ];
-
-        function initTeethSimulator() {
-            teethCanvas = document.getElementById('teethCanvas');
-            if (!teethCanvas) return;
-            teethCtx = teethCanvas.getContext('2d');
-
-            teethCanvas.addEventListener('click', handleTeethClick);
-            drawTeethSim();
-        }
-
-        function switchTeethMode(mode) {
-            teethMode = mode;
-            document.getElementById('btnModeArch').style.background = (mode === 'arch') ? '#27ae60' : '#7f8c8d';
-            document.getElementById('btnModeCross').style.background = (mode === 'cross') ? '#27ae60' : '#7f8c8d';
-            selectedToothPart = null;
-            drawTeethSim();
-        }
-
-        function drawTeethSim() {
-            if (!teethCtx) return;
-            teethCtx.clearRect(0, 0, teethCanvas.width, teethCanvas.height);
-
-            if (teethMode === 'arch') {
-                // 模式 1：讲义图 2 人体恒牙排列图
-                teethCtx.fillStyle = "#e74c3c"; // 口腔黏膜底色
-                teethCtx.beginPath();
-                teethCtx.ellipse(180, 180, 130, 150, 0, 0, Math.PI * 2);
-                teethCtx.fill();
-
-                teethCtx.fillStyle = "#c0392b"; // 口腔深处
-                teethCtx.beginPath();
-                teethCtx.ellipse(180, 180, 80, 100, 0, 0, Math.PI * 2);
-                teethCtx.fill();
-
-                // 门齿（黄色 - 上下排）
-                teethCtx.fillStyle = (selectedToothPart === 'incisor') ? "#e74c3c" : "#f1c40f";
-                teethCtx.fillRect(150, 40, 60, 20); // 上门齿
-                teethCtx.fillRect(150, 300, 60, 20); // 下门齿
-
-                // 犬齿（粉色）
-                teethCtx.fillStyle = (selectedToothPart === 'canine') ? "#e74c3c" : "#e84393";
-                teethCtx.fillRect(125, 50, 20, 20);
-                teethCtx.fillRect(215, 50, 20, 20);
-                teethCtx.fillRect(125, 290, 20, 20);
-                teethCtx.fillRect(215, 290, 20, 20);
-
-                // 前臼齿与臼齿（蓝色）
-                teethCtx.fillStyle = (selectedToothPart === 'molar' || selectedToothPart === 'premolar') ? "#e74c3c" : "#0984e3";
-                // 上排双侧
-                teethCtx.fillRect(80, 80, 35, 100);
-                teethCtx.fillRect(245, 80, 35, 100);
-                // 下排双侧
-                teethCtx.fillRect(80, 180, 35, 100);
-                teethCtx.fillRect(245, 180, 35, 100);
-
-                // 文字标注
-                teethCtx.fillStyle = "#ffffff";
-                teethCtx.font = "bold 12px Arial";
-                teethCtx.fillText("门齿", 168, 55);
-                teethCtx.fillText("犬齿", 216, 65);
-                teethCtx.fillText("臼齿/前臼齿", 248, 130);
-
-                teethCtx.fillStyle = "#2c3e50";
-                teethCtx.font = "bold 13px Arial";
-                teethCtx.fillText("图2：恒牙排列拱形图 (32颗)", 90, 20);
-
-            } else {
-                // 模式 2：讲义图 3 牙齿结构剖面图
-                // 牙龈
-                teethCtx.fillStyle = "#e84393";
-                teethCtx.fillRect(40, 160, 280, 160);
-
-                // 牙釉质（最外层）
-                teethCtx.fillStyle = (selectedToothPart === 'enamel') ? "#e74c3c" : "#f5f6fa";
-                teethCtx.beginPath();
-                teethCtx.moveTo(90, 160);
-                teethCtx.lineTo(90, 80);
-                teethCtx.bezierCurveTo(120, 40, 240, 40, 270, 80);
-                teethCtx.lineTo(270, 160);
-                teethCtx.closePath();
-                teethCtx.fill();
-                teethCtx.strokeStyle = "#2c3e50";
-                teethCtx.lineWidth = 2;
-                teethCtx.stroke();
-
-                // 牙本质（主体）
-                teethCtx.fillStyle = (selectedToothPart === 'dentin') ? "#e74c3c" : "#f39c12";
-                teethCtx.beginPath();
-                teethCtx.moveTo(110, 160);
-                teethCtx.lineTo(110, 95);
-                teethCtx.bezierCurveTo(130, 65, 230, 65, 250, 95);
-                teethCtx.lineTo(250, 280);
-                teethCtx.lineTo(210, 280);
-                teethCtx.lineTo(180, 180);
-                teethCtx.lineTo(150, 280);
-                teethCtx.lineTo(110, 280);
-                teethCtx.closePath();
-                teethCtx.fill();
-                teethCtx.stroke();
-
-                // 牙髓（血管与神经）
-                teethCtx.fillStyle = (selectedToothPart === 'pulp') ? "#00b894" : "#d63031";
-                teethCtx.beginPath();
-                teethCtx.moveTo(160, 120);
-                teethCtx.bezierCurveTo(170, 100, 190, 100, 200, 120);
-                teethCtx.lineTo(200, 280);
-                teethCtx.lineTo(160, 280);
-                teethCtx.closePath();
-                teethCtx.fill();
-
-                // 标注区域
-                teethCtx.fillStyle = "#2c3e50";
-                teethCtx.font = "bold 12px Arial";
-                teethCtx.fillText("牙冠 ➔", 30, 80);
-                teethCtx.fillText("牙颈 ➔", 30, 160);
-                teethCtx.fillText("牙根 ➔", 30, 230);
-
-                teethCtx.fillText("牙釉质 (最坚硬)", 280, 75);
-                teethCtx.fillText("牙本质 (主体)", 260, 120);
-                teethCtx.fillText("牙髓 (神经/血管)", 210, 200);
-
-                teethCtx.font = "bold 13px Arial";
-                teethCtx.fillText("图3：牙齿纵剖面结构图", 110, 20);
-            }
-        }
-
-        function handleTeethClick(e) {
-            const rect = teethCanvas.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
-
-            const titleEl = document.getElementById('teethTitle');
-            const catEl = document.getElementById('teethCategory');
-            const descEl = document.getElementById('teethDesc');
-
-            if (teethMode === 'arch') {
-                if (my < 75 && mx > 120 && mx < 240) {
-                    selectedToothPart = 'incisor';
-                    titleEl.innerHTML = "🪥 门齿 (Incisors)";
-                    catEl.innerHTML = "数量：8颗 (上4下4)";
-                    descEl.innerHTML = "<strong>功能：</strong> 形状扁平锋利，像菜刀，主要功能是<strong>切断食物</strong>[cite: 3, 4]";
-                } else if ((mx > 110 && mx < 150) || (mx > 210 && mx < 250)) {
-                    selectedToothPart = 'canine';
-                    titleEl.innerHTML = "🪥 犬齿 (Canines)";
-                    catEl.innerHTML = "数量：4颗 (上2下2)";
-                    descEl.innerHTML = "<strong>功能：</strong> 形状尖锐，像尖钩，主要功能是<strong>撕裂食物</strong>[cite: 3, 4]";
-                } else {
-                    selectedToothPart = 'molar';
-                    titleEl.innerHTML = "🪥 前臼齿与臼齿 (Premolars & Molars)";
-                    catEl.innerHTML = "数量：共20颗（含智齿）";
-                    descEl.innerHTML = "<strong>功能：</strong> 咀嚼面宽大，像石磨，主要功能是<strong>捣碎和磨碎食物</strong>[cite: 3, 4]";
-                }
-            } else {
-                if (my < 100) {
-                    selectedToothPart = 'enamel';
-                    titleEl.innerHTML = "🛡️ 牙釉质 (Enamel)";
-                    catEl.innerHTML = "位置：牙冠最外层";
-                    descEl.innerHTML = "<strong>特征：</strong> 人体内<strong>最坚硬的结构</strong>。常用牙齿咬硬物会损坏牙釉质，且<strong>损坏后不能再生</strong>！[cite: 3, 4]";
-                } else if (my < 170) {
-                    selectedToothPart = 'dentin';
-                    titleEl.innerHTML = "🦴 牙本质 (Dentin)";
-                    catEl.innerHTML = "位置：牙釉质内侧";
-                    descEl.innerHTML = "<strong>特征：</strong> 构成牙齿的<strong>主体结构</strong>。当龋齿腐蚀穿透牙釉质到达牙本质时，会逐渐形成龋洞[cite: 3, 4]。";
-                } else {
-                    selectedToothPart = 'pulp';
-                    titleEl.innerHTML = "🩸 牙髓 (Pulp)";
-                    catEl.innerHTML = "位置：牙本质内部腔隙";
-                    descEl.innerHTML = "<strong>特征：</strong> 内含丰富的<strong>毛细血管和神经</strong>。当龋洞深入到牙髓腔时，会剧烈刺激神经引起剧烈牙痛[cite: 3, 4]！";
-                }
-            }
-
-            drawTeethSim();
-        }
-
-        // --- ★★★ 升级：讲义实验1 唾液淀粉酶消化探究模拟器逻辑 ★★★ ---
+        // 实验 1：唾液淀粉酶探究模拟逻辑
         let ezCanvas, ezCtx;
-        let expStep = 0; // 0:初始, 1:加唾液/水, 2:37℃水浴保温, 3:滴加碘液变色
+        let expStep = 0;
         let animTimer = null;
+
+        function initSimulators() {
+            ezCanvas = document.getElementById('enzymeCanvas');
+            if (ezCanvas) ezCtx = ezCanvas.getContext('2d');
+            drawEnzymeExperiment();
+        }
 
         function runEnzymeProcess() {
             if (animTimer) clearInterval(animTimer);
@@ -1110,23 +901,23 @@
             const temp = parseInt(document.getElementById('waterTemp').value);
             const resDiv = document.getElementById('enzymeResult');
 
-            resDiv.innerHTML = "<strong>Step A：</strong> 试管1与2各加入 4mL 1% 淀粉溶液[cite: 3, 4]...";
+            resDiv.innerHTML = "<strong>Step A：</strong> 试管1与2各加入 4mL 1% 淀粉溶液...";
             drawEnzymeExperiment();
 
             animTimer = setInterval(() => {
                 expStep++;
                 if (expStep === 1) {
-                    resDiv.innerHTML = "<strong>Step B：</strong> 试管 1 加入 2mL 唾液，试管 2 加入 2mL 蒸馏水(对照组)[cite: 3, 4]...";
+                    resDiv.innerHTML = "<strong>Step B：</strong> 试管 1 加入 2mL 唾液，试管 2 加入 2mL 蒸馏水(对照组)...";
                 } else if (expStep === 2) {
-                    resDiv.innerHTML = `<strong>Step C：</strong> 放入 ${temp}°C 水浴中保温 10 分钟[cite: 3, 4]...`;
+                    resDiv.innerHTML = `<strong>Step C：</strong> 放入 ${temp}°C 水浴中保温 10 分钟...`;
                 } else if (expStep === 3) {
                     clearInterval(animTimer);
                     if (temp === 37) {
-                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 试管1 <span style='color:green;'>【不显蓝色】</span>（淀粉被唾液淀粉酶消化为麦芽糖）；试管2 <span style='color:blue;'>【呈现深蓝色】</span>（无酶，淀粉未分解）[cite: 3, 4]！";
+                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 试管1 <span style='color:green;'>【不显蓝色】</span>（淀粉被唾液淀粉酶消化为麦芽糖）；试管2 <span style='color:blue;'>【呈现深蓝色】</span>（无酶，淀粉未分解）！";
                     } else if (temp === 0) {
-                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 0°C 低温抑制了酶活性，试管 1 与 试管 2 <span style='color:blue;'>【均呈现深蓝色】</span>[cite: 3, 4]！";
+                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 0°C 低温抑制了酶活性，试管 1 与 试管 2 <span style='color:blue;'>【均呈现深蓝色】</span>！";
                     } else if (temp === 100) {
-                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 100°C 高温使唾液淀粉酶变性失活，试管 1 与 试管 2 <span style='color:blue;'>【均呈现深蓝色】</span>[cite: 3, 4]！";
+                        resDiv.innerHTML = "<strong>Step D (结果)：</strong> 100°C 高温使唾液淀粉酶变性失活，试管 1 与 试管 2 <span style='color:blue;'>【均呈现深蓝色】</span>！";
                     }
                 }
                 drawEnzymeExperiment();
@@ -1138,7 +929,6 @@
             ezCtx.clearRect(0, 0, ezCanvas.width, ezCanvas.height);
             const temp = parseInt(document.getElementById('waterTemp').value);
 
-            // 如果处于水浴保温步骤 (Step 2 及以后)
             if (expStep >= 2) {
                 ezCtx.fillStyle = "#bdc3c7";
                 ezCtx.fillRect(80, 130, 220, 100);
@@ -1147,13 +937,10 @@
 
                 ezCtx.fillStyle = "#e74c3c";
                 ezCtx.font = "bold 13px Arial";
-                ezCtx.fillText(`37°C 温水浴保温中 (${temp}°C)`, 110, 120);
+                ezCtx.fillText(`水浴保温中 (${temp}°C)`, 130, 120);
             }
 
-            // 绘制试管 1
             drawSingleTube(120, "试管 1 (含唾液)", expStep >= 1 ? "唾液" : "淀粉液", (expStep === 3 && temp === 37) ? "#f39c12" : (expStep === 3 ? "#1a252f" : "#ecf0f1"));
-
-            // 绘制试管 2
             drawSingleTube(220, "试管 2 (含水)", expStep >= 1 ? "蒸馏水" : "淀粉液", expStep === 3 ? "#1a252f" : "#ecf0f1");
         }
 
@@ -1164,19 +951,16 @@
             ezCtx.fillRect(x, 50, 40, 140);
             ezCtx.strokeRect(x, 50, 40, 140);
 
-            // 液体
             ezCtx.fillStyle = liquidColor;
             ezCtx.fillRect(x + 2, 110, 36, 78);
 
-            // 文字
             ezCtx.fillStyle = "#2c3e50";
             ezCtx.font = "bold 11px Arial";
             ezCtx.fillText(label, x - 10, 40);
             ezCtx.fillText(contentLabel, x + 2, 140);
 
-            // 滴管 (Step 3)
             if (expStep === 3) {
-                ezCtx.fillStyle = "#d35400"; // 碘液
+                ezCtx.fillStyle = "#d35400";
                 ezCtx.beginPath();
                 ezCtx.arc(x + 20, 80, 4, 0, Math.PI * 2);
                 ezCtx.fill();
@@ -1190,141 +974,7 @@
             document.getElementById('enzymeResult').innerHTML = "状态：已洗净试管，请点击运行按钮。";
         }
 
-        // --- 小肠绒毛微观吸收模拟器 ---
-        let villiCanvas, villiCtx;
-        let villiAnimTimer = null;
-        let particles = [];
-
-        function initVilliSimulator() {
-            villiCanvas = document.getElementById('villiCanvas');
-            if(!villiCanvas) return;
-            villiCtx = villiCanvas.getContext('2d');
-            drawVilliBase();
-        }
-
-        function drawVilliBase() {
-            if(!villiCtx) return;
-            villiCtx.clearRect(0, 0, villiCanvas.width, villiCanvas.height);
-
-            villiCtx.fillStyle = "rgba(241, 196, 15, 0.08)";
-            villiCtx.fillRect(0, 0, 380, 70);
-
-            villiCtx.beginPath();
-            villiCtx.moveTo(40, 300);
-            villiCtx.lineTo(120, 300);
-            villiCtx.bezierCurveTo(120, 100, 140, 40, 190, 40);
-            villiCtx.bezierCurveTo(240, 40, 260, 100, 260, 300);
-            villiCtx.lineTo(340, 300);
-            villiCtx.fillStyle = "#f8d7da";
-            villiCtx.fill();
-            villiCtx.strokeStyle = "#e74c3c";
-            villiCtx.lineWidth = 2;
-            villiCtx.stroke();
-
-            villiCtx.fillStyle = "#f5c6cb";
-            for (let a = 0.2; a < Math.PI - 0.2; a += 0.15) {
-                let cx = 190 + 65 * Math.cos(a + Math.PI);
-                let cy = 200 + 155 * Math.sin(a + Math.PI);
-                villiCtx.beginPath();
-                villiCtx.arc(cx, cy, 7, 0, Math.PI * 2);
-                villiCtx.fill();
-                villiCtx.strokeStyle = "#dc3545";
-                villiCtx.lineWidth = 1;
-                villiCtx.stroke();
-            }
-
-            villiCtx.fillStyle = "rgba(46, 204, 113, 0.5)";
-            villiCtx.beginPath();
-            villiCtx.ellipse(190, 180, 12, 110, 0, 0, Math.PI * 2);
-            villiCtx.fill();
-            villiCtx.strokeStyle = "#27ae60";
-            villiCtx.lineWidth = 2;
-            villiCtx.stroke();
-
-            villiCtx.strokeStyle = "#e74c3c";
-            villiCtx.lineWidth = 5;
-            villiCtx.beginPath();
-            villiCtx.moveTo(165, 290);
-            villiCtx.lineTo(165, 120);
-            villiCtx.arc(175, 120, 10, Math.PI, 0, false);
-            villiCtx.stroke();
-
-            villiCtx.strokeStyle = "#2980b9";
-            villiCtx.beginPath();
-            villiCtx.moveTo(215, 290);
-            villiCtx.lineTo(215, 120);
-            villiCtx.arc(205, 120, 10, 0, Math.PI, false);
-            villiCtx.stroke();
-
-            villiCtx.fillStyle = "#2c3e50";
-            villiCtx.font = "bold 11px Arial";
-            villiCtx.fillText("小肠腔 (食物碎屑)", 10, 25);
-            villiCtx.fillText("单层上皮细胞壁", 30, 110);
-            villiCtx.fillText("毛细血管网", 80, 200);
-            villiCtx.fillText("毛细淋巴管(乳糜管)", 230, 200);
-        }
-
-        function startVilliSim() {
-            resetVilliSim();
-            const type = document.getElementById('villiNutrient').value;
-            const output = document.getElementById('villiSimOutput');
-
-            if (type === 'glucose') {
-                output.innerHTML = "正在演示：<span style='color:#e74c3c;'>葡萄糖 / 氨基酸</span> 穿过单层上皮细胞，直接被 <span style='color:#2980b9;'>毛细血管</span> 吸收进入血液循环！[cite: 3, 4]";
-            } else {
-                output.innerHTML = "正在演示：<span style='color:#27ae60;'>甘油 / 脂肪酸</span> 穿过单层上皮细胞，进入中央 <span style='color:#27ae60;'>毛细淋巴管（乳糜管）</span> 进入淋巴系统！[cite: 3, 4]";
-            }
-
-            for (let i = 0; i < 20; i++) {
-                particles.push({
-                    x: 100 + Math.random() * 180,
-                    y: 10 + Math.random() * 30,
-                    targetX: (type === 'glucose') ? 170 : 190,
-                    targetY: 150 + Math.random() * 80,
-                    progress: 0,
-                    speed: 0.008 + Math.random() * 0.008,
-                    type: type
-                });
-            }
-
-            villiAnimTimer = setInterval(() => {
-                drawVilliBase();
-
-                let allFinished = true;
-                particles.forEach(p => {
-                    if (p.progress < 1) {
-                        p.progress += p.speed;
-                        allFinished = false;
-                    }
-
-                    let curX = p.x + (p.targetX - p.x) * p.progress;
-                    let curY = p.y + (p.targetY - p.y) * p.progress;
-
-                    villiCtx.beginPath();
-                    if (p.type === 'glucose') {
-                        villiCtx.fillStyle = "#e74c3c";
-                        villiCtx.arc(curX, curY, 5, 0, Math.PI * 2);
-                    } else {
-                        villiCtx.fillStyle = "#27ae60";
-                        villiCtx.arc(curX, curY, 6, 0, Math.PI * 2);
-                    }
-                    villiCtx.fill();
-                });
-
-                if (allFinished) {
-                    clearInterval(villiAnimTimer);
-                }
-            }, 30);
-        }
-
-        function resetVilliSim() {
-            if (villiAnimTimer) clearInterval(villiAnimTimer);
-            particles = [];
-            drawVilliBase();
-            document.getElementById('villiSimOutput').innerHTML = "提示：小肠绒毛壁、毛细血管壁与毛细淋巴管壁均仅由一层上皮细胞构成，极利于吸收[cite: 3, 4]。";
-        }
-
-        // --- 其它通用控制 ---
+        // 页面控制函数
         function changeFontSize(size) {
             document.documentElement.style.setProperty('--font-scale', size);
         }
@@ -1341,149 +991,11 @@
             element.classList.toggle('revealed');
         }
 
-        function toggleBlockAns(id) {
-            const content = document.getElementById(id);
-            content.style.display = (content.style.display === "block") ? "none" : "block";
-        }
-
         function toggleAllAnswers(show) {
             document.querySelectorAll('.inline-ans').forEach(el => {
                 if (show) el.classList.add('revealed');
                 else el.classList.remove('revealed');
             });
-
-            document.querySelectorAll('.block-ans-content').forEach(el => {
-                el.style.display = show ? "block" : "none";
-                if(show) el.classList.add('show-print');
-                else el.classList.remove('show-print');
-            });
-        }
-
-        // --- 模拟器 2 与 3 ---
-        let fatCanvas, fatCtx, dialCanvas, dialCtx;
-
-        function initSimulators() {
-            ezCanvas = document.getElementById('enzymeCanvas');
-            if(ezCanvas) ezCtx = ezCanvas.getContext('2d');
-
-            fatCanvas = document.getElementById('fatCanvas');
-            if(fatCanvas) fatCtx = fatCanvas.getContext('2d');
-            
-            dialCanvas = document.getElementById('dialysisCanvas');
-            if(dialCanvas) dialCtx = dialCanvas.getContext('2d');
-
-            drawEnzymeExperiment();
-            drawFatParticles("none");
-            drawDialysisSetup();
-        }
-
-        function drawFatParticles(mode) {
-            if(!fatCtx) return;
-            fatCtx.clearRect(0, 0, fatCanvas.width, fatCanvas.height);
-
-            fatCtx.fillStyle = "#2c3e50";
-            fatCtx.font = "13px Arial";
-
-            if (mode === 'none') {
-                fatCtx.beginPath();
-                fatCtx.fillStyle = "#f1c40f";
-                fatCtx.arc(180, 110, 55, 0, Math.PI * 2);
-                fatCtx.fill();
-                fatCtx.strokeStyle = "#d4ac0d";
-                fatCtx.stroke();
-
-                fatCtx.fillStyle = "#2c3e50";
-                fatCtx.fillText("大脂肪球 (未经胆汁乳化，表面积小)", 70, 25);
-            } else if (mode === 'bile') {
-                fatCtx.fillStyle = "#27ae60";
-                fatCtx.fillText("胆汁物理乳化：形成微小脂肪微粒 (表面积急剧增大)", 30, 25);
-
-                for (let i = 0; i < 28; i++) {
-                    let x = 60 + (i % 7) * 90 + Math.sin(i) * 10;
-                    let y = 60 + Math.floor(i / 7) * 45 + Math.cos(i) * 10;
-                    fatCtx.beginPath();
-                    fatCtx.fillStyle = "#f39c12";
-                    fatCtx.arc(x, y, 10, 0, Math.PI * 2);
-                    fatCtx.fill();
-                }
-            } else if (mode === 'lipase') {
-                fatCtx.beginPath();
-                fatCtx.fillStyle = "#f1c40f";
-                fatCtx.arc(180, 110, 50, 0, Math.PI * 2);
-                fatCtx.fill();
-
-                fatCtx.fillStyle = "#e74c3c";
-                fatCtx.fillText("无胆汁乳化，脂肪酶仅能在表面缓慢作用，消化极慢", 30, 25);
-            } else if (mode === 'both') {
-                fatCtx.fillStyle = "#2c3e50";
-                fatCtx.fillText("协同作用：彻底水解为 甘油 + 脂肪酸 小分子！", 40, 25);
-
-                for (let i = 0; i < 35; i++) {
-                    let x = 40 + (i % 9) * 80 + Math.sin(i * 2) * 12;
-                    let y = 50 + Math.floor(i / 9) * 40;
-                    
-                    fatCtx.beginPath();
-                    fatCtx.fillStyle = "#9b59b6";
-                    fatCtx.arc(x, y, 5, 0, Math.PI * 2);
-                    fatCtx.fill();
-
-                    fatCtx.beginPath();
-                    fatCtx.fillStyle = "#e67e22";
-                    fatCtx.arc(x + 10, y + 2, 4, 0, Math.PI * 2);
-                    fatCtx.fill();
-                }
-            }
-        }
-
-        function runFatSim() {
-            const choice = document.getElementById('fatSimChoice').value;
-            const resDiv = document.getElementById('fatSimResult');
-
-            drawFatParticles(choice);
-
-            if (choice === 'none') {
-                resDiv.innerHTML = "现象：大脂肪球未分解。";
-            } else if (choice === 'bile') {
-                resDiv.innerHTML = "现象：【物理性消化】胆汁不含酶，但能将脂肪分散为微小微粒，增加接触面积。";
-            } else if (choice === 'lipase') {
-                resDiv.innerHTML = "现象：未乳化的脂肪缺乏足够表面积，化学消化速率极低。";
-            } else if (choice === 'both') {
-                resDiv.innerHTML = "现象：【高效协同】胆汁乳化配合脂肪酶催化，脂肪彻底分解为甘油和脂肪酸！";
-            }
-        }
-
-        function drawDialysisSetup() {
-            if(!dialCtx) return;
-            dialCtx.clearRect(0, 0, dialCanvas.width, dialCanvas.height);
-
-            dialCtx.fillStyle = "#bdc3c7";
-            dialCtx.fillRect(90, 60, 180, 130);
-            dialCtx.fillStyle = "rgba(52, 152, 219, 0.3)";
-            dialCtx.fillRect(95, 70, 170, 115);
-
-            dialCtx.fillStyle = "rgba(241, 196, 15, 0.5)";
-            dialCtx.beginPath();
-            dialCtx.ellipse(180, 130, 35, 45, 0, 0, Math.PI * 2);
-            dialCtx.fill();
-            dialCtx.strokeStyle = "#f39c12";
-            dialCtx.lineWidth = 2;
-            dialCtx.stroke();
-
-            dialCtx.fillStyle = "#2c3e50";
-            dialCtx.font = "12px Arial";
-            dialCtx.fillText("人造肠衣袋", 150, 125);
-            dialCtx.fillText("(淀粉 + 葡萄糖)", 140, 140);
-
-            dialCtx.fillText("烧杯清水", 200, 90);
-        }
-
-        function testDialysis(reagent) {
-            const resDiv = document.getElementById('dialysisResult');
-            if (reagent === 'fehling') {
-                resDiv.innerHTML = "烧杯水检测：水浴加热后出现 <span style='color:red;'>【砖红色沉淀】</span>！证明小分子葡萄糖能透过肠衣半透膜扩散至水中[cite: 4]。";
-            } else if (reagent === 'iodine') {
-                resDiv.innerHTML = "烧杯水检测：<span style='color:green;'>【不显蓝色】</span>！证明大分子淀粉无法透过肠衣半透膜[cite: 4]。";
-            }
         }
 
         function toggleMMNode(id) {
