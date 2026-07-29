@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第8章 食物与营养 —— 互动学习平台</title>
+    <title>第10章 物质的运输与排泄 —— 互动学习平台</title>
     <style>
         :root {
             --primary-color: #2c3e50;
             --accent-color: #27ae60;
-            --bg-color: #f8f9fa;
+            --bg-color: #f0f4f8;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
-            --ans-color: #e74c3c;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --ans-color: #e53e3e;
             --font-scale: 1rem;
-            --container-width: 1000px;
+            --container-width: 1100px;
         }
 
         body.dark-mode {
@@ -27,7 +27,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -42,7 +42,7 @@
             top: 0;
             background: #2c3e50;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -53,7 +53,7 @@
         }
 
         .toolbar h1 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin: 0;
         }
 
@@ -68,20 +68,21 @@
             background: var(--accent-color);
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 7px 14px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             font-size: 0.9rem;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.1s;
         }
 
         .btn:hover {
             background: #219150;
+            transform: translateY(-1px);
         }
 
         .select-btn {
-            padding: 5px 8px;
+            padding: 6px 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
             font-weight: bold;
@@ -99,10 +100,10 @@
 
         .card {
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
         }
 
@@ -114,9 +115,15 @@
             font-size: 1.4em;
         }
 
+        h3 {
+            color: #2b6cb0;
+            margin-top: 20px;
+            font-size: 1.15em;
+        }
+
         .inline-ans {
             display: inline-block;
-            min-width: 60px;
+            min-width: 50px;
             padding: 2px 8px;
             margin: 0 3px;
             border-bottom: 2px dashed #999;
@@ -131,32 +138,9 @@
 
         .inline-ans.revealed {
             color: var(--ans-color);
-            background: rgba(231, 76, 60, 0.1);
+            background: rgba(229, 62, 62, 0.1);
             border-bottom: 2px solid var(--ans-color);
             font-weight: bold;
-        }
-
-        .block-ans-btn {
-            background: rgba(0,0,0,0.03);
-            color: var(--primary-color);
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            width: 100%;
-            text-align: left;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-size: 0.95em;
-        }
-
-        .block-ans-content {
-            display: none;
-            padding: 15px;
-            background: rgba(231, 76, 60, 0.05);
-            border-left: 4px solid var(--ans-color);
-            margin-top: 5px;
-            color: var(--ans-color);
         }
 
         .table-responsive {
@@ -182,13 +166,137 @@
             color: var(--primary-color);
         }
 
+        .interactive-diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+            background: rgba(0,0,0,0.02);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .canvas-box {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .organ-info-panel {
+            flex: 1;
+            min-width: 280px;
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* --- 响应式图片热区 (Hotspot) 组件核心样式 --- */
+        .img-hotspot-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+
+        .img-hotspot-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #e53e3e;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .hotspot::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border-radius: 50%;
+            border: 2px solid #e53e3e;
+            animation: pulse-ring 1.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .hotspot:hover {
+            background-color: #3182ce;
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .hotspot.active {
+            background-color: #27ae60;
+            border-color: #fff;
+        }
+
+        .hotspot-tooltip {
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 0.78rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            z-index: 20;
+        }
+
+        .hotspot-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+
+        .hotspot:hover .hotspot-tooltip {
+            opacity: 1;
+        }
+
+        /* 循环与模拟样式 */
         .sim-container {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             align-items: center;
             justify-content: center;
-            background: rgba(0,0,0,0.03);
+            background: rgba(0,0,0,0.02);
             padding: 18px;
             border-radius: 8px;
             margin-top: 15px;
@@ -196,9 +304,9 @@
         }
 
         canvas {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
+            background-color: #fafafa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             max-width: 100%;
             height: auto;
         }
@@ -206,94 +314,78 @@
         .sim-controls {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             flex: 1;
             min-width: 260px;
         }
 
-        .calc-box {
-            background: rgba(39, 174, 96, 0.05);
-            border: 1px solid var(--accent-color);
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            line-height: 1.8;
-            font-size: 0.95em;
-        }
-
-        /* 食物金字塔专属样式 */
-        .pyramid-container {
+        .circ-layout {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin-top: 15px;
-            align-items: stretch;
+            justify-content: center;
+            width: 100%;
         }
-
-        .pyramid-wrapper {
+        .circ-sidebar {
             flex: 1;
-            min-width: 300px;
+            min-width: 320px;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            gap: 18px;
         }
-
-        .pyramid-layer {
-            width: 100%;
+        .circ-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            background: #edf2f7;
+            padding: 6px;
+            border-radius: 8px;
+        }
+        .radio-label {
+            flex: 1;
             text-align: center;
-            padding: 12px 8px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 10px;
+            font-size: 15px;
             font-weight: bold;
-            color: #fff;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
             user-select: none;
         }
-
-        .pyramid-layer:hover, .pyramid-layer.active {
-            transform: scale(1.03);
-            filter: brightness(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            z-index: 5;
+        .radio-label input { display: none; }
+        .radio-label.active {
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .layer-1 { width: 45%; background: #e74c3c; } /* 吃最少: 油糖盐 */
-        .layer-2 { width: 62%; background: #e67e22; } /* 吃适量: 奶肉鱼蛋豆 */
-        .layer-3 { width: 78%; background: #27ae60; } /* 吃多些: 瓜菜水果 */
-        .layer-4 { width: 95%; background: #f39c12; } /* 吃最多: 五谷类 */
-
-        .pyramid-info {
-            flex: 1;
-            min-width: 280px;
-            background: rgba(0,0,0,0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 18px;
+        .checkbox-group {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
 
-        .water-reminder {
-            margin-top: 12px;
-            padding: 10px;
-            background: rgba(41, 128, 185, 0.1);
-            border: 1px solid #2980b9;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-            color: #2980b9;
-        }
-
-        body.dark-mode .water-reminder {
-            color: #89b4fa;
-            border-color: #89b4fa;
-        }
-
+        /* 思维导图 */
         .mindmap-section {
             background: #1e1e2e;
             color: #cdd6f4;
@@ -301,14 +393,12 @@
             border-radius: 8px;
             overflow-x: auto;
         }
-
         .mindmap-tree {
             display: flex;
             flex-direction: row;
             align-items: flex-start;
             gap: 20px;
         }
-
         .node {
             background: #313244;
             border: 1px solid #45475a;
@@ -318,17 +408,14 @@
             white-space: nowrap;
             transition: all 0.2s;
         }
-
         .node:hover {
             border-color: #89b4fa;
             background: #45475a;
         }
-
         .node-title {
             font-weight: bold;
             color: #89b4fa;
         }
-
         .children-container {
             display: flex;
             flex-direction: column;
@@ -337,71 +424,25 @@
             padding-left: 15px;
             margin-left: 5px;
         }
-
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         @media print {
-            .toolbar, .btn, .block-ans-btn, .sim-controls, canvas, .select-btn {
+            .toolbar, .btn, .sim-controls, canvas, .select-btn, .circ-sidebar, .hotspot, .hotspot-tooltip {
                 display: none !important;
             }
-
-            body {
-                background: white !important;
-                color: black !important;
-                font-size: 12pt;
-            }
-
-            .card {
-                box-shadow: none;
-                border: none;
-                padding: 0;
-                margin-bottom: 20px;
-            }
-
-            .inline-ans {
-                border-bottom: 1px solid black;
-                background: none;
-                color: transparent;
-            }
-
-            .inline-ans.revealed {
-                color: black;
-                background: none;
-                border-bottom: 1px solid black;
-            }
-
-            .block-ans-content.show-print {
-                display: block !important;
-                color: black;
-                border-left: 2px solid black;
-                background: none;
-            }
-
-            .mindmap-section {
-                background: white;
-                color: black;
-            }
-
-            .node {
-                background: #eee;
-                color: black;
-                border: 1px solid #000;
-            }
-
-            .pyramid-layer {
-                border: 1px solid #000;
-                color: black !important;
-                background: none !important;
-            }
+            body { background: white !important; color: black !important; font-size: 12pt; }
+            .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
+            .inline-ans { border-bottom: 1px solid black; background: none; color: transparent; }
+            .inline-ans.revealed { color: black; background: none; border-bottom: 1px solid black; }
+            .mindmap-section { background: white; color: black; }
+            .node { background: #eee; color: black; border: 1px solid #000; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h1>第8章 食物与营养</h1>
+        <h1>第10章 物质的运输与排泄</h1>
         
         <div class="controls-group">
             <button class="btn" onclick="toggleAllAnswers(true)">🔓 展开答案</button>
@@ -414,7 +455,7 @@
             </select>
 
             <select class="select-btn" onchange="changeLayoutWidth(this.value)">
-                <option value="1000px">版面: 居中 (1000px)</option>
+                <option value="1100px">版面: 居中 (1100px)</option>
                 <option value="100%">版面: 宽屏 (全屏)</option>
             </select>
 
@@ -426,625 +467,1170 @@
     <div class="container" id="app"></div>
 
     <script>
-        function forceCleanCites() {
-            const regex = /\+\]/gi;
-            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-            let node;
-            while (node = walker.nextNode()) {
-                if (regex.test(node.nodeValue)) {
-                    node.nodeValue = node.nodeValue.replace(regex, '');
-                }
-            }
-        }
+        // --- 核心结构交互数据库 ---
+        const heartData = {
+            la: { title: "❤️ 左心房 (Left Atrium)", category: "心脏心腔", desc: "连接肺静脉，接收来自肺部完成气体交换后富含氧气的鲜红色充氧血。" },
+            lv: { title: "🔴 左心室 (Left Ventricle)", category: "心脏心腔（最厚心壁）", desc: "连接主动脉。心肌壁最发达厚实，强力收缩将充氧血泵入主动脉送往全身各器官。" },
+            ra: { title: "💙 右心房 (Right Atrium)", category: "心脏心腔", desc: "连接上、下腔静脉，接收全身组织细胞代谢后返回的暗红色缺氧血。" },
+            rv: { title: "🔵 右心室 (Right Ventricle)", category: "心脏心腔", desc: "连接肺动脉。收缩时将缺氧血泵入肺动脉送往肺部进行气体交换。" },
+            aorta: { title: "🩸 主脉动脉 (Aorta)", category: "主要血管", desc: "与左心室相连，将充氧血运送至全身身体各部分毛细血管网。" },
+            pa: { title: "🫁 肺动脉 (Pulmonary Artery)", category: "主要血管", desc: "与右心室相连，将缺氧血运送至肺部毛细血管网。是少数运送缺氧血的动脉。" },
+            pv: { title: "🫁 肺静脉 (Pulmonary Vein)", category: "主要血管", desc: "与左心房相连，将肺部鲜红的充氧血送回心脏。是少数运送充氧血的静脉。" },
+            svc: { title: "🌊 上腔静脉 (Superior Vena Cava)", category: "主要血管", desc: "收集上半身代谢后的缺氧血送回右心房。" },
+            ivc: { title: "🌊 下腔静脉 (Inferior Vena Cava)", category: "主要血管", desc: "收集下半身代谢后的缺氧血送回右心房。" },
+            rv_valve: { title: "🚪 右房室瓣 (三尖瓣)", category: "心脏瓣膜", desc: "位于右心房与右心室之间。心室收缩时关闭，防止血液倒流回右心房。" },
+            lv_valve: { title: "🚪 左房室瓣 (二尖瓣)", category: "心脏瓣膜", desc: "位于左心房与左心室之间。心室收缩时关闭，防止血液倒流回左心房。" },
+            sl_valve: { title: "🚪 动脉瓣 (Semilunar Valves)", category: "心脏瓣膜", desc: "位于心室与动脉连接处（如肺动脉瓣、主动脉瓣）。心室舒张时关闭，防止射入动脉的血液倒流回心室。" },
+            myo: { title: "💪 心肌 (Myocardium)", category: "心脏组织", desc: "构成心壁的主要肌肉组织，具有自主节律性收缩的能力，为血液循环提供动力。" }
+        };
 
-        const citeObserver = new MutationObserver(() => forceCleanCites());
+        const lymphData = {
+            spleen: { 
+                title: "🛡️ 脾 (Spleen)", 
+                category: "人体最大的淋巴器官", 
+                desc: "位于腹腔<span class='inline-ans' onclick='toggleInline(this)'>左上方</span>，外观呈<span class='inline-ans' onclick='toggleInline(this)'>紫红色</span>。它是人体<span class='inline-ans' onclick='toggleInline(this)'>最大</span>的淋巴器官，主要功能是破坏<span class='inline-ans' onclick='toggleInline(this)'>衰老血细胞</span>，并发挥强大的免疫过滤作用。" 
+            },
+            thymus: { 
+                title: "🫁 胸腺 (Thymus)", 
+                category: "中枢淋巴器官", 
+                desc: "位于<span class='inline-ans' onclick='toggleInline(this)'>胸骨</span>后面。主要功能是分泌<span class='inline-ans' onclick='toggleInline(this)'>胸腺激素</span>，促使<span class='inline-ans' onclick='toggleInline(this)'>T 淋巴细胞</span>发育成熟，与人体免疫密切相关。" 
+            },
+            tonsil: { 
+                title: "👄 扁桃体 (Tonsils)", 
+                category: "咽部淋巴器官", 
+                desc: "位于<span class='inline-ans' onclick='toggleInline(this)'>呼吸道</span>与<span class='inline-ans' onclick='toggleInline(this)'>消化道</span>的交会处，含有<span class='inline-ans' onclick='toggleInline(this)'>淋巴结</span>，能抵御由口鼻侵入的细菌与病毒。" 
+            },
+            node: { 
+                title: "🟢 淋巴结 (Lymph Nodes)", 
+                category: "周围淋巴器官", 
+                desc: "呈扁圆形或椭圆形小体，沿着<span class='inline-ans' onclick='toggleInline(this)'>淋巴管</span>分布，在<span class='inline-ans' onclick='toggleInline(this)'>颈部</span>、<span class='inline-ans' onclick='toggleInline(this)'>腋窝</span>和<span class='inline-ans' onclick='toggleInline(this)'>腹股沟</span>特别密集。能过滤淋巴液中的病菌，发生感染时会<span class='inline-ans' onclick='toggleInline(this)'>肿大疼痛</span>。" 
+            },
+            vessel: {
+                title: "🌿 淋巴管 (Lymphatic Vessels)",
+                category: "淋巴管道",
+                desc: "构成单向回流网，收集组织液形成<span class='inline-ans' onclick='toggleInline(this)'>淋巴液</span>，最终汇入<span class='inline-ans' onclick='toggleInline(this)'>锁骨下静脉</span>返回血液循环。"
+            }
+        };
+
+        const urinaryData = {
+            kidney: { title: "🫘 肾脏 (Kidneys)", category: "泌尿器官", desc: "位于人体腹腔后壁，形成尿液的最重要器官。过滤血液并排出代谢废物。" },
+            aorta: { title: "🩸 大动脉 (Aorta)", category: "循环血管", desc: "将富含氧气和代谢废物的血液送往全身及肾脏。" },
+            vc: { title: "🌊 大静脉 (Vena Cava)", category: "循环血管", desc: "收集由肾静脉等回流的被净化血液送回心脏。" },
+            ra: { title: "🔴 肾动脉", category: "肾脏血管", desc: "把血液从大动脉分支直接运送至肾脏进行过滤。" },
+            rv: { title: "🔵 肾静脉", category: "肾脏血管", desc: "把被肾脏过滤净化的血液运送回大静脉。" },
+            ureter: { title: "🟡 输尿管 (Ureters)", category: "输尿器官", desc: "细长管状结构，将肾脏连续生成的尿液运送到膀胱。" },
+            bladder: { title: "💧 膀胱 (Urinary Bladder)", category: "贮尿器官", desc: "囊状肌肉器官，可暂时贮存尿液，达到一定量时产生尿意。" },
+            urethra: { title: "🚪 尿道 (Urethra)", category: "排尿通道", desc: "尿液由膀胱经尿道排出体外的最终通道。" }
+        };
+
+        const kidneySectionData = {
+            cortex: { title: "🔴 肾皮质 (Kidney Cortex)", category: "肾内部结构", desc: "位于肾脏外层，呈红褐色，富含肾小球和肾小管，是滤过形成原尿的主要场所。" },
+            medulla: { title: "🟠 肾髓质 (Kidney Medulla)", category: "肾内部结构", desc: "位于深部，颜色较淡，由多个肾锥体组成，包含集合管，负责尿液的浓缩与收集。" },
+            pelvis: { title: "🥣 肾盂 (Renal Pelvis)", category: "肾内部结构", desc: "位于肾脏漏斗状凹陷处，收集由各肾锥体形成的尿液并流向输尿管。" },
+            ra: { title: "🔴 肾动脉", category: "进出血管", desc: "将待过滤的血液引入肾小球血管网。" },
+            rv: { title: "🔵 肾静脉", category: "进出血管", desc: "将肾小管重吸收后的净化血液引回静脉循环。" },
+            ureter: { title: "🟡 输尿管", category: "排泄管道", desc: "连接肾盂，将形成的尿液输送到膀胱。" }
+        };
 
         function renderApp() {
             document.getElementById('app').innerHTML = `
                 <div class="card">
                     <h2>🎯 章节学习目标</h2>
                     <ul>
-                        <li>掌握人体所需的六大营养素（水、无机盐、糖类、脂肪、蛋白质、维生素）及膳食纤维的作用。</li>
-                        <li>掌握五种主要营养成分的化学检验试剂、试剂初始颜色与反应后的变色现象。</li>
-                        <li>理解食物氧化释放热量的机制，掌握糖类、蛋白质（16.8 kJ/g）与脂肪（34 kJ/g）的热值差异。</li>
-                        <li>能够识别营养失衡（肥胖症、消瘦型与浮肿型营养不良）及维生素/无机盐缺乏症。</li>
-                        <li>学会使用公式计算 BMI 与标准体重，掌握食物金字塔与合理三餐分配比例（3:4:3）。</li>
-                        <li>树立食品安全意识，识别食品污染、天然毒素及马来西亚食品认证标志。</li>
+                        <li>掌握血液的组成成分（血浆与血细胞）及饼图比例。</li>
+                        <li>学会解读血常规报告单，能根据红细胞、白细胞、血小板与血红蛋白判断健康状况。</li>
+                        <li>掌握 ABO 血型系统的抗原/抗体图解与交叉配血原则。</li>
+                        <li>熟记心脏真实解剖结构（四腔、瓣膜及连接血管）。</li>
+                        <li>理解体循环与肺循环的动态路径及毛细血管网的物质交换。</li>
+                        <li>掌握心率、脉搏与血压的生理意义及正常范围。</li>
+                        <li>掌握淋巴循环路径、单向回流特点及四大淋巴器官。</li>
+                        <li>掌握泌尿系统与肾脏解剖结构及尿液形成过程。</li>
+                        <li>理解植物的排泄与隐藏的分泌现象。</li>
                     </ul>
                 </div>
 
+                <!-- 10.1 血液和血型 -->
                 <div class="card">
-                    <h2>8.1 食物中的营养物质</h2>
-                    <p>1. 人体所需的六大营养素中，属于无机物的是 <span class="inline-ans" onclick="toggleInline(this)">水</span> 和 <span class="inline-ans" onclick="toggleInline(this)">无机盐</span>；属于有机物的是 <span class="inline-ans" onclick="toggleInline(this)">糖类</span>、<span class="inline-ans" onclick="toggleInline(this)">脂肪</span>、<span class="inline-ans" onclick="toggleInline(this)">蛋白质</span> 和 <span class="inline-ans" onclick="toggleInline(this)">维生素</span>。</p>
+                    <h2>10.1 血液和血型</h2>
                     
-                    <h3>实验：食物中营养成分的检测</h3>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>营养成分</th>
-                                    <th>测试样液示例</th>
-                                    <th>检验试剂（初始颜色）</th>
-                                    <th>反应条件/操作</th>
-                                    <th>明显变化/测试结果现象</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>还原糖（葡萄糖/果糖）</td>
-                                    <td>苹果/梨匀浆</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">斐林试剂【蓝色】</span></td>
-                                    <td>水浴加热</td>
-                                    <td>产生 <span class="inline-ans" onclick="toggleInline(this)">砖红色</span> 沉淀</td>
-                                </tr>
-                                <tr>
-                                    <td>淀粉</td>
-                                    <td>马铃薯块茎匀浆</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">碘液【黄褐色】</span></td>
-                                    <td>常温滴加</td>
-                                    <td>呈现 <span class="inline-ans" onclick="toggleInline(this)">深蓝色</span></td>
-                                </tr>
-                                <tr>
-                                    <td>蛋白质</td>
-                                    <td>稀释蛋清液/豆浆</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">双缩脲试剂【浅蓝色】</span></td>
-                                    <td>先加A液摇匀，再加B液</td>
-                                    <td>溶液呈现 <span class="inline-ans" onclick="toggleInline(this)">紫色</span></td>
-                                </tr>
-                                <tr>
-                                    <td>脂肪</td>
-                                    <td>花生种子匀浆</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">苏丹 III 染液【红色/橘红色】</span></td>
-                                    <td>常温滴加</td>
-                                    <td>呈现 <span class="inline-ans" onclick="toggleInline(this)">橘黄色</span></td>
-                                </tr>
-                                <tr>
-                                    <td>维生素 C</td>
-                                    <td>柠檬汁/橙汁</td>
-                                    <td><span class="inline-ans" onclick="toggleInline(this)">吲哚酚试剂【深蓝色】</span></td>
-                                    <td>逐滴滴入</td>
-                                    <td>蓝色试剂 <span class="inline-ans" onclick="toggleInline(this)">褪色(变无色透明)</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <h3>1. 血液成分占比（圆饼图）</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="bloodPieCanvas" width="340" height="260"></canvas>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3>🩸 血液成分组成说明</h3>
+                            <p><strong>血浆 (55%)：</strong> 90%以上为水，其余为血浆蛋白（白蛋白、球蛋白、纤维蛋白原）、葡萄糖、电解质及代谢废物。</p>
+                            <p><strong>血细胞 (45%)：</strong> 包含红细胞（4.8-5.4百万/μL）、白细胞与血小板（<1%）。</p>
+                        </div>
                     </div>
 
-                    <h3>🧪 互动模拟器 —— 食物营养成分检测变色实验</h3>
+                    <h3>2. 🩺 临床血常规报告单诊断模拟器</h3>
+                    <p style="font-size:0.95em;">调整下方病人的指标，观察并判断可能患有的疾病：</p>
                     <div class="sim-container">
-                        <canvas id="testSimCanvas" width="360" height="260"></canvas>
+                        <div style="width:100%; max-width:650px;">
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>检查项目</th>
+                                            <th>测定值</th>
+                                            <th>参考范围</th>
+                                            <th>单位</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>白细胞计数 (WBC)</strong></td>
+                                            <td><input type="number" id="valWBC" value="11.8" step="0.5" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>4.0 ~ 11.0</td>
+                                            <td>×10⁹ / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>红细胞计数 (RBC)</strong></td>
+                                            <td><input type="number" id="valRBC" value="3.0" step="0.2" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>4.0 ~ 6.0</td>
+                                            <td>×10¹² / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>血红蛋白 (Hb)</strong></td>
+                                            <td><input type="number" id="valHB" value="90" step="5" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>110 ~ 150</td>
+                                            <td>g / L</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>血小板计数 (PLT)</strong></td>
+                                            <td><input type="number" id="valPLT" value="210" step="10" style="width:70px;" onchange="updateLabReport()"></td>
+                                            <td>150 ~ 400</td>
+                                            <td>×10⁹ / L</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="labDiagnosis" style="margin-top:10px; padding:12px; background:#fff; border-radius:6px; border-left:4px solid #e53e3e; font-weight:bold;">
+                                诊断分析加载中...
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>3. 🔬 ABO血型系统的抗原与抗体（图像化模拟器）</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <canvas id="aboTypeCanvas" width="360" height="260"></canvas>
+                        </div>
+                        <div class="organ-info-panel">
+                            <label><strong>选择血型展示：</strong></label>
+                            <select id="selAboType" class="select-btn" style="width:100%; margin-top:8px; padding:8px;" onchange="drawAboTypeSim()">
+                                <option value="A">A 型 (红细胞含 A抗原，血浆含 B抗体)</option>
+                                <option value="B">B 型 (红细胞含 B抗原，血浆含 A抗体)</option>
+                                <option value="AB">AB 型 (红细胞含 A与B抗原，血浆无抗体)</option>
+                                <option value="O">O 型 (红细胞无抗原，血浆含 A与B抗体)</option>
+                            </select>
+                            <div id="aboDescText" style="margin-top:12px; font-size:0.9em; line-height:1.6;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.2 血管和心脏 -->
+                <div class="card">
+                    <h2>10.2 血管和心脏</h2>
+
+                    <h3>🫀 心脏结构与瓣膜解剖探究（标准解剖版）</h3>
+                    <p style="font-size:0.95em;">👇 <strong>点击心脏解剖结构本体上的红色标记点进行探究：</strong></p>
+
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box" style="padding:0; overflow:hidden;">
+                            <div class="img-hotspot-wrapper">
+                                <img src="image/Screenshot 2026-07-29 110929.jpg" alt="心脏解剖结构图">
+                                
+                                <!-- 高精度对齐解剖结构的 Hotspot 坐标 -->
+                                <div class="hotspot" style="top: 15%; left: 42%;" onclick="showHeartSpotInfo('pa', this)"><div class="hotspot-tooltip">肺动脉</div></div>
+                                <div class="hotspot" style="top: 9%; left: 55%;" onclick="showHeartSpotInfo('aorta', this)"><div class="hotspot-tooltip">主动脉</div></div>
+                                <div class="hotspot" style="top: 27%; left: 39%;" onclick="showHeartSpotInfo('svc', this)"><div class="hotspot-tooltip">上腔静脉</div></div>
+                                <div class="hotspot" style="top: 42%; left: 28%;" onclick="showHeartSpotInfo('pv', this)"><div class="hotspot-tooltip">肺静脉</div></div>
+                                <div class="hotspot" style="top: 48%; left: 38%;" onclick="showHeartSpotInfo('ra', this)"><div class="hotspot-tooltip">右心房</div></div>
+                                <div class="hotspot" style="top: 45%; left: 66%;" onclick="showHeartSpotInfo('la', this)"><div class="hotspot-tooltip">左心房</div></div>
+                                <div class="hotspot" style="top: 61%; left: 40%;" onclick="showHeartSpotInfo('rv_valve', this)"><div class="hotspot-tooltip">右房室瓣</div></div>
+                                <div class="hotspot" style="top: 55%; left: 62%;" onclick="showHeartSpotInfo('lv_valve', this)"><div class="hotspot-tooltip">左房室瓣</div></div>
+                                <div class="hotspot" style="top: 50%; left: 51%;" onclick="showHeartSpotInfo('sl_valve', this)"><div class="hotspot-tooltip">动脉瓣</div></div>
+                                <div class="hotspot" style="top: 71%; left: 42%;" onclick="showHeartSpotInfo('rv', this)"><div class="hotspot-tooltip">右心室</div></div>
+                                <div class="hotspot" style="top: 70%; left: 64%;" onclick="showHeartSpotInfo('lv', this)"><div class="hotspot-tooltip">左心室</div></div>
+                                <div class="hotspot" style="top: 83%; left: 35%;" onclick="showHeartSpotInfo('ivc', this)"><div class="hotspot-tooltip">下腔静脉</div></div>
+                                <div class="hotspot" style="top: 86%; left: 73%;" onclick="showHeartSpotInfo('myo', this)"><div class="hotspot-tooltip">心肌</div></div>
+                            </div>
+                        </div>
+
+                        <div class="organ-info-panel" id="heartInfoPanel">
+                            <h3 id="heartTitle">👈 点击左图标记点</h3>
+                            <p id="heartCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="heartDesc">点击左侧真实解剖图中的各个脉冲标记点，可直观学习左心房、左心室、右心房、右心室、瓣膜及各大血管的功能。</p>
+                        </div>
+                    </div>
+
+                    <h3>💓 血压、心率与脉搏模拟器</h3>
+                    <div class="sim-container">
                         <div class="sim-controls">
-                            <label><strong>1. 选择待测样液：</strong></label>
-                            <select id="simSample">
-                                <option value="apple">苹果匀浆 (含还原糖)</option>
-                                <option value="potato">马铃薯匀浆 (含淀粉)</option>
-                                <option value="egg">蛋清稀释液 (含蛋白质)</option>
-                                <option value="peanut">花生匀浆 (含脂肪)</option>
-                                <option value="lemon">柠檬汁 (含维生素 C)</option>
-                            </select>
-
-                            <label><strong>2. 选择检验试剂：</strong></label>
-                            <select id="simReagent" onchange="previewReagentColor()">
-                                <option value="fehling">斐林试剂 [原色: 蓝色] (需加热)</option>
-                                <option value="iodine">碘液 [原色: 黄褐色]</option>
-                                <option value="biuret">双缩脲试剂 [原色: 浅蓝色]</option>
-                                <option value="sudan">苏丹 III 染液 [原色: 红色]</option>
-                                <option value="indophenol">吲哚酚试剂 [原色: 深蓝色]</option>
-                            </select>
-
-                            <button class="btn" onclick="runTestSim()">🧪 滴加试剂并观察变色</button>
-                            <button class="btn" style="background:#7f8c8d;" onclick="resetTestSim()">🔄 洗净试管</button>
+                            <label><strong>滑动调节心率 (BPM)：<span id="bpmDisp">75</span> 次/分</strong></label>
+                            <input type="range" id="bpmInput" min="40" max="160" value="75" oninput="updateBpSim()">
                             
-                            <div id="testSimResult" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
-                                状态：请选择试剂与样液，准备对比前后颜色变化。
+                            <div class="table-responsive">
+                                <table>
+                                    <tr>
+                                        <th>收缩压 (高压)</th>
+                                        <th>舒张压 (低压)</th>
+                                        <th>脉搏次数</th>
+                                        <th>血压状态评估</th>
+                                    </tr>
+                                    <tr>
+                                        <td id="sysDisp" style="font-weight:bold; color:#e53e3e;">118 mmHg</td>
+                                        <td id="diaDisp" style="font-weight:bold; color:#3182ce;">78 mmHg</td>
+                                        <td id="pulseDisp" style="font-weight:bold;">75 次/分</td>
+                                        <td id="bpStatus" style="font-weight:bold; color:#27ae60;">正常血压</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <p style="font-size:0.85em; color:#718096;">注：心脏每次收缩射血对动脉壁产生的压强为血压；脉搏频率与心率完全一致。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10.3 血液循环 -->
+                <div class="card">
+                    <h2>10.3 血液循环互动模拟器</h2>
+                    <p style="margin-bottom:15px;"><strong>重点强调：</strong> 肺部毛细血管网 与 身体各部分毛细血管网 的动态物质交换。</p>
+
+                    <div class="circ-layout">
+                        <div class="canvas-card" style="padding:10px;">
+                            <canvas id="simCanvas" width="620" height="700"></canvas>
+                            <div class="legend-box" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #e2e8f0;">
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>充氧血 (高氧鲜红)</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#3182ce;"></div><span>缺氧血 (高CO<sub>2</sub>暗红)</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#e53e3e;"></div><span>氧气 (O<sub>2</sub>) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#dd6b20;"></div><span>二氧化碳 (CO<sub>2</sub>) 分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#319795;"></div><span>营养物质分子</span></div>
+                                <div style="display:flex; align-items:center; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#805ad5;"></div><span>代谢废物分子</span></div>
+                            </div>
+                        </div>
+
+                        <div class="circ-sidebar">
+                            <div class="circ-panel">
+                                <h3>模式选择（循环类型）</h3>
+                                <div class="radio-group">
+                                    <label class="radio-label active" id="lblAll">
+                                        <input type="radio" name="circMode" value="all" checked> 全景循环
+                                    </label>
+                                    <label class="radio-label" id="lblSystemic">
+                                        <input type="radio" name="circMode" value="systemic"> 体循环
+                                    </label>
+                                    <label class="radio-label" id="lblPulmonary">
+                                        <input type="radio" name="circMode" value="pulmonary"> 肺循环
+                                    </label>
+                                </div>
+
+                                <h3>视图控制选项</h3>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item"><input type="checkbox" id="chkNets" checked> <span>突出显示毛细血管网 (Capillary Mesh)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkValves" checked> <span>显示房室瓣 (左/右房室瓣)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkFlowDir" checked> <span>显示血流方向箭头 (Flow Direction)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkBloodCells" checked> <span>显示血细胞动态流动 (Blood Flow)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkDiffusion" checked> <span>显示毛细血管物质扩散 (Substance Diffusion)</span></label>
+                                    <label class="checkbox-item"><input type="checkbox" id="chkLabels" checked> <span>显示文字与器官标注 (Labels)</span></label>
+                                </div>
+
+                                <div style="margin-top:15px;">
+                                    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:0.9rem;">
+                                        <span>心率 / 流速调节:</span>
+                                        <span id="bpmVal">75 BPM</span>
+                                    </div>
+                                    <input type="range" id="bpmSlider" min="40" max="150" value="75" style="width:100%;">
+                                </div>
+
+                                <div style="display:flex; gap:10px; margin-top:15px;">
+                                    <button class="btn" id="btnToggle" style="flex:1;">暂停模拟</button>
+                                    <button class="btn" id="btnReset" style="flex:1; background:#718096;">重置位置</button>
+                                </div>
+                            </div>
+
+                            <div class="circ-panel">
+                                <h3>毛细血管网核心功能</h3>
+                                <div id="infoText" style="font-size:0.88rem; line-height:1.6; background:#f7fafc; padding:12px; border-radius:6px; border-left:4px solid #3182ce;">
+                                    <strong>1. 肺部毛细血管网：</strong><br>
+                                    气体在此进行扩散交换，血液排出 CO<sub>2</sub> 并吸收 O<sub>2</sub>，由缺氧血转变为充氧血。<br><br>
+                                    <strong>2. 身体各部分毛细血管网：</strong><br>
+                                    血液在此把 O<sub>2</sub> 和养料供给细胞利用，并带走 CO<sub>2</sub> 和代谢废物，由充氧血转变为缺氧血。
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 10.4 淋巴循环 -->
                 <div class="card">
-                    <h2>8.1.2 食物与能量</h2>
-                    <p>食物中的能量通过体内缓慢氧化释放。氧化 1g 糖类或蛋白质释放约 <span class="inline-ans" onclick="toggleInline(this)">16.8 kJ</span> 热量，而氧化 1g 脂肪可释放约 <span class="inline-ans" onclick="toggleInline(this)">34 kJ</span> 热量。</p>
+                    <h2>10.4 淋巴循环与淋巴器官</h2>
+                    <p><strong>淋巴循环路径：</strong> <span class="inline-ans" onclick="toggleInline(this)">毛细淋巴管</span> ➔ 各级淋巴管 ➔ 淋巴总管 ➔ <span class="inline-ans" onclick="toggleInline(this)">锁骨下静脉</span>（汇入血液循环）。</p>
                     
-                    <h3>🔥 互动模拟器 —— 食物热量测定 (Calorimetry)</h3>
-                    <div class="sim-container">
-                        <canvas id="calorimeterCanvas" width="320" height="240"></canvas>
-                        <div class="sim-controls">
-                            <label><strong>选择燃烧样品 (1g)：</strong></label>
-                            <select id="foodSample" onchange="resetCalSim()">
-                                <option value="rice">大米 (富含糖类 - 16.8 kJ)</option>
-                                <option value="beef">牛肉干 (富含蛋白质 - 16.8 kJ)</option>
-                                <option value="peanut" selected>花生仁 (富含脂肪 - 34.0 kJ)</option>
-                            </select>
-                            <button class="btn" onclick="startCombustion()">点燃样品并测量水温</button>
-                            <button class="btn" style="background:#7f8c8d;" onclick="resetCalSim()">🔄 重置实验</button>
-                            <div id="calSimOutput" style="margin-top:5px; font-weight:bold; color:var(--primary-color);">
-                                初始水温：20.0 °C<br>当前水温：20.0 °C
+                    <h3>8. 淋巴器官分布与解剖探究（点击器官可查看详细功能）</h3>
+                    <p style="font-size:0.9em; color:#4a5568;">💡 点击下图中的<strong>扁桃体、胸腺、脾脏、淋巴结或淋巴管</strong>，右侧将呈现包含隐藏挖空练习的器官介绍：</p>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box" style="padding:0; overflow:hidden;">
+                            <div class="img-hotspot-wrapper" style="max-width: 420px;">
+                                <img src="image/Screenshot 2026-07-29 112403.jpg" alt="人体淋巴系统解剖分布图">
+                                
+                                <div class="hotspot" style="top: 11%; left: 44%;" onclick="showLymphSpotInfo('tonsil', this)"><div class="hotspot-tooltip">扁桃体</div></div>
+                                <div class="hotspot" style="top: 22%; left: 45%;" onclick="showLymphSpotInfo('thymus', this)"><div class="hotspot-tooltip">胸腺</div></div>
+                                <div class="hotspot" style="top: 25%; left: 60%;" onclick="showLymphSpotInfo('node', this)"><div class="hotspot-tooltip">淋巴结</div></div>
+                                <div class="hotspot" style="top: 32%; left: 54%;" onclick="showLymphSpotInfo('spleen', this)"><div class="hotspot-tooltip">脾</div></div>
+                                <div class="hotspot" style="top: 75%; left: 36%;" onclick="showLymphSpotInfo('vessel', this)"><div class="hotspot-tooltip">淋巴管</div></div>
                             </div>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3 id="lymphTitle">👈 点击左图标记点</h3>
+                            <p id="lymphCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="lymphDesc">请点击左图中的淋巴器官标记点查看探究内容。</p>
                         </div>
                     </div>
                 </div>
 
+                <!-- 10.5 人体的排泄 -->
                 <div class="card">
-                    <h2>8.1.3 营养素的作用与缺乏症</h2>
-                    <p>填空并核对各营养素缺乏导致的疾病：</p>
-                    <ul>
-                        <li><strong>缺钙 (Ca)：</strong> 儿童易患 <span class="inline-ans" onclick="toggleInline(this)">佝偻病</span>，成人易患 <span class="inline-ans" onclick="toggleInline(this)">骨质疏松症</span>。</li>
-                        <li><strong>缺铁 (Fe)：</strong> 易导致 <span class="inline-ans" onclick="toggleInline(this)">缺铁性贫血</span>。</li>
-                        <li><strong>缺碘 (I)：</strong> 引起人体 <span class="inline-ans" onclick="toggleInline(this)">甲状腺肿大</span>，儿童智力低下。</li>
-                        <li><strong>缺锌 (Zn)：</strong> 会导致儿童 <span class="inline-ans" onclick="toggleInline(this)">味蕾功能下降</span>、食欲减弱。</li>
-                        <li><strong>维生素 A 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">夜盲症</span>、干眼症、皮肤干燥。</li>
-                        <li><strong>维生素 B1 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">脚气病</span>（非真菌性，下肢无力水肿）、神经炎。</li>
-                        <li><strong>维生素 C 缺乏：</strong> 导致 <span class="inline-ans" onclick="toggleInline(this)">坏血病</span>（牙龈出血、皮下淤血）。</li>
-                        <li><strong>维生素 D 缺乏：</strong> 影响钙磷吸收，人体可在阳光照射下利用皮肤自行合成 <span class="inline-ans" onclick="toggleInline(this)">维生素 D</span>。</li>
-                    </ul>
-
-                    <button class="block-ans-btn" onclick="toggleBlockAns('q1')">💡 逆向思考：为什么膳食纤维不能提供能量，却被称为“第七大营养素”？</button>
-                    <div id="q1" class="block-ans-content">
-                        膳食纤维主要由纤维素组成。虽然不能被消化吸收，但它能促进肠道蠕动、刺激消化液分泌、利于排便，并能降低大肠癌发病率、减少肠道对脂肪的吸收，预防心血管疾病。
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2>8.2 营养与健康 & 8.3 均衡饮食</h2>
+                    <h2>10.5 人体的排泄（泌尿系统与肾脏）</h2>
                     
-                    <h3>📐 健康计算器 —— BMI 与标准体重计算过程</h3>
-                    <div style="background:rgba(39, 174, 96, 0.05); padding:15px; border-radius:6px; margin-bottom:15px; border:1px solid var(--border-color);">
-                        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:center;">
-                            <label>性别: 
-                                <select id="bmiGender" class="select-btn">
-                                    <option value="male">男性</option>
-                                    <option value="female">女性</option>
-                                </select>
-                            </label>
-                            <label>身高 (cm): <input type="number" id="bmiHeight" value="170" style="width:70px; padding:5px; border-radius:4px; border:1px solid #ccc;"></label>
-                            <label>体重 (kg): <input type="number" id="bmiWeight" value="65" style="width:70px; padding:5px; border-radius:4px; border:1px solid #ccc;"></label>
-                            <button class="btn" onclick="calculateBMI()">📊 演示公式与计算步骤</button>
+                    <h3>9 & 10. 泌尿系统与肾脏解剖结构探究</h3>
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box" style="padding:0; overflow:hidden;">
+                            <div style="padding:10px; background:#f8fafc; border-bottom:1px solid #ddd;">
+                                <button class="btn" id="btnModeUrinary" onclick="switchExcretionMode('urinary')">🩺 泌尿系统全貌</button>
+                                <button class="btn" id="btnModeKidney" style="background:#718096;" onclick="switchExcretionMode('kidney')">🫘 肾脏剖面结构</button>
+                            </div>
+
+                            <!-- 模式 1: 泌尿系统全貌 (校正热区定位) -->
+                            <div id="viewUrinary" class="img-hotspot-wrapper" style="max-width: 480px;">
+                                <img src="image/Screenshot 2026-07-29 112607.jpg" alt="泌尿系统解剖图">
+                                
+                                <div class="hotspot" style="top: 8%; left: 30%;" onclick="showExcretSpotInfo('aorta', this, 'urinary')"><div class="hotspot-tooltip">大动脉</div></div>
+                                <div class="hotspot" style="top: 15%; left: 24%;" onclick="showExcretSpotInfo('vc', this, 'urinary')"><div class="hotspot-tooltip">大静脉</div></div>
+                                <div class="hotspot" style="top: 25%; left: 32%;" onclick="showExcretSpotInfo('ra', this, 'urinary')"><div class="hotspot-tooltip">肾动脉</div></div>
+                                <div class="hotspot" style="top: 29%; left: 26%;" onclick="showExcretSpotInfo('rv', this, 'urinary')"><div class="hotspot-tooltip">肾静脉</div></div>
+                                <div class="hotspot" style="top: 31%; left: 37%;" onclick="showExcretSpotInfo('kidney', this, 'urinary')"><div class="hotspot-tooltip">肾脏</div></div>
+                                <div class="hotspot" style="top: 52%; left: 34%;" onclick="showExcretSpotInfo('ureter', this, 'urinary')"><div class="hotspot-tooltip">输尿管</div></div>
+                                <div class="hotspot" style="top: 76%; left: 28%;" onclick="showExcretSpotInfo('bladder', this, 'urinary')"><div class="hotspot-tooltip">膀胱</div></div>
+                                <div class="hotspot" style="top: 84%; left: 28%;" onclick="showExcretSpotInfo('urethra', this, 'urinary')"><div class="hotspot-tooltip">尿道</div></div>
+                            </div>
+
+                            <!-- 模式 2: 肾脏解剖剖面 (校正热区定位) -->
+                            <div id="viewKidney" class="img-hotspot-wrapper hidden" style="max-width: 420px;">
+                                <img src="image/Screenshot 2026-07-29 113003.jpg" alt="肾脏结构剖面图">
+                                
+                                <div class="hotspot" style="top: 37%; left: 52%;" onclick="showExcretSpotInfo('pelvis', this, 'kidney')"><div class="hotspot-tooltip">肾盂</div></div>
+                                <div class="hotspot" style="top: 24%; left: 66%;" onclick="showExcretSpotInfo('cortex', this, 'kidney')"><div class="hotspot-tooltip">肾皮质</div></div>
+                                <div class="hotspot" style="top: 50%; left: 30%;" onclick="showExcretSpotInfo('ra', this, 'kidney')"><div class="hotspot-tooltip">肾动脉</div></div>
+                                <div class="hotspot" style="top: 53%; left: 36%;" onclick="showExcretSpotInfo('rv', this, 'kidney')"><div class="hotspot-tooltip">肾静脉</div></div>
+                                <div class="hotspot" style="top: 52%; left: 58%;" onclick="showExcretSpotInfo('medulla', this, 'kidney')"><div class="hotspot-tooltip">肾髓质</div></div>
+                                <div class="hotspot" style="top: 75%; left: 37%;" onclick="showExcretSpotInfo('ureter', this, 'kidney')"><div class="hotspot-tooltip">输尿管</div></div>
+                            </div>
                         </div>
 
-                        <div id="bmiCalcDetails" class="calc-box" style="display:none;"></div>
-                    </div>
-
-                    <h3>🥗 互动食物金字塔 (Balanced Diet Pyramid)</h3>
-                    <p>根据《中国居民膳食指南》与马来西亚健康膳食建议，合理膳食结构的塔层由底至顶如下。点击各塔层探索建议摄入量：</p>
-
-                    <div class="pyramid-container">
-                        <div class="pyramid-wrapper">
-                            <div class="pyramid-layer layer-1" onclick="selectPyramidLayer(1)">
-                                1. 吃最少：油、糖、盐类
-                            </div>
-                            <div class="pyramid-layer layer-2" onclick="selectPyramidLayer(2)">
-                                2. 吃适量：奶制品、肉、鱼、蛋及豆类
-                            </div>
-                            <div class="pyramid-layer layer-3" onclick="selectPyramidLayer(3)">
-                                3. 吃多些：瓜菜类、蔬菜、水果
-                            </div>
-                            <div class="pyramid-layer layer-4 active" onclick="selectPyramidLayer(4)">
-                                4. 吃最多：五谷类（米面、面包、麦片）
-                            </div>
-                        </div>
-
-                        <div class="pyramid-info" id="pyramidInfoBox">
-                            <!-- 由 JS 动态渲染 -->
+                        <div class="organ-info-panel">
+                            <h3 id="excretTitle">👈 点击左图标记点探究</h3>
+                            <p id="excretCategory" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="excretDesc">选择上方模式并点击图片中的标记点查看对应的功能与结构详情。</p>
                         </div>
                     </div>
-
-                    <div class="water-reminder">
-                        💧 每日补充：每天应喝 6 至 8 杯流质饮料（包括开水、清茶和汤）
-                    </div>
-
-                    <h3 style="margin-top:20px;">三餐热量分配与饮食习惯</h3>
-                    <p>一日三餐合理的食量分配比例为：早餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>，午餐占 <span class="inline-ans" onclick="toggleInline(this)">40%</span>，晚餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>。</p>
-                    <p>营养不良的临床常见类型包括：能量供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">消瘦型</span>；蛋白质供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">浮肿型</span>；以及消瘦-浮肿型。</p>
                 </div>
 
+                <!-- 10.6 植物的排泄作用 -->
                 <div class="card">
-                    <h2>8.4 关注食品安全</h2>
-                    <p>1. 食品安全问题可归纳为三大类：</p>
-                    <ul>
-                        <li>细菌及其毒素引起的腐败变质（如发酵米面制品中的 <span class="inline-ans" onclick="toggleInline(this)">米酵菌酸</span>）。</li>
-                        <li>农药、有毒化学药品和激素污染。</li>
-                        <li>新型食品安全隐患（如未经长期实践证明无害的转基因食品与过度强化食品）。</li>
-                    </ul>
-                    <p>2. 天然毒素防范：发芽的马铃薯含有毒剧烈的 <span class="inline-ans" onclick="toggleInline(this)">龙葵素</span>；受潮大米/花生易被致癌性极强的 <span class="inline-ans" onclick="toggleInline(this)">黄曲霉毒素</span> 污染。</p>
+                    <h2>10.6 植物的排泄作用与分泌现象</h2>
+                    <p>植物通过光合作用释放氧气、呼吸作用排出二氧化碳，以及蒸腾作用排出过剩水分。</p>
                     
-                    <button class="block-ans-btn" onclick="toggleBlockAns('q2')">🔍 辨识：马来西亚常见的食品安全认证有哪些？</button>
-                    <div id="q2" class="block-ans-content">
-                        主要认证标志包括：
-                        <ol>
-                            <li><strong>Buatan Malaysia</strong> (马来西亚制造)</li>
-                            <li><strong>Halal by JAKIM</strong> (清真认证)</li>
-                            <li><strong>GMP</strong> (药品/食品生产质量管理规范)</li>
-                            <li><strong>HACCP</strong> (危害分析临界控制点)</li>
-                            <li><strong>ISO 9001 / 22000</strong> (国际标准化组织认证)</li>
-                        </ol>
+                    <h3>🌱 植物的分泌现象（点击隐藏词展开）</h3>
+                    <div style="background:#f7fafc; padding:15px; border-radius:8px; border-left:4px solid #27ae60; line-height:2;">
+                        1. 植物细胞合成特殊的有机物或无机物排出体外或积累于体内，称为 <span class="inline-ans" onclick="toggleInline(this)">分泌</span> 现象。<br>
+                        2. 松树在割开树体后会流出 <span class="inline-ans" onclick="toggleInline(this)">松脂</span>；桃树会分泌浅黄色的 <span class="inline-ans" onclick="toggleInline(this)">桃胶</span>。<br>
+                        3. 橡胶树割胶流出的胶乳是重要的经济 <span class="inline-ans" onclick="toggleInline(this)">分泌物</span>。<br>
+                        4. 剧毒树种见血封喉（箭毒木）的乳汁含有毒甙，进入伤口会引起 <span class="inline-ans" onclick="toggleInline(this)">血液凝固</span> 与心脏麻痹！
                     </div>
                 </div>
 
+                <!-- NotebookLM 风格思维架构复盘 -->
                 <div class="card mindmap-section">
-                    <h2 style="color:#89b4fa; border-bottom-color:#89b4fa;">NotebookLM 风格思维架构复盘（水平向右展开）</h2>
-                    <p style="font-size:0.9em; color:#a6adc8;">💡 点击节点右侧的 [+] 或 [-] 可展开/收起子分支知识网络：</p>
-                    
+                    <h2 style="color:#89b4fa; border-bottom-color:#89b4fa;">NotebookLM 风格思维架构复盘（点击右侧 [+] 展开）</h2>
                     <div class="mindmap-tree">
-                        <div class="node">
-                            <span class="node-title">第8章 食物与营养</span>
-                        </div>
-                        
+                        <div class="node"><span class="node-title">第10章 物质运输与排泄</span></div>
                         <div class="children-container">
+                            
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="node" onclick="toggleMMNode('mm1')">
-                                    <span>8.1 食物中的营养物质</span> <strong id="btn-mm1">[+]</strong>
-                                </div>
+                                <div class="node" onclick="toggleMMNode('mm1')"><span>10.1 血液与血型</span> <strong id="btn-mm1">[+]</strong></div>
                                 <div id="mm1" class="children-container hidden">
-                                    <div class="node">无机物：水、无机盐（Ca/Fe/I/Zn）</div>
-                                    <div class="node">有机物：糖类、脂肪、蛋白质、维生素</div>
-                                    <div class="node">化学检验：斐林/碘液/双缩脲/苏丹III/吲哚酚试剂</div>
-                                    <div class="node">膳食纤维：促进蠕动、预防心血管疾病</div>
+                                    <div class="node">血浆 (55%)：水(90%+)、蛋白质、葡萄糖、无机盐、代谢物</div>
+                                    <div class="node">血细胞：红细胞(无核/运氧)、白细胞(有核/防御)、血小板(无核/止血)</div>
+                                    <div class="node">ABO血型：红细胞抗原 + 血浆抗体 ➔ 交叉配血实验</div>
                                 </div>
                             </div>
 
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="node" onclick="toggleMMNode('mm2')">
-                                    <span>8.1.2 食物与能量</span> <strong id="btn-mm2">[+]</strong>
-                                </div>
+                                <div class="node" onclick="toggleMMNode('mm2')"><span>10.2 血管与心脏</span> <strong id="btn-mm2">[+]</strong></div>
                                 <div id="mm2" class="children-container hidden">
-                                    <div class="node">糖类 & 蛋白质：16.8 kJ/g</div>
-                                    <div class="node">脂肪：34.0 kJ/g（储能物质）</div>
-                                    <div class="node">释放机制：体内缓慢氧化反应</div>
+                                    <div class="node">血管：动脉(离心/壁厚)、静脉(回心/静脉瓣)、毛细血管(物质交换)</div>
+                                    <div class="node">心脏：四腔(左房/左室/右房/右室) + 房室瓣/动脉瓣(防止倒流)</div>
+                                    <div class="node">心血管健康：冠心病(冠状动脉狭窄)、中风(脑动脉硬化/破裂)</div>
                                 </div>
                             </div>
 
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="node" onclick="toggleMMNode('mm3')">
-                                    <span>8.2 & 8.3 营养健康与均衡饮食</span> <strong id="btn-mm3">[+]</strong>
-                                </div>
+                                <div class="node" onclick="toggleMMNode('mm3')"><span>10.3 血液循环</span> <strong id="btn-mm3">[+]</strong></div>
                                 <div id="mm3" class="children-container hidden">
-                                    <div class="node">营养失衡：肥胖症 vs 营养不良（消瘦/浮肿型）</div>
-                                    <div class="node">食物金字塔（四层结构）与三餐比例（30%:40%:30%）</div>
-                                    <div class="node">BMI 计算公式与标准体重范围</div>
+                                    <div class="node">体循环：左心室 ➔ 主脉动脉 ➔ 身体毛细血管网 ➔ 腔静脉 ➔ 右心房 (充氧变缺氧)</div>
+                                    <div class="node">肺循环：右心室 ➔ 肺动脉 ➔ 肺部毛细血管网 ➔ 肺静脉 ➔ 左心房 (缺氧变充氧)</div>
+                                    <div class="node">生理指标：心率(约75次/分) = 脉搏 | 血压(收缩压/舒张压)</div>
                                 </div>
                             </div>
 
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="node" onclick="toggleMMNode('mm4')">
-                                    <span>8.4 关注食品安全</span> <strong id="btn-mm4">[+]</strong>
-                                </div>
+                                <div class="node" onclick="toggleMMNode('mm4')"><span>10.4 淋巴循环</span> <strong id="btn-mm4">[+]</strong></div>
                                 <div id="mm4" class="children-container hidden">
-                                    <div class="node">污染源：微生物毒素、农药重金属、新型食品</div>
-                                    <div class="node">天然毒素：龙葵素（土豆）、黄曲霉毒素（花生）</div>
-                                    <div class="node">质量认证：Halal, HACCP, GMP, Buatan Malaysia</div>
+                                    <div class="node">路径：毛细淋巴管 ➔ 各级淋巴管 ➔ 淋巴总管 ➔ 锁骨下静脉</div>
+                                    <div class="node">特点：单向回流，不形成闭合循环</div>
+                                    <div class="node">器官：脾(最大淋巴器官)、胸腺、扁桃体、淋巴结</div>
                                 </div>
                             </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm5')"><span>10.5 人体排泄</span> <strong id="btn-mm5">[+]</strong></div>
+                                <div id="mm5" class="children-container hidden">
+                                    <div class="node">途径：泌尿系统(排尿)、皮肤(排汗)、肺(呼出 CO<sub>2</sub> 与水蒸气)</div>
+                                    <div class="node">泌尿系统：肾脏(产生尿液)、输尿管、膀胱(暂存)、尿道</div>
+                                    <div class="node">尿液形成：肾小球滤过(原尿) ➔ 肾小管重吸收(葡萄糖100%/水/盐)</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm6')"><span>10.6 植物排泄与分泌</span> <strong id="btn-mm6">[+]</strong></div>
+                                <div id="mm6" class="children-container hidden">
+                                    <div class="node">排泄：光合作用释放 O<sub>2</sub>、呼吸作用排出 CO<sub>2</sub>、蒸腾排出水</div>
+                                    <div class="node">分泌现象：松脂、桃胶、橡胶胶乳、见血封喉毒汁</div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             `;
 
-            initSimulators();
-            selectPyramidLayer(4); // 默认选中底层五谷类
-            forceCleanCites();
+            initBloodPie();
+            updateLabReport();
+            drawAboTypeSim();
+            updateBpSim();
+            initCircSimulator();
         }
 
-        function changeFontSize(size) {
-            document.documentElement.style.setProperty('--font-scale', size);
-        }
-
-        function changeLayoutWidth(width) {
-            document.documentElement.style.setProperty('--container-width', width);
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        function toggleInline(element) {
-            element.classList.toggle('revealed');
-        }
-
-        function toggleBlockAns(id) {
-            const content = document.getElementById(id);
-            content.style.display = (content.style.display === "block") ? "none" : "block";
-        }
-
-        function toggleAllAnswers(show) {
-            document.querySelectorAll('.inline-ans').forEach(el => {
-                if (show) el.classList.add('revealed');
-                else el.classList.remove('revealed');
-            });
-
-            document.querySelectorAll('.block-ans-content').forEach(el => {
-                el.style.display = show ? "block" : "none";
-                if(show) el.classList.add('show-print');
-                else el.classList.remove('show-print');
-            });
-        }
-
-        /* 食物金字塔交互数据与逻辑 */
-        const pyramidData = {
-            1: {
-                title: "🔴 顶层：油、糖、盐类（吃最少）",
-                intake: "食用油 < 25-30g / 日，食盐 < 5g / 日",
-                foods: "烹调油、白糖、食用盐、黄油、高糖饮料、糕点",
-                function: "提供必需脂肪酸与能量，但过量极易导致肥胖、高血压、心血管疾病及龋齿。建议烹饪少油少盐。"
-            },
-            2: {
-                title: "🟠 第三层：奶制品、肉、鱼、蛋及豆类（吃适量）",
-                intake: "奶类 300g / 日；鱼虾/肉/蛋类 120-200g / 日",
-                foods: "牛奶、酸奶、奶酪、瘦肉、家禽、鱼类、鸡蛋、大豆及豆制品",
-                function: "富含优质蛋白质、钙、铁、锌及维生素B群。构造与修复人体组织细胞，维持正常免疫力。"
-            },
-            3: {
-                title: "🟢 第二层：瓜菜类、蔬菜与水果（吃多些）",
-                intake: "蔬菜 300-500g / 日；水果 200-350g / 日",
-                foods: "青菜、胡萝卜、茄子、番茄、西瓜、葡萄、苹果、香蕉、橙子",
-                function: "富含膳食纤维、维生素C、胡萝卜素及矿物质。促进肠道蠕动，预防便秘，增强机体抗氧化与免疫力。"
-            },
-            4: {
-                title: "🟡 塔底：五谷类（吃最多）",
-                intake: "谷类及杂豆 200-300g / 日（含全谷物 50-150g）",
-                foods: "米饭、面条、面包、玉米片、麦片、米粉、饼干、薯类",
-                function: "人体最主要的能量来源（富含淀粉/糖类与复合碳水化合物）。维持日常人体生理活动与脑力消耗。"
+        // --- 核心热区点击逻辑函数 ---
+        function setActiveHotspot(el) {
+            const container = el.closest('.img-hotspot-wrapper');
+            if(container) {
+                container.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
             }
-        };
-
-        function selectPyramidLayer(layerNum) {
-            document.querySelectorAll('.pyramid-layer').forEach(el => el.classList.remove('active'));
-            const layers = document.querySelectorAll('.pyramid-layer');
-            if (layers[4 - layerNum]) {
-                layers[4 - layerNum].classList.add('active');
-            }
-
-            const data = pyramidData[layerNum];
-            const infoBox = document.getElementById('pyramidInfoBox');
-            if (infoBox && data) {
-                infoBox.innerHTML = `
-                    <h4 style="margin:0 0 8px 0; color:var(--primary-color); font-size:1.1em;">${data.title}</h4>
-                    <p style="margin:4px 0;"><strong>🎯 建议摄入量：</strong>${data.intake}</p>
-                    <p style="margin:4px 0;"><strong>🥗 代表性食物：</strong>${data.foods}</p>
-                    <p style="margin:4px 0;"><strong>💡 营养生理作用：</strong>${data.function}</p>
-                `;
-            }
+            el.classList.add('active');
         }
 
-        let testCanvas, testCtx, calCanvas, calCtx;
-        const reagentOriginalColors = {
-            'fehling': { color: '#2980b9', name: '蓝色' },
-            'iodine': { color: '#d35400', name: '黄褐色' },
-            'biuret': { color: '#52be80', name: '浅蓝色' },
-            'sudan': { color: '#e74c3c', name: '红色' },
-            'indophenol': { color: '#1b4f72', name: '深蓝色' }
-        };
-
-        function initSimulators() {
-            testCanvas = document.getElementById('testSimCanvas');
-            testCtx = testCanvas ? testCanvas.getContext('2d') : null;
-            calCanvas = document.getElementById('calorimeterCanvas');
-            calCtx = calCanvas ? calCanvas.getContext('2d') : null;
-
-            previewReagentColor();
-            drawCalorimeter(20.0, false);
+        function showHeartSpotInfo(key, el) {
+            setActiveHotspot(el);
+            const data = heartData[key];
+            if (!data) return;
+            document.getElementById('heartTitle').innerHTML = data.title;
+            document.getElementById('heartCategory').innerHTML = `解剖分类：${data.category}`;
+            document.getElementById('heartDesc').innerHTML = data.desc;
         }
 
-        function drawTestTube(liquidColor, label, showHeat, reagentDropColor) {
-            if(!testCtx) return;
-            testCtx.clearRect(0, 0, testCanvas.width, testCanvas.height);
-
-            if (showHeat) {
-                testCtx.fillStyle = "#bdc3c7";
-                testCtx.fillRect(100, 160, 160, 70);
-                testCtx.fillStyle = "rgba(52, 152, 219, 0.4)";
-                testCtx.fillRect(105, 170, 150, 55);
-                testCtx.beginPath();
-                testCtx.fillStyle = "#e67e22";
-                testCtx.arc(180, 240, 12, 0, Math.PI * 2);
-                testCtx.fill();
-            }
-
-            testCtx.strokeStyle = "#7f8c8d";
-            testCtx.lineWidth = 3;
-            testCtx.fillStyle = "rgba(236, 240, 241, 0.3)";
-            testCtx.fillRect(160, 40, 40, 150);
-            testCtx.strokeRect(160, 40, 40, 150);
-
-            testCtx.fillStyle = liquidColor;
-            testCtx.fillRect(162, 110, 36, 78);
-
-            if (reagentDropColor) {
-                testCtx.fillStyle = reagentDropColor;
-                testCtx.beginPath();
-                testCtx.arc(180, 75, 5, 0, Math.PI * 2);
-                testCtx.fill();
-                testCtx.fillStyle = "#95a5a6";
-                testCtx.fillRect(177, 10, 6, 50);
-            }
-
-            testCtx.fillStyle = "#2c3e50";
-            testCtx.font = "14px Arial";
-            testCtx.fillText(label, 15, 30);
+        function showLymphSpotInfo(key, el) {
+            setActiveHotspot(el);
+            const data = lymphData[key];
+            if (!data) return;
+            document.getElementById('lymphTitle').innerHTML = data.title;
+            document.getElementById('lymphCategory').innerHTML = `器官分类：${data.category}`;
+            document.getElementById('lymphDesc').innerHTML = data.desc;
         }
 
-        function runTestSim() {
-            const sample = document.getElementById('simSample').value;
-            const reagent = document.getElementById('simReagent').value;
-            const resDiv = document.getElementById('testSimResult');
-
-            let targetColor = "";
-            let desc = "";
-            let isHeat = false;
-            const origName = reagentOriginalColors[reagent].name;
-
-            if (sample === 'apple' && reagent === 'fehling') {
-                targetColor = "#c0392b";
-                desc = `成功检验！试剂由初始【${origName}】经水浴加热后转变为【砖红色沉淀】，证明含有还原糖。`;
-                isHeat = true;
-            } else if (sample === 'potato' && reagent === 'iodine') {
-                targetColor = "#1a252f";
-                desc = `成功检验！试剂由初始【${origName}】变为【深蓝色】，证明含有淀粉。`;
-            } else if (sample === 'egg' && reagent === 'biuret') {
-                targetColor = "#8e44ad";
-                desc = `成功检验！试剂由初始【${origName}】变为【紫色】，证明含有蛋白质。`;
-            } else if (sample === 'peanut' && reagent === 'sudan') {
-                targetColor = "#f39c12";
-                desc = `成功检验！试剂由初始【${origName}】变为【橘黄色】，证明含有脂肪。`;
-            } else if (sample === 'lemon' && reagent === 'indophenol') {
-                targetColor = "rgba(236, 240, 241, 0.2)";
-                desc = `成功检验！初始【${origName}】吲哚酚试剂滴入后【褪色至无色透明】，证明含有维生素 C。`;
-            } else {
-                targetColor = reagentOriginalColors[reagent].color;
-                desc = `未出现明显变色：试剂维持【${origName}】，表明该样液中不含对应的目标营养成分。`;
-            }
-
-            drawTestTube(targetColor, isHeat ? "🔥 正在水浴加热反应..." : "✅ 反应完成，观察变色", isHeat, reagentOriginalColors[reagent].color);
-            resDiv.innerHTML = `测试结果：${desc}`;
+        function showExcretSpotInfo(key, el, mode) {
+            setActiveHotspot(el);
+            const data = (mode === 'urinary') ? urinaryData[key] : kidneySectionData[key];
+            if (!data) return;
+            document.getElementById('excretTitle').innerHTML = data.title;
+            document.getElementById('excretCategory').innerHTML = `解剖分类：${data.category}`;
+            document.getElementById('excretDesc').innerHTML = data.desc;
         }
 
-        function previewReagentColor() {
-            const reagent = document.getElementById('simReagent').value;
-            const orig = reagentOriginalColors[reagent];
-            drawTestTube("#f5f6fa", `试剂原色: 【${orig.name}】`, false, orig.color);
-            document.getElementById('testSimResult').innerHTML = `当前选择试剂初始颜色为：<b>${orig.name}</b>`;
-        }
-
-        function resetTestSim() {
-            drawTestTube("rgba(236, 240, 241, 0.5)", "试管已清洗，准备就绪", false, null);
-            document.getElementById('testSimResult').innerHTML = "状态：请选择样液与试剂，观察变色。";
-        }
-
-        let simInterval = null;
-        let currentTemp = 20.0;
-        let targetTemp = 20.0;
-        let isBurning = false;
-
-        function drawCalorimeter(temp, flame) {
-            if(!calCtx) return;
-            calCtx.clearRect(0, 0, calCanvas.width, calCanvas.height);
-            calCtx.fillStyle = "#7f8c8d";
-            calCtx.fillRect(30, 200, 120, 8);
-            calCtx.fillRect(50, 30, 8, 170);
-            calCtx.fillRect(50, 50, 70, 5);
-
-            calCtx.strokeStyle = "#3498db";
-            calCtx.lineWidth = 2;
-            calCtx.strokeRect(95, 60, 30, 90);
-            calCtx.fillStyle = "#3498db";
-            calCtx.fillRect(96, 90, 28, 59);
-
-            calCtx.fillStyle = "#95a5a6";
-            calCtx.fillRect(108, 30, 4, 100);
-            let mercuryHeight = (temp - 20) * 1.8;
-            calCtx.fillStyle = "#e74c3c";
-            calCtx.fillRect(108, 130 - mercuryHeight, 4, mercuryHeight + 4);
-
-            calCtx.fillStyle = "#34495e";
-            calCtx.fillRect(80, 165, 40, 3);
-
-            if (flame) {
-                calCtx.beginPath();
-                calCtx.fillStyle = "#e67e22";
-                calCtx.arc(110, 160, 7, 0, Math.PI * 2);
-                calCtx.fill();
-            }
-
-            calCtx.fillStyle = "#2c3e50";
-            calCtx.font = "14px Arial";
-            calCtx.fillText(`水温计: ${temp.toFixed(1)} °C`, 170, 50);
-        }
-
-        function startCombustion() {
-            if (isBurning) return;
-            const sample = document.getElementById('foodSample').value;
-            targetTemp = (sample === 'peanut') ? 60.5 : 40.0;
-
-            isBurning = true;
-            simInterval = setInterval(() => {
-                if (currentTemp < targetTemp) {
-                    currentTemp += 0.5;
-                    drawCalorimeter(currentTemp, true);
-                    document.getElementById('calSimOutput').innerHTML = 
-                        `初始水温：20.0 °C<br>当前水温：<span style="color:red;">${currentTemp.toFixed(1)} °C</span> (上升 ${(currentTemp-20).toFixed(1)} °C)`;
-                } else {
-                    clearInterval(simInterval);
-                    isBurning = false;
-                    drawCalorimeter(currentTemp, false);
-                }
-            }, 50);
-        }
-
-        function resetCalSim() {
-            clearInterval(simInterval);
-            isBurning = false;
-            currentTemp = 20.0;
-            drawCalorimeter(20.0, false);
-            document.getElementById('calSimOutput').innerHTML = `初始水温：20.0 °C<br>当前水温：20.0 °C`;
-        }
-
-        function calculateBMI() {
-            const gender = document.getElementById('bmiGender').value;
-            const h = parseFloat(document.getElementById('bmiHeight').value);
-            const w = parseFloat(document.getElementById('bmiWeight').value);
-
-            if (!h || !w) return;
-
-            const hm = h / 100;
-            const bmi = (w / (hm * hm)).toFixed(1);
+        // --- 切换泌尿系统 / 肾脏剖面视图 ---
+        function switchExcretionMode(mode) {
+            const viewUrinary = document.getElementById('viewUrinary');
+            const viewKidney = document.getElementById('viewKidney');
             
-            let stdFormulaText = "";
-            let stdWeight = 0;
-
-            if (gender === 'male') {
-                stdFormulaText = `男性标准体重 = (身高 - 80) × 70% = (${h} - 80) × 0.7`;
-                stdWeight = ((h - 80) * 0.7).toFixed(1);
+            if (mode === 'urinary') {
+                viewUrinary.classList.remove('hidden');
+                viewKidney.classList.add('hidden');
+                document.getElementById('btnModeUrinary').style.background = '#27ae60';
+                document.getElementById('btnModeKidney').style.background = '#718096';
             } else {
-                stdFormulaText = `女性标准体重 = (身高 - 70) × 60% = (${h} - 70) × 0.6`;
-                stdWeight = ((h - 70) * 0.6).toFixed(1);
+                viewUrinary.classList.add('hidden');
+                viewKidney.classList.remove('hidden');
+                document.getElementById('btnModeUrinary').style.background = '#718096';
+                document.getElementById('btnModeKidney').style.background = '#27ae60';
             }
-
-            const minStd = (stdWeight * 0.9).toFixed(1);
-            const maxStd = (stdWeight * 1.1).toFixed(1);
-
-            let status = "";
-            const diffRatio = (w - stdWeight) / stdWeight;
-
-            if (diffRatio > 0.2) status = "肥胖（超过标准体重 20% 以上）";
-            else if (diffRatio > 0.1) status = "过重（超过标准体重 10%~20%）";
-            else if (diffRatio < -0.2) status = "体重不足（低于标准体重 20% 以上）";
-            else if (diffRatio < -0.1) status = "过轻（低于标准体重 10%~20%）";
-            else status = "正常体重（位于标准体重 ±10% 范围内）";
-
-            const detailBox = document.getElementById('bmiCalcDetails');
-            detailBox.style.display = "block";
-            detailBox.innerHTML = `
-<strong>📘 详细计算过程与步骤展现：</strong><br>
---------------------------------------------------<br>
-<strong>1. BMI (身体质量指数) 计算：</strong><br>
-   • 公式：BMI = 体重(kg) ÷ [身高(m)]²<br>
-   • 算式：BMI = ${w} ÷ (${hm} × ${hm}) = <strong>${bmi}</strong><br><br>
-
-<strong>2. 标准体重评估计算：</strong><br>
-   • 公式：${stdFormulaText}<br>
-   • 计算结果：理想标准体重 = <strong>${stdWeight} kg</strong><br>
-   • 正常体重范围(±10%)：<strong>${minStd} kg ~ ${maxStd} kg</strong><br><br>
-
-<strong>3. 结果判断：</strong><br>
-   • 当前实际体重：<strong>${w} kg</strong><br>
-   • 结论评估：<span style="color:#e74c3c; font-weight:bold;">${status}</span>
-            `;
         }
 
+        // --- 思维导图展开/收起控制 ---
         function toggleMMNode(id) {
             const target = document.getElementById(id);
             const btn = document.getElementById('btn-' + id);
-            if (target.classList.contains('hidden')) {
-                target.classList.remove('hidden');
-                btn.innerText = '[-]';
-            } else {
-                target.classList.add('hidden');
-                btn.innerText = '[+]';
+            if (target) {
+                if (target.classList.contains('hidden')) {
+                    target.classList.remove('hidden');
+                    if (btn) btn.innerText = '[-]';
+                } else {
+                    target.classList.add('hidden');
+                    if (btn) btn.innerText = '[+]';
+                }
             }
         }
 
+        // --- 1. 血液成分圆饼图 ---
+        function initBloodPie() {
+            const canvas = document.getElementById('bloodPieCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const data = [
+                { label: '血浆 (55%)', value: 0.55, color: '#f6e05e' },
+                { label: '红细胞 (44%)', value: 0.44, color: '#e53e3e' },
+                { label: '白细胞与血小板 (<1%)', value: 0.01, color: '#3182ce' }
+            ];
+
+            let startAngle = -Math.PI / 2;
+            data.forEach(slice => {
+                let sliceAngle = slice.value * Math.PI * 2;
+                ctx.beginPath();
+                ctx.arc(120, 130, 90, startAngle, startAngle + sliceAngle);
+                ctx.lineTo(120, 130);
+                ctx.fillStyle = slice.color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                startAngle += sliceAngle;
+            });
+
+            data.forEach((slice, i) => {
+                ctx.fillStyle = slice.color;
+                ctx.fillRect(220, 70 + i * 40, 15, 15);
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(slice.label, 242, 82 + i * 40);
+            });
+        }
+
+        // --- 2. 验血报告模拟器逻辑 ---
+        function updateLabReport() {
+            const wbc = parseFloat(document.getElementById('valWBC').value);
+            const rbc = parseFloat(document.getElementById('valRBC').value);
+            const hb = parseFloat(document.getElementById('valHB').value);
+            const plt = parseFloat(document.getElementById('valPLT').value);
+            const diag = document.getElementById('labDiagnosis');
+
+            let issues = [];
+            if (wbc > 11.0) issues.push("⚠️ 白细胞偏高：身体可能存在<span style='color:#e53e3e;'>急性炎症或细菌感染</span>！");
+            if (wbc < 4.0) issues.push("⚠️ 白细胞偏低：免疫力低下。");
+            if (rbc < 4.0 || hb < 110) issues.push("⚠️ 红细胞/血红蛋白偏低：诊断为<span style='color:#e53e3e;'>贫血</span>，运氧能力下降！");
+            if (plt < 150) issues.push("⚠️ 血小板偏低：凝血功能受损，伤口止血困难！");
+            if (plt > 400) issues.push("⚠️ 血小板偏高：易形成异常血栓。");
+
+            if (issues.length === 0) {
+                diag.style.borderLeftColor = "#27ae60";
+                diag.innerHTML = "✅ 各项血液指标正常，身体健康！";
+            } else {
+                diag.style.borderLeftColor = "#e53e3e";
+                diag.innerHTML = issues.join("<br>");
+            }
+        }
+
+        // --- 3. ABO血型系统图像化模拟器 ---
+        function drawAboTypeSim() {
+            const canvas = document.getElementById('aboTypeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const type = document.getElementById('selAboType').value;
+            const desc = document.getElementById('aboDescText');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            ctx.arc(180, 130, 65, 0, Math.PI * 2);
+            ctx.fillStyle = '#e53e3e';
+            ctx.fill();
+            ctx.strokeStyle = '#c53030';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            if (type === 'A') {
+                drawAntigens(ctx, 'A');
+                drawAntibodies(ctx, 'B');
+                desc.innerHTML = "<strong>A型血：</strong>红细胞膜上附着圆形 <strong>A抗原</strong>，血浆中悬浮 <strong>B抗体</strong>。";
+            } else if (type === 'B') {
+                drawAntigens(ctx, 'B');
+                drawAntibodies(ctx, 'A');
+                desc.innerHTML = "<strong>B型血：</strong>红细胞膜上附着菱形 <strong>B抗原</strong>，血浆中悬浮 <strong>A抗体</strong>。";
+            } else if (type === 'AB') {
+                drawAntigens(ctx, 'AB');
+                desc.innerHTML = "<strong>AB型血：</strong>红细胞膜上同时含有 <strong>A与B抗原</strong>，血浆中<strong>无抗体</strong>（万能受血者）。";
+            } else if (type === 'O') {
+                drawAntibodies(ctx, 'AB');
+                desc.innerHTML = "<strong>O型血：</strong>红细胞膜上<strong>无抗原</strong>（万能施血者），血浆中同时含有 <strong>A与B抗体</strong>。";
+            }
+        }
+
+        function drawAntigens(ctx, type) {
+            for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+                let x = 180 + Math.cos(a) * 65;
+                let y = 130 + Math.sin(a) * 65;
+                
+                if (type === 'A' || (type === 'AB' && a % (Math.PI/3) === 0)) {
+                    ctx.beginPath();
+                    ctx.arc(x + Math.cos(a)*10, y + Math.sin(a)*10, 6, 0, Math.PI*2);
+                    ctx.fillStyle = '#9b59b6';
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.rect(x + Math.cos(a)*8 - 5, y + Math.sin(a)*8 - 5, 10, 10);
+                    ctx.fillStyle = '#27ae60';
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawAntibodies(ctx, type) {
+            ctx.fillStyle = '#3182ce';
+            ctx.font = 'bold 12px Arial';
+            if (type === 'B' || type === 'AB') ctx.fillText('Y 型 B抗体', 30, 50);
+            if (type === 'A' || type === 'AB') ctx.fillText('Y 型 A抗体', 270, 50);
+        }
+
+        // --- 6. 血压与心率模拟 ---
+        function updateBpSim() {
+            const bpm = parseInt(document.getElementById('bpmInput').value);
+            document.getElementById('bpmDisp').textContent = bpm;
+            document.getElementById('pulseDisp').textContent = `${bpm} 次/分`;
+
+            let sys = Math.round(110 + (bpm - 75) * 0.35);
+            let dia = Math.round(72 + (bpm - 75) * 0.2);
+
+            document.getElementById('sysDisp').textContent = `${sys} mmHg`;
+            document.getElementById('diaDisp').textContent = `${dia} mmHg`;
+
+            const status = document.getElementById('bpStatus');
+            if (sys >= 140 || dia >= 90) {
+                status.textContent = "1级/2级高血压"; status.style.color = "#e53e3e";
+            } else if (sys >= 120) {
+                status.textContent = "血压偏高"; status.style.color = "#dd6b20";
+            } else {
+                status.textContent = "正常血压"; status.style.color = "#27ae60";
+            }
+        }
+
+        // --- 5. 血液循环交互模拟器逻辑 ---
+        let simCanvas, simCtx;
+        let isRunning = true;
+        let selectedMode = 'all';
+
+        const boxes = {
+            lung: { x: 180, y: 35, w: 260, h: 85 },
+            ra: { x: 200, y: 210, w: 110, h: 70 },
+            la: { x: 310, y: 210, w: 110, h: 70 },
+            rv: { x: 200, y: 280, w: 110, h: 70 },
+            lv: { x: 310, y: 280, w: 110, h: 70 },
+            body: { x: 420, y: 360, w: 170, h: 240 }
+        };
+
+        const systemicPath = [
+            { x: 365, y: 350 }, { x: 365, y: 650 }, { x: 505, y: 650 },
+            { x: 505, y: 600 }, { x: 505, y: 360 }, { x: 505, y: 150 },
+            { x: 255, y: 150 }, { x: 255, y: 210 }
+        ];
+
+        const pulmonaryPath = [
+            { x: 255, y: 350 }, { x: 255, y: 610 }, { x: 80, y: 610 },
+            { x: 80, y: 77 }, { x: 180, y: 77 }, { x: 440, y: 77 },
+            { x: 455, y: 77 }, { x: 455, y: 175 }, { x: 365, y: 175 }, { x: 365, y: 210 }
+        ];
+
+        const raToRv = [{ x: 255, y: 210 }, { x: 255, y: 280 }];
+        const laToLv = [{ x: 365, y: 210 }, { x: 365, y: 280 }];
+
+        class Particle {
+            constructor(pathType, offset = 0) {
+                this.pathType = pathType;
+                this.progress = offset;
+            }
+
+            getPosAndState() {
+                let path = this.pathType === 'systemic' ? systemicPath : pulmonaryPath;
+                let totalDist = 0, segDists = [];
+
+                for (let i = 0; i < path.length - 1; i++) {
+                    let d = Math.hypot(path[i+1].x - path[i].x, path[i+1].y - path[i].y);
+                    segDists.push(d); totalDist += d;
+                }
+
+                let targetD = this.progress * totalDist, currentD = 0;
+                let x = path[0].x, y = path[0].y;
+                let isOxygenated = (this.pathType === 'systemic') ? (this.progress < 0.38) : (this.progress > 0.45);
+
+                for (let i = 0; i < segDists.length; i++) {
+                    if (currentD + segDists[i] >= targetD) {
+                        let t = (targetD - currentD) / segDists[i];
+                        x = path[i].x + t * (path[i+1].x - path[i].x);
+                        y = path[i].y + t * (path[i+1].y - path[i].y);
+                        break;
+                    }
+                    currentD += segDists[i];
+                }
+                return { x, y, isOxygenated };
+            }
+
+            update(speed) {
+                this.progress += speed;
+                if (this.progress >= 1) {
+                    this.progress = 0;
+                    if (selectedMode === 'all') {
+                        this.pathType = (this.pathType === 'systemic') ? 'pulmonary' : 'systemic';
+                    }
+                }
+            }
+        }
+
+        const circParticles = [];
+        const numParticles = 28;
+        for (let i = 0; i < numParticles; i++) {
+            circParticles.push(new Particle('systemic', i / (numParticles / 2)));
+            circParticles.push(new Particle('pulmonary', i / (numParticles / 2)));
+        }
+
+        class DiffusionParticle {
+            constructor(zone) {
+                this.zone = zone;
+                this.reset();
+            }
+
+            reset() {
+                if (this.zone === 'lung') {
+                    this.type = Math.random() > 0.5 ? 'O2' : 'CO2';
+                    this.progress = Math.random();
+                    this.y = boxes.lung.y + 20 + Math.random() * 45;
+                } else {
+                    const rand = Math.random();
+                    if (rand < 0.3) this.type = 'O2';
+                    else if (rand < 0.6) this.type = 'Nutrient';
+                    else if (rand < 0.8) this.type = 'CO2';
+                    else this.type = 'Waste';
+                    
+                    this.progress = Math.random();
+                    this.y = boxes.body.y + 25 + Math.random() * 190;
+                }
+                this.speed = 0.005 + Math.random() * 0.008;
+            }
+
+            update() {
+                this.progress += this.speed;
+                if (this.progress > 1) this.reset();
+            }
+
+            draw(ctx) {
+                let x, y, color, size = 5;
+                if (this.zone === 'lung') {
+                    if (this.type === 'O2') {
+                        x = boxes.lung.x + 20 + this.progress * 220;
+                        y = this.y - (1 - this.progress) * 12;
+                        color = '#e53e3e';
+                    } else {
+                        x = boxes.lung.x + 240 - this.progress * 220;
+                        y = this.y + (1 - this.progress) * 12;
+                        color = '#dd6b20';
+                    }
+                } else {
+                    if (this.type === 'O2' || this.type === 'Nutrient') {
+                        x = boxes.body.x + 20 + this.progress * 130;
+                        y = this.y;
+                        color = (this.type === 'O2') ? '#e53e3e' : '#319795';
+                    } else {
+                        x = boxes.body.x + 150 - this.progress * 130;
+                        y = this.y;
+                        color = (this.type === 'CO2') ? '#dd6b20' : '#805ad5';
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        const diffParticles = [];
+        for (let i = 0; i < 20; i++) {
+            diffParticles.push(new DiffusionParticle('lung'));
+            diffParticles.push(new DiffusionParticle('body'));
+        }
+
+        function drawPipelines() {
+            simCtx.lineWidth = 16;
+            simCtx.lineJoin = 'round';
+
+            const showSystemic = (selectedMode === 'all' || selectedMode === 'systemic');
+            const showPulmonary = (selectedMode === 'all' || selectedMode === 'pulmonary');
+
+            simCtx.strokeStyle = showSystemic ? '#e53e3e' : 'rgba(229, 62, 62, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(systemicPath[0].x, systemicPath[0].y);
+            simCtx.lineTo(systemicPath[1].x, systemicPath[1].y);
+            simCtx.lineTo(systemicPath[2].x, systemicPath[2].y);
+            simCtx.lineTo(systemicPath[3].x, systemicPath[3].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showSystemic ? '#3182ce' : 'rgba(49, 130, 206, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(systemicPath[4].x, systemicPath[4].y);
+            simCtx.lineTo(systemicPath[5].x, systemicPath[5].y);
+            simCtx.lineTo(systemicPath[6].x, systemicPath[6].y);
+            simCtx.lineTo(systemicPath[7].x, systemicPath[7].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showPulmonary ? '#3182ce' : 'rgba(49, 130, 206, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(pulmonaryPath[0].x, pulmonaryPath[0].y);
+            simCtx.lineTo(pulmonaryPath[1].x, pulmonaryPath[1].y);
+            simCtx.lineTo(pulmonaryPath[2].x, pulmonaryPath[2].y);
+            simCtx.lineTo(pulmonaryPath[3].x, pulmonaryPath[3].y);
+            simCtx.lineTo(pulmonaryPath[4].x, pulmonaryPath[4].y);
+            simCtx.stroke();
+
+            simCtx.strokeStyle = showPulmonary ? '#e53e3e' : 'rgba(229, 62, 62, 0.15)';
+            simCtx.beginPath();
+            simCtx.moveTo(pulmonaryPath[5].x, pulmonaryPath[5].y);
+            simCtx.lineTo(pulmonaryPath[6].x, pulmonaryPath[6].y);
+            simCtx.lineTo(pulmonaryPath[7].x, pulmonaryPath[7].y);
+            simCtx.lineTo(pulmonaryPath[8].x, pulmonaryPath[8].y);
+            simCtx.lineTo(pulmonaryPath[9].x, pulmonaryPath[9].y);
+            simCtx.stroke();
+
+            simCtx.lineWidth = 12;
+            simCtx.strokeStyle = '#cbd5e0';
+            simCtx.beginPath();
+            simCtx.moveTo(raToRv[0].x, raToRv[0].y); simCtx.lineTo(raToRv[1].x, raToRv[1].y);
+            simCtx.moveTo(laToLv[0].x, laToLv[0].y); simCtx.lineTo(laToLv[1].x, laToLv[1].y);
+            simCtx.stroke();
+        }
+
+        function drawCapillaryNets() {
+            const chkNets = document.getElementById('chkNets');
+            if (!chkNets || !chkNets.checked) return;
+
+            simCtx.save();
+            simCtx.lineWidth = 2.5;
+
+            const lungX = boxes.lung.x, lungY = boxes.lung.y, lungW = boxes.lung.w;
+            simCtx.strokeStyle = 'rgba(229, 62, 62, 0.35)';
+            simCtx.beginPath();
+            simCtx.moveTo(lungX, lungY + 20); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 5, lungX + lungW, lungY + 20);
+            simCtx.moveTo(lungX, lungY + 42); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 30, lungX + lungW, lungY + 42);
+            simCtx.moveTo(lungX, lungY + 65); simCtx.quadraticCurveTo(lungX + lungW/2, lungY + 80, lungX + lungW, lungY + 65);
+            simCtx.moveTo(lungX + 60, lungY + 12); simCtx.lineTo(lungX + 60, lungY + 70);
+            simCtx.moveTo(lungX + 130, lungY + 10); simCtx.lineTo(lungX + 130, lungY + 75);
+            simCtx.moveTo(lungX + 200, lungY + 12); simCtx.lineTo(lungX + 200, lungY + 70);
+            simCtx.stroke();
+
+            const bodyX = boxes.body.x, bodyY = boxes.body.y, bodyH = boxes.body.h, bodyW = boxes.body.w;
+            simCtx.strokeStyle = 'rgba(49, 130, 206, 0.35)';
+            simCtx.beginPath();
+            simCtx.moveTo(bodyX + 30, bodyY); simCtx.quadraticCurveTo(bodyX + 10, bodyY + bodyH/2, bodyX + 30, bodyY + bodyH);
+            simCtx.moveTo(bodyX + bodyW/2, bodyY); simCtx.quadraticCurveTo(bodyX + bodyW/2 + 20, bodyY + bodyH/2, bodyX + bodyW/2, bodyY + bodyH);
+            simCtx.moveTo(bodyX + bodyW - 30, bodyY); simCtx.quadraticCurveTo(bodyX + bodyW - 10, bodyY + bodyH/2, bodyX + bodyW - 30, bodyY + bodyH);
+            simCtx.moveTo(bodyX + 15, bodyY + 60); simCtx.lineTo(bodyX + bodyW - 15, bodyY + 60);
+            simCtx.moveTo(bodyX + 10, bodyY + 120); simCtx.lineTo(bodyX + bodyW - 10, bodyY + 120);
+            simCtx.moveTo(bodyX + 15, bodyY + 180); simCtx.lineTo(bodyX + bodyW - 15, bodyY + 180);
+            simCtx.stroke();
+
+            simCtx.restore();
+        }
+
+        function drawArrow(x, y, dir, color) {
+            simCtx.save();
+            simCtx.translate(x, y);
+            let angle = 0;
+            if (dir === 'up') angle = -Math.PI / 2;
+            if (dir === 'down') angle = Math.PI / 2;
+            if (dir === 'left') angle = Math.PI;
+            if (dir === 'right') angle = 0;
+            simCtx.rotate(angle);
+
+            simCtx.fillStyle = color;
+            simCtx.beginPath();
+            simCtx.moveTo(-9, -7);
+            simCtx.lineTo(7, 0);
+            simCtx.lineTo(-9, 7);
+            simCtx.closePath();
+            simCtx.fill();
+            simCtx.restore();
+        }
+
+        function drawFlowDirections() {
+            if (selectedMode === 'all' || selectedMode === 'systemic') {
+                drawArrow(365, 520, 'down', '#ffffff');
+                drawArrow(430, 650, 'right', '#ffffff');
+                drawArrow(505, 250, 'up', '#ffffff');
+                drawArrow(375, 150, 'left', '#ffffff');
+                drawArrow(255, 245, 'down', '#2b6cb0');
+            }
+
+            if (selectedMode === 'all' || selectedMode === 'pulmonary') {
+                drawArrow(255, 480, 'down', '#ffffff');
+                drawArrow(160, 610, 'left', '#ffffff');
+                drawArrow(80, 290, 'up', '#ffffff');
+                drawArrow(135, 77, 'right', '#ffffff');
+                drawArrow(455, 125, 'down', '#ffffff');
+                drawArrow(400, 175, 'left', '#ffffff');
+                drawArrow(365, 245, 'down', '#2b6cb0');
+            }
+        }
+
+        function drawSubscriptText(ctx, text, sub, nextText, x, y, font, subFont) {
+            ctx.font = font;
+            ctx.fillText(text, x, y);
+            let w1 = ctx.measureText(text).width;
+            ctx.font = subFont;
+            ctx.fillText(sub, x + w1, y + 4);
+            let w2 = ctx.measureText(sub).width;
+            if (nextText) {
+                ctx.font = font;
+                ctx.fillText(nextText, x + w1 + w2, y);
+            }
+        }
+
+        function drawBoxesAndValves() {
+            const chkValves = document.getElementById('chkValves');
+            const chkLabels = document.getElementById('chkLabels');
+
+            simCtx.lineWidth = 2.5;
+            simCtx.strokeStyle = '#2d3748';
+            simCtx.textAlign = 'center';
+            simCtx.textBaseline = 'middle';
+
+            simCtx.fillStyle = '#ffffff';
+            simCtx.fillRect(boxes.lung.x, boxes.lung.y, boxes.lung.w, boxes.lung.h);
+            simCtx.strokeRect(boxes.lung.x, boxes.lung.y, boxes.lung.w, boxes.lung.h);
+
+            [boxes.ra, boxes.la, boxes.rv, boxes.lv].forEach(b => {
+                simCtx.fillStyle = '#ffffff';
+                simCtx.fillRect(b.x, b.y, b.w, b.h);
+            });
+
+            simCtx.beginPath();
+            simCtx.rect(200, 210, 220, 140);
+            simCtx.moveTo(310, 210); simCtx.lineTo(310, 350);
+            simCtx.moveTo(200, 280); simCtx.lineTo(228, 280);
+            simCtx.moveTo(282, 280); simCtx.lineTo(338, 280);
+            simCtx.moveTo(392, 280); simCtx.lineTo(420, 280);
+            simCtx.stroke();
+
+            simCtx.fillStyle = '#ffffff';
+            simCtx.fillRect(boxes.body.x, boxes.body.y, boxes.body.w, boxes.body.h);
+            simCtx.strokeRect(boxes.body.x, boxes.body.y, boxes.body.w, boxes.body.h);
+
+            drawCapillaryNets();
+
+            if (chkValves && chkValves.checked) {
+                simCtx.lineWidth = 3.5;
+                simCtx.strokeStyle = '#3182ce';
+
+                simCtx.beginPath();
+                simCtx.moveTo(228, 280); simCtx.lineTo(243, 302);
+                simCtx.moveTo(282, 280); simCtx.lineTo(267, 302);
+                simCtx.stroke();
+
+                simCtx.beginPath();
+                simCtx.moveTo(338, 280); simCtx.lineTo(353, 302);
+                simCtx.moveTo(392, 280); simCtx.lineTo(377, 302);
+                simCtx.stroke();
+
+                if (chkLabels && chkLabels.checked) {
+                    simCtx.font = 'bold 13px sans-serif';
+                    simCtx.fillStyle = '#2b6cb0';
+                    simCtx.fillText('右房室瓣', 255, 268);
+                    simCtx.fillText('左房室瓣', 365, 268);
+                }
+            }
+
+            if (chkLabels && chkLabels.checked) {
+                simCtx.fillStyle = '#1a202c';
+
+                simCtx.font = 'bold 18px sans-serif';
+                simCtx.fillText('肺部的毛细血管网', boxes.lung.x + boxes.lung.w/2, boxes.lung.y + 26);
+                
+                simCtx.textAlign = 'left';
+                simCtx.fillStyle = '#e53e3e';
+                drawSubscriptText(simCtx, '氧增加 ↑', '', '', boxes.lung.x + 30, boxes.lung.y + 58, 'bold 13px sans-serif', 'bold 10px sans-serif');
+                
+                simCtx.fillStyle = '#3182ce';
+                drawSubscriptText(simCtx, '二氧化碳', '2', ' 减少 ↓', boxes.lung.x + 130, boxes.lung.y + 58, 'bold 13px sans-serif', 'bold 10px sans-serif');
+
+                simCtx.textAlign = 'center';
+                simCtx.fillStyle = '#1a202c';
+                simCtx.font = 'bold 18px sans-serif';
+                simCtx.fillText('右心房', boxes.ra.x + boxes.ra.w/2, boxes.ra.y + 28);
+                simCtx.fillText('左心房', boxes.la.x + boxes.la.w/2, boxes.la.y + 28);
+                simCtx.fillText('右心室', boxes.rv.x + boxes.rv.w/2, boxes.rv.y + 45);
+                simCtx.fillText('左心室', boxes.lv.x + boxes.lv.w/2, boxes.lv.y + 45);
+
+                simCtx.font = 'bold 17px sans-serif';
+                simCtx.fillText('身体各个部分的', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 28);
+                simCtx.fillText('毛细血管网', boxes.body.x + boxes.body.w/2, boxes.body.y + boxes.body.h/2 - 4);
+                
+                simCtx.textAlign = 'left';
+                simCtx.fillStyle = '#e53e3e';
+                drawSubscriptText(simCtx, '消耗氧气 & 养料', '', '', boxes.body.x + 25, boxes.body.y + boxes.body.h/2 + 25, 'bold 13px sans-serif', 'bold 10px sans-serif');
+                
+                simCtx.fillStyle = '#3182ce';
+                drawSubscriptText(simCtx, '产生 CO', '2', ' & 代谢物', boxes.body.x + 20, boxes.body.y + boxes.body.h/2 + 48, 'bold 13px sans-serif', 'bold 10px sans-serif');
+
+                simCtx.textAlign = 'center';
+                simCtx.font = 'bold 15px sans-serif';
+                simCtx.fillStyle = '#1a202c';
+                simCtx.fillText('上、下腔静脉', 375, 126);
+                simCtx.fillText('肺静脉', 480, 245);
+                simCtx.fillText('肺动脉', 145, 630);
+                simCtx.fillText('主动脉', 350, 630);
+            }
+        }
+
+        function initCircSimulator() {
+            simCanvas = document.getElementById('simCanvas');
+            if (!simCanvas) return;
+            simCtx = simCanvas.getContext('2d');
+
+            const bpmSlider = document.getElementById('bpmSlider');
+            const bpmVal = document.getElementById('bpmVal');
+            const btnToggle = document.getElementById('btnToggle');
+            const btnReset = document.getElementById('btnReset');
+            const infoText = document.getElementById('infoText');
+
+            if(bpmSlider) {
+                bpmSlider.addEventListener('input', (e) => {
+                    if(bpmVal) bpmVal.textContent = `${e.target.value} BPM`;
+                });
+            }
+
+            if(btnToggle) {
+                btnToggle.addEventListener('click', () => {
+                    isRunning = !isRunning;
+                    btnToggle.textContent = isRunning ? '暂停模拟' : '播放模拟';
+                });
+            }
+
+            if(btnReset) {
+                btnReset.addEventListener('click', () => {
+                    circParticles.forEach((p, idx) => {
+                        p.progress = (idx % (numParticles / 2)) / (numParticles / 2);
+                    });
+                });
+            }
+
+            const radios = document.querySelectorAll('input[name="circMode"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    selectedMode = e.target.value;
+                    document.querySelectorAll('.radio-label').forEach(lbl => lbl.classList.remove('active'));
+                    if (selectedMode === 'all') document.getElementById('lblAll').classList.add('active');
+                    if (selectedMode === 'systemic') document.getElementById('lblSystemic').classList.add('active');
+                    if (selectedMode === 'pulmonary') document.getElementById('lblPulmonary').classList.add('active');
+
+                    if (infoText) {
+                        if (selectedMode === 'all') {
+                            infoText.innerHTML = '<strong>全景模式：</strong>体循环与肺循环紧密衔接，构成一条完整的双循环途径。<br><br><strong>毛细血管网：</strong>是血液与组织细胞（或肺泡）进行物质交换的唯一场所。';
+                        } else if (selectedMode === 'systemic') {
+                            infoText.innerHTML = '<strong>体循环路径：</strong><br>左心室 → 主脉动脉 → 身体各部分毛细血管网 → 上、下腔静脉 → 右心房<br><br><em>经由左房室瓣将血液从左心房注入左心室。</em>';
+                        } else if (selectedMode === 'pulmonary') {
+                            infoText.innerHTML = '<strong>肺循环路径：</strong><br>右心室 → 肺动脉 → 肺部毛细血管网 → 肺静脉 → 左心房<br><br><em>经由右房室瓣将血液从右心房注入右心室。</em>';
+                        }
+                    }
+                });
+            });
+
+            renderCirc();
+        }
+
+        function renderCirc() {
+            if (!simCtx) return;
+            simCtx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+
+            drawPipelines();
+
+            const chkFlowDir = document.getElementById('chkFlowDir');
+            if (chkFlowDir && chkFlowDir.checked) {
+                drawFlowDirections();
+            }
+
+            drawBoxesAndValves();
+
+            const bpmSlider = document.getElementById('bpmSlider');
+            const bpm = bpmSlider ? parseInt(bpmSlider.value) : 75;
+            const speed = (bpm / 60) * 0.0025;
+
+            const chkBloodCells = document.getElementById('chkBloodCells');
+            if (chkBloodCells && chkBloodCells.checked) {
+                circParticles.forEach(p => {
+                    if (selectedMode === 'systemic' && p.pathType !== 'systemic') return;
+                    if (selectedMode === 'pulmonary' && p.pathType !== 'pulmonary') return;
+
+                    if (isRunning) p.update(speed);
+                    let res = p.getPosAndState();
+
+                    simCtx.beginPath();
+                    simCtx.arc(res.x, res.y, 7, 0, Math.PI * 2);
+                    simCtx.fillStyle = res.isOxygenated ? '#e53e3e' : '#3182ce';
+                    simCtx.fill();
+                    simCtx.strokeStyle = '#ffffff';
+                    simCtx.lineWidth = 1.5;
+                    simCtx.stroke();
+                });
+            }
+
+            const chkDiffusion = document.getElementById('chkDiffusion');
+            if (chkDiffusion && chkDiffusion.checked) {
+                diffParticles.forEach(dp => {
+                    if (selectedMode === 'systemic' && dp.zone === 'lung') return;
+                    if (selectedMode === 'pulmonary' && dp.zone === 'body') return;
+
+                    if (isRunning) dp.update();
+                    dp.draw(simCtx);
+                });
+            }
+
+            requestAnimationFrame(renderCirc);
+        }
+
+        // --- 通用页面控制 ---
+        function toggleInline(el) { el.classList.toggle('revealed'); }
+        function toggleAllAnswers(show) {
+            document.querySelectorAll('.inline-ans').forEach(el => {
+                if(show) el.classList.add('revealed'); else el.classList.remove('revealed');
+            });
+        }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function changeFontSize(sz) { document.documentElement.style.setProperty('--font-scale', sz); }
+        function changeLayoutWidth(w) { document.documentElement.style.setProperty('--container-width', w); }
+
         document.addEventListener("DOMContentLoaded", () => {
             renderApp();
-            citeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
         });
     </script>
 </body>
