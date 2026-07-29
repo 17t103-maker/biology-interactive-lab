@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第1章 物种的多样性 —— 互动学习平台</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --ans-color: #e53e3e;
+            --font-scale: 1rem;
+            --container-width: 1100px;
+        }
+
+        body.dark-mode {
+            --primary-color: #89b4fa;
+            --bg-color: #181825;
+            --card-bg: #1e1e2e;
+            --text-color: #cdd6f4;
+            --border-color: #45475a;
+            --ans-color: #f38ba8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-size: var(--font-scale);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .toolbar {
+            position: sticky;
+            top: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+            gap: 10px;
+        }
+
+        .toolbar h1 {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .controls-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background: #219150;
+            transform: translateY(-1px);
+        }
+
+        .select-btn {
+            padding: 6px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            font-size: 0.85rem;
+            background: white;
+            color: #333;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 20px auto;
+            padding: 0 20px;
+            transition: max-width 0.3s;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        h3 {
+            color: #2b6cb0;
+            margin-top: 20px;
+            font-size: 1.15em;
+        }
+
+        .inline-ans {
+            display: inline-block;
+            min-width: 50px;
+            padding: 2px 8px;
+            margin: 0 3px;
+            border-bottom: 2px dashed #999;
+            color: transparent;
+            background: rgba(0,0,0,0.05);
+            cursor: pointer;
+            border-radius: 3px;
+            text-align: center;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .inline-ans.revealed {
+            color: var(--ans-color);
+            background: rgba(229, 62, 62, 0.1);
+            border-bottom: 2px solid var(--ans-color);
+            font-weight: bold;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(0,0,0,0.04);
+            color: var(--primary-color);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* --- 标准课本双项式检索表样式 (特征 ...... 索引号/名称) --- */
+        /* ------------------------------------------------------------- */
+        .dichotomous-key-box {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Songti SC", STSong, sans-serif;
+        }
+
+        .dichotomous-key-box .key-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            color: var(--primary-color);
+        }
+
+        .key-line {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 10px;
+            font-size: 1.02rem;
+            line-height: 1.5;
+        }
+
+        .key-feature {
+            white-space: nowrap;
+            padding-right: 8px;
+        }
+
+        .key-leader {
+            flex: 1;
+            border-bottom: 2px dotted #888;
+            margin: 0 8px;
+            height: 1em;
+        }
+
+        .key-target {
+            white-space: nowrap;
+            padding-left: 8px;
+            font-weight: bold;
+            color: #2b6cb0;
+        }
+
+        .key-target.result {
+            color: #27ae60;
+        }
+
+        /* 容器与面板组件 */
+        .interactive-diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+            background: rgba(0,0,0,0.02);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .canvas-box {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .organ-info-panel {
+            flex: 1;
+            min-width: 280px;
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .img-hotspot-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+
+        .img-hotspot-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #e53e3e;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .hotspot::after {
+            content: '';
+            position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border-radius: 50%;
+            border: 2px solid #e53e3e;
+            animation: pulse-ring 1.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .hotspot:hover {
+            background-color: #3182ce;
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .hotspot.active {
+            background-color: #27ae60;
+            border-color: #fff;
+        }
+
+        .hotspot-tooltip {
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 0.78rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            z-index: 20;
+        }
+
+        .hotspot-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%; left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        }
+
+        .hotspot:hover .hotspot-tooltip {
+            opacity: 1;
+        }
+
+        .sim-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.02);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mindmap-section {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 25px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .mindmap-tree {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .node {
+            background: #313244;
+            border: 1px solid #45475a;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .node:hover {
+            border-color: #89b4fa;
+            background: #45475a;
+        }
+
+        .node-title {
+            font-weight: bold;
+            color: #89b4fa;
+        }
+
+        .children-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-left: 2px dashed #45475a;
+            padding-left: 15px;
+            margin-left: 5px;
+        }
+
+        .hidden { display: none !important; }
+
+        @media print {
+            .toolbar, .btn, .select-btn, .hotspot, .hotspot-tooltip {
+                display: none !important;
+            }
+            body { background: white !important; color: black !important; font-size: 12pt; }
+            .card { box-shadow: none; border: none; padding: 0; margin-bottom: 20px; }
+            .inline-ans { border-bottom: 1px solid black; background: none; color: transparent; }
+            .inline-ans.revealed { color: black; background: none; border-bottom: 1px solid black; }
+            .mindmap-section { background: white; color: black; }
+            .node { background: #eee; color: black; border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h1>第1章 物种的多样性</h1>
+        
+        <div class="controls-group">
+            <button class="btn" onclick="toggleAllAnswers(true)">🔓 展开答案</button>
+            <button class="btn" onclick="toggleAllAnswers(false)">🔒 隐藏答案</button>
+            
+            <select class="select-btn" onchange="changeFontSize(this.value)">
+                <option value="1rem">字号: 标准 (100%)</option>
+                <option value="1.15rem">字号: 大字 (115%)</option>
+                <option value="1.3rem">字号: 超大 (130%)</option>
+            </select>
+
+            <select class="select-btn" onchange="changeLayoutWidth(this.value)">
+                <option value="1100px">版面: 居中 (1100px)</option>
+                <option value="100%">版面: 宽屏 (全屏)</option>
+            </select>
+
+            <button class="btn" style="background:#8e44ad;" onclick="toggleDarkMode()">🌙 护眼模式</button>
+            <button class="btn" style="background:#2980b9;" onclick="window.print()">🖨️ 打印</button>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <script>
+        const dogData = {
+            beagle: { title: "🐕 比格犬 (Beagle)", feature: "垂耳、短毛、嗅觉敏锐", desc: "小型猎犬，性格活泼。" },
+            fox: { title: "🦊 银狐犬 (Japanese Spitz)", feature: "纯白浓密长毛、立耳", desc: "外观呈纯白色，毛发极浓密。" },
+            cavalier: { title: "🐶 查理王猎犬", feature: "长丝状垂耳、长毛", desc: "温顺的玩具猎犬。" },
+            crested: { title: "🐩 冠毛犬 (Chinese Crested)", feature: "体表大无毛、头顶冠毛", desc: "无毛犬种代表。" },
+            maltese: { title: "🤍 马尔济斯犬", feature: "纯白长毛、小型娇小", desc: "单层长毛极具特色。" },
+            scottish: { title: "🖤 苏格兰梗 (Scottish Terrier)", feature: "黑色硬毛、长胡须、短腿", desc: "硬毛梗犬类。" },
+            dachshund: { title: "🌭 腊肠犬 (Dachshund)", feature: "身躯极长、腿极短", desc: "二叉分类典型特征：[躯干极长/腿短]。" },
+            corgi: { title: "🦊 柯基犬 (Corgi)", feature: "短腿、大立耳、大臀部", desc: "二叉分类典型特征：[腿短/立耳]。" },
+            chow: { title: "🦁 松狮犬 (Chow Chow)", feature: "蓬松厚毛、蓝黑色舌头", desc: "大型蓬松犬种。" },
+            shiba: { title: "🐕 柴犬 (Shiba Inu)", feature: "短双层毛、卷尾、短立耳", desc: "日本本土猎犬种。" },
+            golden: { title: "🦮 金毛寻回犬 (Golden Retriever)", feature: "金色长毛、下垂耳朵、大型", desc: "温顺大型犬代表。" },
+            husky: { title: "🐺 西伯利亚雪橇犬 (哈士奇)", feature: "双层厚毛、狼外观、中大型", desc: "适应极寒环境的双层毛。" }
+        };
+
+        const binomialData = {
+            hibiscus: { title: "🌺 朱槿 (大红花)", latin: "<i>Hibiscus rosa-sinensis</i>", genus: "Hibiscus (木槿属)", species: "rosa-sinensis (中国的/玫瑰状)", desc: "俗名与学名的对比：俗称大红花，学名为双名法，首字为属名大写，第二字为种小名小写。" },
+            human: { title: "🧍 现代人", latin: "<i>Homo sapiens</i> L.", genus: "Homo (人属)", species: "sapiens (有智慧的)", desc: "林奈命名的现代人学名。末尾 L. 代表命名者林奈 (Linnaeus) 的缩写。" },
+            dog: { title: "🐕 家犬", latin: "<i>Canis familiaris</i>", genus: "Canis (犬属)", species: "familiaris (家养的)", desc: "与狼 (<i>Canis lupus</i>) 同属不同种，体现了亲缘关系的密切程度。" },
+            wolf: { title: "🐺 狼", latin: "<i>Canis lupus</i>", genus: "Canis (犬属)", species: "lupus (狼)", desc: "与犬属名相同，说明结构高度相似、亲缘关系极近。" }
+        };
+
+        const kingdomHotspotData = {
+            monera: { title: "🦠 原核生物界 (Monera)", trait: "无成形细胞核（无核膜）", desc: "都是单细胞生物，通过分裂生殖繁殖。包含细菌、蓝细菌（蓝藻）等最原始的生物。" },
+            protista: { title: "🔬 原生生物界 (Protista)", trait: "单细胞/简单多细胞真核生物", desc: "包含像植物能光合作用的衣藻/海带、像动物能运动的草履虫/变形虫，以及双重特征的眼虫。" },
+            fungi: { title: "🍄 真菌界 (Fungi)", trait: "真核、有细胞壁（几丁质）、无叶绿体", desc: "营腐生或寄生生活（异养）。包含单细胞的酵母菌，多细胞的香菇、木耳及青霉菌。" },
+            plantae: { title: "🌿 植物界 (Plantae)", trait: "多细胞真核、有细胞壁（纤维素）、自营", desc: "含有叶绿体能进行光合作用制造有机物。如苔藓、蕨类、裸子植物与被子植物。" },
+            animalia: { title: "🦁 动物界 (Animalia)", trait: "多细胞真核、无细胞壁、异营", desc: "无细胞壁与叶绿体，必须通过摄食获取有机物。分为脊椎动物与无脊椎动物。" }
+        };
+
+        const cellStructData = {
+            dna: { title: "🧬 拟核/DNA (无核膜)", organ: "原核生物特征", desc: "遗传物质裸露在细胞质中，没有核膜包被，不形成成形的细胞核。" },
+            yeast_nucleus: { title: "🔮 细胞核 (有核膜)", organ: "真核生物特征", desc: "遗传物质由双层核膜包被，是细胞代谢与遗传的控制中心。" },
+            vacuole: { title: "💧 大液泡", organ: "真菌/植物细胞器", desc: "成熟细胞中常有较大液泡，贮存水、营养物质及代谢产物。" },
+            wall: { title: "🛡️ 细胞壁", organ: "保护与支持结构", desc: "蓝细菌具细胞壁；酵母菌细胞壁成分主要为几丁质/聚糖。" }
+        };
+
+        function renderApp() {
+            document.getElementById('app').innerHTML = `
+                <div class="card">
+                    <h2>🎯 章节学习目标</h2>
+                    <ul>
+                        <li>理解生物分类的标准（求同比较、求异比较、同异共用比较法）。</li>
+                        <li>掌握俗名与学名的区别，熟记林奈提出的双名法（二名法）书写规范。</li>
+                        <li>熟练掌握二叉式分类检索表（双项式检索表）的应用与编制。</li>
+                        <li>了解分类系统的演进历史（二界、三界、五界系统及三域系统）。</li>
+                        <li>掌握五界分类系统（原核生物界、原生生物界、真菌界、植物界、动物界）的核心特征与代表生物。</li>
+                    </ul>
+                </div>
+
+                <!-- 1.1 生物的分类与物种的命名 -->
+                <div class="card">
+                    <h2>1.1 生物的分类与物种的命名</h2>
+                    
+                    <h3>1. 常见宠物狗形态异同与 12 种狗全图鉴</h3>
+                    <p>👇 <strong>点击下方图中的红色标记点，探索每种狗的形态特征：</strong></p>
+
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box" style="padding:0; overflow:hidden;">
+                            <div class="img-hotspot-wrapper" style="max-width:460px;">
+                                <img src="image/dog_varieties.jpg" alt="常见宠物狗种类">
+                                <div class="hotspot" style="top: 25%; left: 19%;" onclick="showDogInfo('beagle', this)"><div class="hotspot-tooltip">比格犬</div></div>
+                                <div class="hotspot" style="top: 25%; left: 42%;" onclick="showDogInfo('fox', this)"><div class="hotspot-tooltip">银狐犬</div></div>
+                                <div class="hotspot" style="top: 25%; left: 65%;" onclick="showDogInfo('cavalier', this)"><div class="hotspot-tooltip">查理王猎犬</div></div>
+                                <div class="hotspot" style="top: 25%; left: 86%;" onclick="showDogInfo('crested', this)"><div class="hotspot-tooltip">冠毛犬</div></div>
+                                <div class="hotspot" style="top: 55%; left: 18%;" onclick="showDogInfo('maltese', this)"><div class="hotspot-tooltip">马尔济斯</div></div>
+                                <div class="hotspot" style="top: 55%; left: 41%;" onclick="showDogInfo('scottish', this)"><div class="hotspot-tooltip">苏格兰梗</div></div>
+                                <div class="hotspot" style="top: 55%; left: 63%;" onclick="showDogInfo('dachshund', this)"><div class="hotspot-tooltip">腊肠犬</div></div>
+                                <div class="hotspot" style="top: 55%; left: 85%;" onclick="showDogInfo('corgi', this)"><div class="hotspot-tooltip">柯基犬</div></div>
+                                <div class="hotspot" style="top: 83%; left: 18%;" onclick="showDogInfo('chow', this)"><div class="hotspot-tooltip">松狮犬</div></div>
+                                <div class="hotspot" style="top: 83%; left: 42%;" onclick="showDogInfo('shiba', this)"><div class="hotspot-tooltip">柴犬</div></div>
+                                <div class="hotspot" style="top: 83%; left: 64%;" onclick="showDogInfo('golden', this)"><div class="hotspot-tooltip">金毛</div></div>
+                                <div class="hotspot" style="top: 83%; left: 85%;" onclick="showDogInfo('husky', this)"><div class="hotspot-tooltip">西伯利亚犬</div></div>
+                            </div>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3 id="dogTitle">👈 点击左图标记点</h3>
+                            <p id="dogFeature" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="dogDesc">观察形态异同（如腿长短、毛发类型、躯干比例），是建立二叉式分类标准的基础。</p>
+                        </div>
+                    </div>
+
+                    <h3>2. 俗名的缺陷与双名法 (Binomial Nomenclature)</h3>
+                    <p>俗名容易产生 <strong>同物异名</strong>（如玉米又称包谷、苞米）或 <strong>异物同名</strong>（如天堂鸟花与天堂鸟）。瑞典博物学家 <span class="inline-ans" onclick="toggleInline(this)">林奈</span> 提出了双名法。解构格式：<strong>学名 = 属名 (大写) + 种小名 (小写)</strong>。</p>
+                    
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box">
+                            <label><strong>选择生物查看双名法结构：</strong></label>
+                            <select id="selBinomial" class="select-btn" style="width:100%; margin-top:10px; padding:8px;" onchange="updateBinomialSim()">
+                                <option value="hibiscus">朱槿 (Hibiscus rosa-sinensis)</option>
+                                <option value="human">现代人 (Homo sapiens L.)</option>
+                                <option value="dog">家犬 (Canis familiaris)</option>
+                                <option value="wolf">灰狼 (Canis lupus)</option>
+                            </select>
+                            <div id="binomialDisp" style="margin-top:20px; font-size:1.3rem; font-family:serif; font-style:italic; color:#e53e3e; background:#fff3f3; padding:12px; border-radius:6px; border:1px solid #feb2b2;"></div>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3 id="bioTitle">🌺 结构解析</h3>
+                            <p id="bioGenus" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="bioSpecies" style="font-weight:bold; color:#3182ce;"></p>
+                            <p id="bioDesc"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.2 二叉式检索表的制作和应用 -->
+                <div class="card">
+                    <h2>1.2 二叉式检索表的制作和应用</h2>
+                    
+                    <h3>💡 互动检索体验：点击特征节点，查明生物身份！</h3>
+                    <p>请点击下方的检索选项，体验如何使用二叉式检索表鉴定生物：</p>
+
+                    <div class="sim-container" style="flex-direction:column; align-items:flex-start;">
+                        <div style="background:#fff; width:100%; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+                            <div id="keyStep" style="font-size:1.1rem; font-weight:bold; color:#2c3e50;">1a. 具有根和绿叶 ................................................ 请转到 2</div>
+                            <div style="margin-top:12px; display:flex; gap:10px;">
+                                <button class="btn" id="btnOptionA" onclick="nextKeyStep('A')">选择 1a (有根有绿叶)</button>
+                                <button class="btn" id="btnOptionB" style="background:#3182ce;" onclick="nextKeyStep('B')">选择 1b (无根无绿叶)</button>
+                                <button class="btn" style="background:#718096;" onclick="resetKeySim()">↺ 重置检索</button>
+                            </div>
+                        </div>
+                        <div id="keyResult" style="width:100%; padding:12px; background:#e6fffa; border-left:4px solid #319795; font-weight:bold; display:none;"></div>
+                    </div>
+
+                    <!-- 标准课本格式的双项式检索表对照 -->
+                    <h3>📜 标准双项式检索表对照 (课本规范格式)</h3>
+                    <div class="dichotomous-key-box">
+                        <div class="key-title">表1-1 图1-5中六类生物的二叉式检索表</div>
+                        
+                        <div class="key-line">
+                            <span class="key-feature">1有根有绿叶</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target">2</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">1无根无绿叶</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target">4</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">2不开花结果</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">苔藓</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">2能开花结果</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target">3</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">3种子单子叶</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">玉米</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">3种子双子叶</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">蚕豆</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">4体表有鳞</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">沙丁鱼</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">4体表无鳞</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target">5</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">5有羽毛</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">蜂鸟</span>
+                        </div>
+                        <div class="key-line">
+                            <span class="key-feature">5无羽毛</span>
+                            <span class="key-leader"></span>
+                            <span class="key-target result">长鼻猴</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.3 生物的分类系统 -->
+                <div class="card">
+                    <h2>1.3 生物的分类系统与细胞结构</h2>
+
+                    <h3>1. 五界分类系统演化架构（魏泰克 Whittaker, 1969）</h3>
+                    <p style="font-size:0.95em;">👇 <strong>点击演化图中的五界标记点探究各界特征：</strong></p>
+
+                    <div class="interactive-diagram-container">
+                        <div class="canvas-box" style="padding:0; overflow:hidden;">
+                            <div class="img-hotspot-wrapper" style="max-width:480px;">
+                                <img src="image/five_kingdoms.jpg" alt="五界分类系统演化图">
+                                <div class="hotspot" style="top: 22%; left: 20%;" onclick="showKingdomSpotInfo('monera', this)"><div class="hotspot-tooltip">原核生物界</div></div>
+                                <div class="hotspot" style="top: 18%; left: 55%;" onclick="showKingdomSpotInfo('fungi', this)"><div class="hotspot-tooltip">真菌界</div></div>
+                                <div class="hotspot" style="top: 48%; left: 55%;" onclick="showKingdomSpotInfo('animalia', this)"><div class="hotspot-tooltip">动物界</div></div>
+                                <div class="hotspot" style="top: 75%; left: 55%;" onclick="showKingdomSpotInfo('plantae', this)"><div class="hotspot-tooltip">植物界</div></div>
+                                <div class="hotspot" style="top: 48%; left: 32%;" onclick="showKingdomSpotInfo('protista', this)"><div class="hotspot-tooltip">原生生物界</div></div>
+                            </div>
+                        </div>
+                        <div class="organ-info-panel">
+                            <h3 id="kingTitle">👈 点击演化图标记点</h3>
+                            <p id="kingTrait" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="kingDesc">探索从无成形细胞核的原核生物到真核原生生物，再分化为真菌、植物与动物的五界演化关系。</p>
+                        </div>
+                    </div>
+
+                    <h3>2. 🔬 原核 vs 真核细胞结构互动对比</h3>
+                    <div class="interactive-diagram-container" style="margin-top:20px;">
+                        <div class="canvas-box" style="display:flex; flex-direction:column; gap:10px;">
+                            <p style="font-weight:bold; margin:5px 0;">原核细胞（蓝细菌）</p>
+                            <div class="img-hotspot-wrapper" style="max-width:380px;">
+                                <img src="image/blue_green_algae.jpg" alt="蓝细菌细胞结构">
+                                <div class="hotspot" style="top: 24%; left: 74%;" onclick="showCellStructInfo('wall', this)"><div class="hotspot-tooltip">细胞壁/细胞膜</div></div>
+                                <div class="hotspot" style="top: 52%; left: 50%;" onclick="showCellStructInfo('dna', this)"><div class="hotspot-tooltip">DNA (无核膜)</div></div>
+                            </div>
+
+                            <p style="font-weight:bold; margin:15px 0 5px 0;">真核细胞（酵母菌）</p>
+                            <div class="img-hotspot-wrapper" style="max-width:320px;">
+                                <img src="image/yeast_cell.jpg" alt="酵母菌细胞结构">
+                                <div class="hotspot" style="top: 55%; left: 70%;" onclick="showCellStructInfo('yeast_nucleus', this)"><div class="hotspot-tooltip">成形细胞核</div></div>
+                                <div class="hotspot" style="top: 35%; left: 45%;" onclick="showCellStructInfo('vacuole', this)"><div class="hotspot-tooltip">液泡</div></div>
+                            </div>
+                        </div>
+
+                        <div class="organ-info-panel">
+                            <h3 id="cellTitle">👈 点击细胞结构标记点</h3>
+                            <p id="cellOrgan" style="font-weight:bold; color:var(--accent-color);"></p>
+                            <p id="cellDesc">对比原核细胞（无核膜包被的细胞核）与真核细胞（有双层核膜包被的成形细胞核）的根本区别。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 思维导图复盘 -->
+                <div class="card mindmap-section">
+                    <h2 style="color:#89b4fa; border-bottom-color:#89b4fa;">NotebookLM 风格思维架构复盘（点击右侧 [+] 展开）</h2>
+                    <div class="mindmap-tree">
+                        <div class="node"><span class="node-title">第1章 物种的多样性</span></div>
+                        <div class="children-container">
+                            
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm1')"><span>1.1 分类与命名</span> <strong id="btn-mm1">[+]</strong></div>
+                                <div id="mm1" class="children-container hidden">
+                                    <div class="node">分类标准：求同比较 / 求异比较 / 同异共用比较</div>
+                                    <div class="node">俗名缺陷：同物异名（玉米/包谷）与 异物同名（天堂鸟）</div>
+                                    <div class="node">双名法（林奈）：学名 = 属名 (名词/首字母大写) + 种小名 (形容词/全小写)</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm2')"><span>1.2 检索表制作应用</span> <strong id="btn-mm2">[+]</strong></div>
+                                <div id="mm2" class="children-container hidden">
+                                    <div class="node">原则：依据一极或多对相对性状逐级一分为二</div>
+                                    <div class="node">格式：二叉式（双项式检索表）</div>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="node" onclick="toggleMMNode('mm3')"><span>1.3 分类系统演进</span> <strong id="btn-mm3">[+]</strong></div>
+                                <div id="mm3" class="children-container hidden">
+                                    <div class="node">演化历程：二界系统 ➔ 三界系统(海克尔) ➔ 五界系统(魏泰克) ➔ 三域系统(乌斯)</div>
+                                    <div class="node">原核生物界：无核膜包被 (细菌、蓝细菌)</div>
+                                    <div class="node">真核生物界：原生生物界 / 真菌界 / 植物界 / 动物界</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateBinomialSim();
+            resetKeySim();
+        }
+
+        function setActiveHotspot(el) {
+            const container = el.closest('.img-hotspot-wrapper');
+            if(container) {
+                container.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+            }
+            el.classList.add('active');
+        }
+
+        function showDogInfo(key, el) {
+            setActiveHotspot(el);
+            const data = dogData[key];
+            if(!data) return;
+            document.getElementById('dogTitle').innerHTML = data.title;
+            document.getElementById('dogFeature').innerHTML = `形态特征：${data.feature}`;
+            document.getElementById('dogDesc').innerHTML = data.desc;
+        }
+
+        function showKingdomSpotInfo(key, el) {
+            setActiveHotspot(el);
+            const data = kingdomHotspotData[key];
+            if(!data) return;
+            document.getElementById('kingTitle').innerHTML = data.title;
+            document.getElementById('kingTrait').innerHTML = `核心特征：${data.trait}`;
+            document.getElementById('kingDesc').innerHTML = data.desc;
+        }
+
+        function showCellStructInfo(key, el) {
+            setActiveHotspot(el);
+            const data = cellStructData[key];
+            if(!data) return;
+            document.getElementById('cellTitle').innerHTML = data.title;
+            document.getElementById('cellOrgan').innerHTML = `结构归属：${data.organ}`;
+            document.getElementById('cellDesc').innerHTML = data.desc;
+        }
+
+        function updateBinomialSim() {
+            const val = document.getElementById('selBinomial').value;
+            const data = binomialData[val];
+            if(!data) return;
+            document.getElementById('binomialDisp').innerHTML = data.latin;
+            document.getElementById('bioTitle').innerHTML = data.title;
+            document.getElementById('bioGenus').innerHTML = `属名：${data.genus}`;
+            document.getElementById('bioSpecies').innerHTML = `种小名：${data.species}`;
+            document.getElementById('bioDesc').innerHTML = data.desc;
+        }
+
+        let currentKeyStep = 1;
+        function nextKeyStep(choice) {
+            const stepDisp = document.getElementById('keyStep');
+            const btnA = document.getElementById('btnOptionA');
+            const btnB = document.getElementById('btnOptionB');
+
+            if (currentKeyStep === 1) {
+                if (choice === 'A') {
+                    currentKeyStep = 2;
+                    stepDisp.innerHTML = "2a. 不开花结果 ................................................ 苔藓<br>2b. 能开花结果 ................................................ 请转到 3";
+                    btnA.innerHTML = "选择 2a (不开花结果)";
+                    btnB.innerHTML = "选择 2b (能开花结果)";
+                } else {
+                    currentKeyStep = 4;
+                    stepDisp.innerHTML = "4a. 体表有鳞片 ................................................ 沙丁鱼<br>4b. 体表无鳞片 ................................................ 请转到 5";
+                    btnA.innerHTML = "选择 4a (体表有鳞)";
+                    btnB.innerHTML = "选择 4b (体表无鳞)";
+                }
+            } else if (currentKeyStep === 2) {
+                if (choice === 'A') {
+                    showKeyResult("🌱 鉴定成功：该生物为【苔藓】！");
+                } else {
+                    currentKeyStep = 3;
+                    stepDisp.innerHTML = "3a. 种子为单子叶 ................................................ 玉米<br>3b. 种子为双子叶 ................................................ 蚕豆";
+                    btnA.innerHTML = "选择 3a (单子叶)";
+                    btnB.innerHTML = "选择 3b (双子叶)";
+                }
+            } else if (currentKeyStep === 3) {
+                if (choice === 'A') showKeyResult("🌽 鉴定成功：该生物为【玉米】！");
+                else showKeyResult("🫘 鉴定成功：该生物为【蚕豆】！");
+            } else if (currentKeyStep === 4) {
+                if (choice === 'A') {
+                    showKeyResult("🐟 鉴定成功：该生物为【沙丁鱼】！");
+                } else {
+                    currentKeyStep = 5;
+                    stepDisp.innerHTML = "5a. 身体有羽毛 ................................................ 蜂鸟<br>5b. 身体无羽毛 ................................................ 长鼻猴";
+                    btnA.innerHTML = "选择 5a (有羽毛)";
+                    btnB.innerHTML = "选择 5b (无羽毛)";
+                }
+            } else if (currentKeyStep === 5) {
+                if (choice === 'A') showKeyResult("🐦 鉴定成功：该生物为【蜂鸟】！");
+                else showKeyResult("🐒 鉴定成功：该生物为【长鼻猴】！");
+            }
+        }
+
+        function showKeyResult(msg) {
+            const resDisp = document.getElementById('keyResult');
+            resDisp.style.display = "block";
+            resDisp.innerHTML = msg;
+        }
+
+        function resetKeySim() {
+            currentKeyStep = 1;
+            document.getElementById('keyStep').innerHTML = "1a. 有根有绿叶 ................................................ 请转到 2<br>1b. 无根无绿叶 ................................................ 请转到 4";
+            document.getElementById('btnOptionA').innerHTML = "选择 1a (有根有绿叶)";
+            document.getElementById('btnOptionB').innerHTML = "选择 1b (无根无绿叶)";
+            document.getElementById('keyResult').style.display = "none";
+        }
+
+        function toggleMMNode(id) {
+            const target = document.getElementById(id);
+            const btn = document.getElementById('btn-' + id);
+            if (target) {
+                if (target.classList.contains('hidden')) {
+                    target.classList.remove('hidden');
+                    if (btn) btn.innerText = '[-]';
+                } else {
+                    target.classList.add('hidden');
+                    if (btn) btn.innerText = '[+]';
+                }
+            }
+        }
+
+        function toggleInline(el) { el.classList.toggle('revealed'); }
+        function toggleAllAnswers(show) {
+            document.querySelectorAll('.inline-ans').forEach(el => {
+                if(show) el.classList.add('revealed'); else el.classList.remove('revealed');
+            });
+        }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function changeFontSize(sz) { document.documentElement.style.setProperty('--font-scale', sz); }
+        function changeLayoutWidth(w) { document.documentElement.style.setProperty('--container-width', w); }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderApp();
+        });
+    </script>
+</body>
+</html>
