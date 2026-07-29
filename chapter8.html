@@ -222,6 +222,78 @@
             font-size: 0.95em;
         }
 
+        /* 食物金字塔专属样式 */
+        .pyramid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            align-items: stretch;
+        }
+
+        .pyramid-wrapper {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pyramid-layer {
+            width: 100%;
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #fff;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+            user-select: none;
+        }
+
+        .pyramid-layer:hover, .pyramid-layer.active {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 5;
+        }
+
+        .layer-1 { width: 45%; background: #e74c3c; } /* 吃最少: 油糖盐 */
+        .layer-2 { width: 62%; background: #e67e22; } /* 吃适量: 奶肉鱼蛋豆 */
+        .layer-3 { width: 78%; background: #27ae60; } /* 吃多些: 瓜菜水果 */
+        .layer-4 { width: 95%; background: #f39c12; } /* 吃最多: 五谷类 */
+
+        .pyramid-info {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .water-reminder {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(41, 128, 185, 0.1);
+            border: 1px solid #2980b9;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: #2980b9;
+        }
+
+        body.dark-mode .water-reminder {
+            color: #89b4fa;
+            border-color: #89b4fa;
+        }
+
         .mindmap-section {
             background: #1e1e2e;
             color: #cdd6f4;
@@ -317,6 +389,12 @@
                 color: black;
                 border: 1px solid #000;
             }
+
+            .pyramid-layer {
+                border: 1px solid #000;
+                color: black !important;
+                background: none !important;
+            }
         }
     </style>
 </head>
@@ -348,7 +426,6 @@
     <div class="container" id="app"></div>
 
     <script>
-        // 高阶 DOM 强效净化器：专门强行擦除任何系统自动插入的 字符串
         function forceCleanCites() {
             const regex = /\+\]/gi;
             const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
@@ -360,7 +437,6 @@
             }
         }
 
-        // 启动全局实时监测，发生任何改变立刻清理
         const citeObserver = new MutationObserver(() => forceCleanCites());
 
         function renderApp() {
@@ -528,7 +604,35 @@
                         <div id="bmiCalcDetails" class="calc-box" style="display:none;"></div>
                     </div>
 
-                    <h3>三餐热量分配与饮食习惯</h3>
+                    <h3>🥗 互动食物金字塔 (Balanced Diet Pyramid)</h3>
+                    <p>根据《中国居民膳食指南》与马来西亚健康膳食建议，合理膳食结构的塔层由底至顶如下。点击各塔层探索建议摄入量：</p>
+
+                    <div class="pyramid-container">
+                        <div class="pyramid-wrapper">
+                            <div class="pyramid-layer layer-1" onclick="selectPyramidLayer(1)">
+                                1. 吃最少：油、糖、盐类
+                            </div>
+                            <div class="pyramid-layer layer-2" onclick="selectPyramidLayer(2)">
+                                2. 吃适量：奶制品、肉、鱼、蛋及豆类
+                            </div>
+                            <div class="pyramid-layer layer-3" onclick="selectPyramidLayer(3)">
+                                3. 吃多些：瓜菜类、蔬菜、水果
+                            </div>
+                            <div class="pyramid-layer layer-4 active" onclick="selectPyramidLayer(4)">
+                                4. 吃最多：五谷类（米面、面包、麦片）
+                            </div>
+                        </div>
+
+                        <div class="pyramid-info" id="pyramidInfoBox">
+                            <!-- 由 JS 动态渲染 -->
+                        </div>
+                    </div>
+
+                    <div class="water-reminder">
+                        💧 每日补充：每天应喝 6 至 8 杯流质饮料（包括开水、清茶和汤）
+                    </div>
+
+                    <h3 style="margin-top:20px;">三餐热量分配与饮食习惯</h3>
                     <p>一日三餐合理的食量分配比例为：早餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>，午餐占 <span class="inline-ans" onclick="toggleInline(this)">40%</span>，晚餐占 <span class="inline-ans" onclick="toggleInline(this)">30%</span>。</p>
                     <p>营养不良的临床常见类型包括：能量供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">消瘦型</span>；蛋白质供应不足为主的 <span class="inline-ans" onclick="toggleInline(this)">浮肿型</span>；以及消瘦-浮肿型。</p>
                 </div>
@@ -595,7 +699,7 @@
                                 </div>
                                 <div id="mm3" class="children-container hidden">
                                     <div class="node">营养失衡：肥胖症 vs 营养不良（消瘦/浮肿型）</div>
-                                    <div class="node">食物金字塔与三餐比例（30%:40%:30%）</div>
+                                    <div class="node">食物金字塔（四层结构）与三餐比例（30%:40%:30%）</div>
                                     <div class="node">BMI 计算公式与标准体重范围</div>
                                 </div>
                             </div>
@@ -616,6 +720,7 @@
             `;
 
             initSimulators();
+            selectPyramidLayer(4); // 默认选中底层五谷类
             forceCleanCites();
         }
 
@@ -653,6 +758,53 @@
             });
         }
 
+        /* 食物金字塔交互数据与逻辑 */
+        const pyramidData = {
+            1: {
+                title: "🔴 顶层：油、糖、盐类（吃最少）",
+                intake: "食用油 < 25-30g / 日，食盐 < 5g / 日",
+                foods: "烹调油、白糖、食用盐、黄油、高糖饮料、糕点",
+                function: "提供必需脂肪酸与能量，但过量极易导致肥胖、高血压、心血管疾病及龋齿。建议烹饪少油少盐。"
+            },
+            2: {
+                title: "🟠 第三层：奶制品、肉、鱼、蛋及豆类（吃适量）",
+                intake: "奶类 300g / 日；鱼虾/肉/蛋类 120-200g / 日",
+                foods: "牛奶、酸奶、奶酪、瘦肉、家禽、鱼类、鸡蛋、大豆及豆制品",
+                function: "富含优质蛋白质、钙、铁、锌及维生素B群。构造与修复人体组织细胞，维持正常免疫力。"
+            },
+            3: {
+                title: "🟢 第二层：瓜菜类、蔬菜与水果（吃多些）",
+                intake: "蔬菜 300-500g / 日；水果 200-350g / 日",
+                foods: "青菜、胡萝卜、茄子、番茄、西瓜、葡萄、苹果、香蕉、橙子",
+                function: "富含膳食纤维、维生素C、胡萝卜素及矿物质。促进肠道蠕动，预防便秘，增强机体抗氧化与免疫力。"
+            },
+            4: {
+                title: "🟡 塔底：五谷类（吃最多）",
+                intake: "谷类及杂豆 200-300g / 日（含全谷物 50-150g）",
+                foods: "米饭、面条、面包、玉米片、麦片、米粉、饼干、薯类",
+                function: "人体最主要的能量来源（富含淀粉/糖类与复合碳水化合物）。维持日常人体生理活动与脑力消耗。"
+            }
+        };
+
+        function selectPyramidLayer(layerNum) {
+            document.querySelectorAll('.pyramid-layer').forEach(el => el.classList.remove('active'));
+            const layers = document.querySelectorAll('.pyramid-layer');
+            if (layers[4 - layerNum]) {
+                layers[4 - layerNum].classList.add('active');
+            }
+
+            const data = pyramidData[layerNum];
+            const infoBox = document.getElementById('pyramidInfoBox');
+            if (infoBox && data) {
+                infoBox.innerHTML = `
+                    <h4 style="margin:0 0 8px 0; color:var(--primary-color); font-size:1.1em;">${data.title}</h4>
+                    <p style="margin:4px 0;"><strong>🎯 建议摄入量：</strong>${data.intake}</p>
+                    <p style="margin:4px 0;"><strong>🥗 代表性食物：</strong>${data.foods}</p>
+                    <p style="margin:4px 0;"><strong>💡 营养生理作用：</strong>${data.function}</p>
+                `;
+            }
+        }
+
         let testCanvas, testCtx, calCanvas, calCtx;
         const reagentOriginalColors = {
             'fehling': { color: '#2980b9', name: '蓝色' },
@@ -664,9 +816,9 @@
 
         function initSimulators() {
             testCanvas = document.getElementById('testSimCanvas');
-            testCtx = testCanvas.getContext('2d');
+            testCtx = testCanvas ? testCanvas.getContext('2d') : null;
             calCanvas = document.getElementById('calorimeterCanvas');
-            calCtx = calCanvas.getContext('2d');
+            calCtx = calCanvas ? calCanvas.getContext('2d') : null;
 
             previewReagentColor();
             drawCalorimeter(20.0, false);
@@ -890,7 +1042,6 @@
             }
         }
 
-        // 页面初始化
         document.addEventListener("DOMContentLoaded", () => {
             renderApp();
             citeObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
